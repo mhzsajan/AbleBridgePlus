@@ -42,12 +42,19 @@ class BrowserHandler:
         except Exception as e:
             return {'error': str(e)}
     
-    def load_instrument_or_effect(self, track_index: int, uri: str) -> Dict[str, Any]:
-        """Load an instrument or effect."""
+    def load_instrument_or_effect(self, track_index: int, uri: str, track_type: str = "track") -> Dict[str, Any]:
+        """Load an instrument or effect onto a track.
+        
+        Args:
+            track_index: The track index (0-based)
+            uri: The URI or device name to load
+            track_type: "track" (default), "return", or "master"
+        """
         # This is a placeholder
         # Real implementation would load the device
         return {
             'track_index': track_index,
             'uri': uri,
+            'track_type': track_type,
             'message': 'Device loading requires manual implementation'
         }
