@@ -1,6 +1,6 @@
 # Enhanced AbletonBridge
 
-MCP bridge connecting AI/LLM tools to Ableton Live, enhanced for live show performances. 440+ tools for AI-assisted music production and real-time show control.
+MCP bridge connecting AI/LLM tools to Ableton Live, enhanced for live show performances. 450+ tools for AI-assisted music production and real-time show control.
 
 **By Sajan Maharjan**  
 *Inspiration from [AbletonBridge](https://github.com/hidingwill/AbletonBridge) by [hidingwill](https://github.com/hidingwill)*
@@ -13,12 +13,13 @@ MCP bridge connecting AI/LLM tools to Ableton Live, enhanced for live show perfo
 
 ## Features
 
-**440+ tools** across **14 categories** for complete Ableton Live control.
+**450+ tools** across **15 categories** for complete Ableton Live control.
 
 | Category | Tools | Description |
 |----------|-------|-------------|
 | Tracks, Clips, Devices | 340+ | Core Ableton operations |
 | MIDI Mapping | 7 | Controller integration |
+| MIDI CC Control | 5 | Plugin parameter control via CC |
 | Plugin Management | 8 | VST/AU scanning and config |
 | Video Integration | 10 | Videosync2 and Spout |
 | Setlist Management | 9 | AbleSet integration |
@@ -36,15 +37,16 @@ MCP bridge connecting AI/LLM tools to Ableton Live, enhanced for live show perfo
 
 | Category | Original AbletonBridge | Enhanced AbletonBridge |
 |----------|----------------------|----------------------|
-| **Tool Count** | 353 | 440+ |
+| **Tool Count** | 353 | 450+ |
 | **Tracks** | create, delete, duplicate, group, arm, freeze | + routing channels exposed |
 | **Clips** | create, fire, stop, notes, quantize, humanize | + batch operations |
-| **Devices** | parameters, presets, snapshots, hidden params | + plugin management |
+| **Devices** | parameters, presets, snapshots, hidden params | + plugin management, track_type support |
 | **Mixer** | volume, pan, mute, solo, sends | + batch set multiple tracks |
-| **Browser** | tree, search, load instruments/effects | + plugin scanning |
+| **Browser** | tree, search, load instruments/effects | + plugin scanning, master/return loading |
 | **Automation** | clip envelopes, track automation, curves | + presets, templates |
 | **Creative** | chord progression, bass line, drum patterns | + AI generation |
 | **MIDI Mapping** | ❌ | ✅ 7 tools (get, create, delete, save/load) |
+| **MIDI CC Control** | ❌ | ✅ 5 tools (100 maps: NI Komplete + Arturia V Collection) |
 | **Plugin Management** | ❌ | ✅ 8 tools (scan, list, configure, presets) |
 | **Video Integration** | ❌ | ✅ 10 tools (Videosync2, Spout, video clips) |
 | **Setlist Management** | ❌ | ✅ 9 tools (AbleSet, songs, transitions) |
