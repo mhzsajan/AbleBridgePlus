@@ -73,6 +73,46 @@ MCP bridge connecting AI/LLM tools to Ableton Live, enhanced for live show perfo
 
 ---
 
+## Roadmap — Upcoming Features (510+ Tools)
+
+### Live Show Control (15 new tools)
+- Show clock & timer
+- Emergency stop / panic mute
+- Backup scene activation
+- Scene macros (fire multiple scenes)
+
+### Performance Analytics (12 new tools)
+- Session & track statistics
+- Mix history tracking
+- Performance trends
+- CPU/memory history
+
+### Session Management (10 new tools)
+- Auto-backup & restore
+- Session comparison
+- Change history
+
+### Audio/MIDI Presets (12 new tools)
+- Reverb, delay, compressor, EQ presets
+- Arpeggiator & chord presets
+
+### Video/Lighting (10 new tools)
+- Video effect presets
+- DMX lighting control
+- Lighting scene presets
+
+### AI Enhancement (8 new tools)
+- Genre-based mixing suggestions
+- Auto gain staging
+- Mix optimization
+- Sound design assistance
+
+### Advanced Show Control (8 new tools)
+- Scene macros
+- Backup presets
+
+---
+
 ## Quick Install
 
 ### Windows
@@ -165,46 +205,6 @@ generate_midi(track_index=0, clip_index=0, style="melody", scale="minor", root=6
 - [Features](docs/FEATURES.md)
 - [Architecture](docs/ARCHITECTURE.md)
 - [New Features Plan](docs/NEW-FEATURES-PLAN.md)
-
----
-
-## Roadmap — Upcoming Features (510+ Tools)
-
-### Live Show Control (15 new tools)
-- Show clock & timer
-- Emergency stop / panic mute
-- Backup scene activation
-- Scene macros (fire multiple scenes)
-
-### Performance Analytics (12 new tools)
-- Session & track statistics
-- Mix history tracking
-- Performance trends
-- CPU/memory history
-
-### Session Management (10 new tools)
-- Auto-backup & restore
-- Session comparison
-- Change history
-
-### Audio/MIDI Presets (12 new tools)
-- Reverb, delay, compressor, EQ presets
-- Arpeggiator & chord presets
-
-### Video/Lighting (10 new tools)
-- Video effect presets
-- DMX lighting control
-- Lighting scene presets
-
-### AI Enhancement (8 new tools)
-- Genre-based mixing suggestions
-- Auto gain staging
-- Mix optimization
-- Sound design assistance
-
-### Advanced Show Control (8 new tools)
-- Scene macros
-- Backup presets
 
 ---
 
