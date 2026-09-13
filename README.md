@@ -1,6 +1,8 @@
 # Enhanced AbletonBridge
 
-AI-integrated live show engineering system for Ableton Live with 440+ tools. Built on [AbletonBridge](https://github.com/hidingwill/AbletonBridge) by [hidingwill](https://github.com/hidingwill).
+MCP bridge connecting AI/LLM tools to Ableton Live, enhanced for live show performances. 440+ tools for AI-assisted music production and real-time show control.
+
+Built on [AbletonBridge](https://github.com/hidingwill/AbletonBridge) by [hidingwill](https://github.com/hidingwill).
 
 [![Release](https://img.shields.io/github/v/release/mhzsajan/enhanced-abletonbridge)](https://github.com/mhzsajan/enhanced-abletonbridge/releases)
 [![License](https://img.shields.io/github/license/mhzsajan/enhanced-abletonbridge)](LICENSE)
