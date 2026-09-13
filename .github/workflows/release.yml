@@ -1,0 +1,94 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+
+      - name: Install dependencies
+        run: uv sync
+
+      - name: Create release package
+        run: |
+          # Create release directory
+          mkdir -p release-package
+          
+          # Copy necessary files
+          cp -r MCP_Server release-package/
+          cp -r AbletonBridge_Remote_Script release-package/
+          cp -r M4L_Device release-package/
+          cp -r docs release-package/
+          cp -r tests release-package/
+          cp -r examples release-package/
+          cp -r release release-package/
+          cp README.md release-package/
+          cp LICENSE release-package/
+          cp CHANGELOG.md release-package/
+          cp pyproject.toml release-package/
+          cp uv.lock release-package/
+          
+          # Create Windows ZIP
+          zip -r enhanced-abletonbridge-windows.zip release-package/
+          
+          # Create tar.gz for Linux/macOS
+          tar -czf enhanced-abletonbridge-linux.tar.gz release-package/
+          
+          # Clean up
+          rm -rf release-package
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          files: |
+            enhanced-abletonbridge-windows.zip
+            enhanced-abletonbridge-linux.tar.gz
+          body: |
+            ## Enhanced AbletonBridge v${{ github.ref_name }}
+            
+            AI-integrated live show engineering system for Ableton Live.
+            
+            ### What's New
+            - 440+ tools across 14 categories
+            - Enhanced routing with channel exposure
+            - MIDI mapping, plugin management, video routing
+            - AbleSet integration, performance monitoring
+            - Live show presets, quick scene fire
+            - Audio analysis, template system
+            - Advanced routing, AI integration
+            
+            ### Quick Install
+            
+            **Windows:**
+            1. Download `enhanced-abletonbridge-windows.zip`
+            2. Extract and run `install.bat`
+            
+            **macOS/Linux:**
+            1. Download `enhanced-abletonbridge-linux.tar.gz`
+            2. Extract and run `./install.sh`
+            
+            ### Documentation
+            - [Installation Guide](https://github.com/mhzsajan/enhanced-abletonbridge/blob/main/docs/INSTALLATION.md)
+            - [Features](https://github.com/mhzsajan/enhanced-abletonbridge/blob/main/docs/FEATURES.md)
+            - [Architecture](https://github.com/mhzsajan/enhanced-abletonbridge/blob/main/docs/ARCHITECTURE.md)
+            
+            ### Credits
+            Based on [AbletonBridge](https://github.com/hidingwill/AbletonBridge) by [hidingwill](https://github.com/hidingwill).

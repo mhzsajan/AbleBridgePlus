@@ -49,6 +49,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Setlist management tools for AbleSet
 - Performance monitoring tools (CPU, memory)
 - Quick presets tools for live shows
+- AI integration tools (snapshots, suggestions)
+- Audio analysis tools (spectrum, levels, chords)
+- Template system tools
+- Advanced routing tools (side-chain, multi-output)
+- Automation enhancement tools
+
+## [0.1.0] - 2026-09-13
+
+### Added
+- Core MCP Server architecture (from AbletonBridge)
+- TCP connection to Ableton Remote Script
+- UDP connection for real-time updates
+- M4L Bridge integration
+- Basic tool set (tracks, clips, devices, mixer, browser)
+
+### Enhanced
+- Routing channels exposure in `get_track_routing`
+- Added `available_input_routing_channels` to response
+- Added `available_output_routing_channels` to response
+
+### Added (New Tools)
+- MIDI mapping tools (get, create, delete)
+- Plugin management tools (scan, list, configure)
+- Video routing tools for Videosync2
+- Setlist management tools for AbleSet
+- Performance monitoring tools (CPU, memory)
+- Quick presets tools for live shows
 
 ## [0.0.1] - 2026-09-13
 
