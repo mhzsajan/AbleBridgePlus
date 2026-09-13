@@ -4,6 +4,9 @@ MCP bridge connecting AI/LLM tools to Ableton Live, enhanced for live show perfo
 
 Built on [AbletonBridge](https://github.com/hidingwill/AbletonBridge) by [hidingwill](https://github.com/hidingwill).
 
+**Author:** Sajan Maharjan  
+**Original Creator:** [hidingwill](https://github.com/hidingwill)
+
 [![Release](https://img.shields.io/github/v/release/mhzsajan/enhanced-abletonbridge)](https://github.com/mhzsajan/enhanced-abletonbridge/releases)
 [![License](https://img.shields.io/github/license/mhzsajan/enhanced-abletonbridge)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
@@ -68,17 +71,42 @@ uv sync
 | Advanced Routing | 6 | Side-chain, multi-output |
 | Automation Enhancement | 6 | Presets, templates |
 
-### What's New vs Original
+### Side-by-Side Comparison
 
-| Feature | Original | Enhanced |
-|---------|----------|----------|
-| Tool Count | 353 | 440+ |
-| Routing Channels | Missing | Exposed |
-| MIDI Mapping | No | Yes |
-| Video Integration | No | Yes |
-| Setlist Management | No | Yes |
-| Performance Monitoring | No | Yes |
-| AI Integration | No | Yes |
+| Category | Original AbletonBridge | Enhanced AbletonBridge |
+|----------|----------------------|----------------------|
+| **Tool Count** | 353 | 440+ |
+| **Tracks** | create, delete, duplicate, group, arm, freeze | + routing channels exposed |
+| **Clips** | create, fire, stop, notes, quantize, humanize | + batch operations |
+| **Devices** | parameters, presets, snapshots, hidden params | + plugin management |
+| **Mixer** | volume, pan, mute, solo, sends | + batch set multiple tracks |
+| **Browser** | tree, search, load instruments/effects | + plugin scanning |
+| **Automation** | clip envelopes, track automation, curves | + presets, templates |
+| **Creative** | chord progression, bass line, drum patterns | + AI generation |
+| **MIDI Mapping** | ❌ | ✅ 7 tools (get, create, delete, save/load) |
+| **Plugin Management** | ❌ | ✅ 8 tools (scan, list, configure, presets) |
+| **Video Integration** | ❌ | ✅ 10 tools (Videosync2, Spout, video clips) |
+| **Setlist Management** | ❌ | ✅ 9 tools (AbleSet, songs, transitions) |
+| **Performance Monitoring** | ❌ | ✅ 8 tools (CPU, memory, latency, alerts) |
+| **Live Show Presets** | ❌ | ✅ 10 tools (save/load, scene presets, emergency stop) |
+| **AI Integration** | ❌ | ✅ 9 tools (snapshots, suggestions, MIDI generation) |
+| **Audio Analysis** | ❌ | ✅ 8 tools (spectrum, levels, chords, dynamics) |
+| **Template System** | ❌ | ✅ 10 tools (session, track, device templates) |
+| **Advanced Routing** | ❌ | ✅ 6 tools (side-chain, multi-output, presets) |
+| **Automation Enhancement** | ❌ | ✅ 6 tools (presets, templates, batch) |
+
+### Use Cases
+
+| Use Case | Original | Enhanced |
+|----------|----------|----------|
+| General Ableton control | ✅ | ✅ |
+| Live show engineering | ❌ | ✅ |
+| Video integration | ❌ | ✅ |
+| AI-assisted mixing | ❌ | ✅ |
+| Plugin management | ❌ | ✅ |
+| MIDI controller mapping | ❌ | ✅ |
+| Performance monitoring | ❌ | ✅ |
+| Setlist management | ❌ | ✅ |
 
 ---
 
