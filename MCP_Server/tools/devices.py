@@ -4,7 +4,44 @@ Device management tools for AbleBridge++.
 These tools handle loading instruments, effects, and managing devices on tracks.
 """
 
-from typing import Any, Dict, Optional
+import time
+from typing import Any, Dict, List, Optional
+
+
+def _m4l_batch_set_params(m4l, track_index, device_index, parameters):
+    """Set multiple hidden parameters by sending individual set_hidden_param
+    commands sequentially.
+
+    Returns a dict with keys: params_set, params_failed, total_requested, errors.
+    """
+    ok = 0
+    failed = 0
+    errors: List[str] = []
+    for p in parameters:
+        try:
+            result = m4l.send_command("set_hidden_param", {
+                "track_index": track_index,
+                "device_index": device_index,
+                "parameter_index": int(p["index"]),
+                "value": float(p["value"]),
+            })
+            if result.get("status") == "success":
+                ok += 1
+            else:
+                failed += 1
+                errors.append(f"[{p['index']}]: {result.get('message', '?')}")
+        except Exception as e:
+            failed += 1
+            errors.append(f"[{p['index']}]: {str(e)}")
+        # Small delay to let Ableton breathe when setting many params
+        if len(parameters) > 6:
+            time.sleep(0.05)
+    return {
+        "params_set": ok,
+        "params_failed": failed,
+        "total_requested": ok + failed,
+        "errors": errors,
+    }
 
 
 def load_instrument_or_effect(track_index: int, uri: str, track_type: str = "track") -> Dict[str, Any]:

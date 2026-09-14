@@ -13,15 +13,51 @@ import json
 import logging
 import os
 import sys
+import time
 from typing import Any, Dict, List, Optional
 
 # Add parent directory to path for imports
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from MCP_Server.connections.ableton import AbletonConnection
-from MCP_Server.connections.m4l import M4LConnection
+from MCP_Server.connections.ableton import get_ableton_connection, AbletonConnection
+from MCP_Server.connections.m4l import get_m4l_connection, M4LConnection
+from MCP_Server.constants import LOCALHOST, ABLETON_TCP_PORT
 from MCP_Server.state import GlobalState
 from MCP_Server.tools import ToolRegistry
+import MCP_Server.state as state
+
+
+class _FastMCPAdapter:
+    """Minimal FastMCP-compatible adapter for the register_tools(mcp) pattern.
+
+    The ported tool modules call ``@mcp.tool()`` inside ``register_tools(mcp)``.
+    This adapter implements just that decorator so the modules register into
+    the server's ToolRegistry instead of a real FastMCP instance.
+    """
+
+    def __init__(self, registry: ToolRegistry):
+        self._registry = registry
+
+    def tool(self, *args, **kwargs):
+        """Decorator: register the wrapped function as a tool."""
+        def decorator(func):
+            self._registry.register_tool(func.__name__, func)
+            return func
+        return decorator
+
+
+class _ContextShim:
+    """Minimal MCP Context replacement for tools that report progress."""
+
+    async def report_progress(self, current: float, total: float, message: str = None):
+        """Best-effort progress reporting (no-op in this server)."""
+        pass
+
+    def info(self, message: str):
+        pass
+
+    def debug(self, message: str):
+        pass
 
 # Configure logging
 logging.basicConfig(
@@ -38,8 +74,13 @@ class MCPServer:
         """Initialize the MCP server."""
         self.state = GlobalState()
         self.tool_registry = ToolRegistry()
-        self.ableton_connection = AbletonConnection()
+        # Share the module-level singletons so both the server and the tool
+        # modules (via state.ableton_connection / get_ableton_connection) use
+        # the same connections.
+        self.ableton_connection = AbletonConnection(host=LOCALHOST, port=ABLETON_TCP_PORT)
+        state.ableton_connection = self.ableton_connection
         self.m4l_connection = M4LConnection()
+        state.m4l_connection = self.m4l_connection
         
         # Register all tools
         self._register_tools()
@@ -86,8 +127,14 @@ class MCPServer:
             scene_macros, backup_presets
         ]
         
+        adapter = _FastMCPAdapter(self.tool_registry)
         for module in tool_modules:
-            self.tool_registry.register_module(module)
+            if hasattr(module, 'register_tools'):
+                # New-style modules: register_tools(mcp) with @mcp.tool()
+                module.register_tools(adapter)
+            else:
+                # Old-style modules: @tool(...) decorated functions
+                self.tool_registry.register_module(module)
         
         logger.info(f"Registered {self.tool_registry.tool_count} tools")
     
@@ -161,12 +208,18 @@ class MCPServer:
         
         # Execute the tool
         try:
-            result = await tool_func(**arguments)
+            import inspect
+            call_args = dict(arguments)
+            # New-style tools take a Context as first param; inject a shim.
+            if 'ctx' in inspect.signature(tool_func).parameters:
+                call_args['ctx'] = _ContextShim()
+            result = await tool_func(**call_args)
+            text = result if isinstance(result, str) else json.dumps(result, indent=2)
             return {
                 'content': [
                     {
                         'type': 'text',
-                        'text': json.dumps(result, indent=2)
+                        'text': text
                     }
                 ]
             }
@@ -199,7 +252,7 @@ class MCPServer:
         
         # Connect to Ableton
         try:
-            await self.ableton_connection.connect()
+            self.ableton_connection.connect()
             logger.info("Connected to Ableton")
         except Exception as e:
             logger.warning(f"Could not connect to Ableton: {e}")
@@ -207,12 +260,13 @@ class MCPServer:
         
         # Connect to M4L Bridge
         try:
-            await self.m4l_connection.connect()
+            self.m4l_connection.connect()
             logger.info("Connected to M4L Bridge")
         except Exception as e:
             logger.warning(f"Could not connect to M4L Bridge: {e}")
             logger.info("Server will start without M4L Bridge")
         
+        state.server_start_time = time.time()
         logger.info("AbleBridge++ MCP Server started")
         logger.info("Ready to accept connections")
     
@@ -222,13 +276,13 @@ class MCPServer:
         
         # Disconnect from Ableton
         try:
-            await self.ableton_connection.disconnect()
+            self.ableton_connection.disconnect()
         except Exception as e:
             logger.error(f"Error disconnecting from Ableton: {e}")
         
         # Disconnect from M4L Bridge
         try:
-            await self.m4l_connection.disconnect()
+            self.m4l_connection.disconnect()
         except Exception as e:
             logger.error(f"Error disconnecting from M4L Bridge: {e}")
         

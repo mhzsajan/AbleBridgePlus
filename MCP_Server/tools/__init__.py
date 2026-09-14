@@ -94,7 +94,7 @@ class ToolRegistry:
         return len(self._tools)
 
 
-def tool(name: str, description: str = "", input_schema: Optional[Dict[str, Any]] = None):
+def tool(name: str, description: str = "", input_schema: Optional[Dict[str, Any]] = None, **kwargs):
     """
     Decorator to mark a function as an MCP tool.
     
@@ -102,7 +102,11 @@ def tool(name: str, description: str = "", input_schema: Optional[Dict[str, Any]
         name: Tool name
         description: Tool description
         input_schema: Input schema for the tool
+        **kwargs: Accepts ``inputSchema`` as an alias for ``input_schema``
+            (the ported tool modules use camelCase).
     """
+    if input_schema is None and 'inputSchema' in kwargs:
+        input_schema = kwargs['inputSchema']
     def decorator(func: Callable):
         func._tool_metadata = {
             'name': name,

@@ -5,13 +5,36 @@ Web Dashboard Server for AbleBridge++ MCP Server.
 import asyncio
 import json
 import logging
+import time
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from typing import Any, Dict, Optional
 import threading
 
 from MCP_Server.constants import WEB_DASHBOARD_PORT, LOCALHOST
+import MCP_Server.state as state
 
 logger = logging.getLogger('MCP_Server.dashboard')
+
+
+def get_m4l_status() -> tuple:
+    """Return (sockets_ready, bridge_responding) with cached ping."""
+    sockets_ready = bool(state.m4l_connection and state.m4l_connection._connected)
+    if not sockets_ready:
+        return False, False
+
+    now = time.time()
+    if now - state.m4l_ping_cache["timestamp"] < state.M4L_PING_CACHE_TTL:
+        return sockets_ready, state.m4l_ping_cache["result"]
+
+    try:
+        result = state.m4l_connection.ping()
+    except Exception as e:
+        logger.debug("Dashboard M4L ping failed: %s", e)
+        result = False
+
+    state.m4l_ping_cache["result"] = result
+    state.m4l_ping_cache["timestamp"] = now
+    return sockets_ready, result
 
 
 class DashboardHandler(BaseHTTPRequestHandler):
