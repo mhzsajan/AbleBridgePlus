@@ -9,7 +9,7 @@ description = "AI-integrated live show engineering system for Ableton Live"
 readme = "README.md"
 license = { text = "MIT" }
 authors = [{ name = "Sajan Maharjan" }]
-requires-python = ">=3.8"
+requires-python = ">=3.10"
 keywords = ["ableton", "music", "production", "live-show", "mcp", "ai"]
 classifiers = [
     "Development Status :: 4 - Beta",
@@ -27,7 +27,7 @@ classifiers = [
 ]
 
 dependencies = [
-    "mcp>=0.1.0",
+    "mcp>=0.1.0,<2",
     "aiohttp>=3.8.0",
     "python-osc>=1.8.0",
 ]

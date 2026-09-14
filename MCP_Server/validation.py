@@ -435,3 +435,52 @@ def validate_optional(value: Any, validator_func, default: Any = None) -> Any:
         return default
     
     return validator_func(value)
+
+
+# ---------------------------------------------------------------------------
+# Backward-compatible aliases used by the ported tool modules (register_tools
+# pattern). Kept alongside the canonical validators so both tool styles work.
+# ---------------------------------------------------------------------------
+
+
+def _validate_index(value: Any, name: str = "index") -> int:
+    """Alias for validate_track_index: generic non-negative index check."""
+    if not isinstance(value, int):
+        raise ValidationError(f"{name} must be an integer, got {type(value).__name__}")
+    if value < 0:
+        raise ValidationError(f"{name} must be non-negative, got {value}")
+    return value
+
+
+def _validate_index_allow_negative(value: Any, name: str = "index") -> int:
+    """Alias for validate_track_index with allow_negative=True."""
+    if not isinstance(value, int):
+        raise ValidationError(f"{name} must be an integer, got {type(value).__name__}")
+    return value
+
+
+def _validate_range(value: Any, name: str = "value", min_val: float = 0, max_val: float = 1) -> float:
+    """Alias for validate_value: numeric range check."""
+    return validate_value(value, min_val, max_val, name)
+
+
+def _validate_notes(notes: Any) -> List[Dict]:
+    """Alias for validate_notes."""
+    return validate_notes(notes)
+
+
+def _validate_automation_points(points: Any) -> List[Dict]:
+    """Alias for validate_automation_points."""
+    return validate_automation_points(points)
+
+
+def _reduce_automation_points(points: List[Dict], max_points: int = MAX_AUTOMATION_POINTS) -> List[Dict]:
+    """
+    Reduce automation points for performance by even decimation.
+
+    Returns the list unchanged if it is already within the limit.
+    """
+    if len(points) <= max_points:
+        return points
+    step = len(points) / max_points
+    return [points[int(i * step)] for i in range(max_points)]
