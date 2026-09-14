@@ -5,8 +5,8 @@ echo ========================================
 echo AbleBridge++ Installer v0.3.0
 echo ========================================
 echo.
-echo Based on AbletonBridge by hidingwill
-echo https://github.com/mhzsajan/enhanced-abletonbridge
+echo MCP bridge for Ableton Live - 417 tools
+echo https://github.com/mhzsajan/ablebridge-dev
 echo.
 
 REM Check for Python
@@ -14,7 +14,7 @@ echo Checking for Python installation...
 python --version >nul 2>&1
 if errorlevel 1 (
     echo ERROR: Python not found!
-    echo Please install Python 3.8+ from https://www.python.org/downloads/
+    echo Please install Python 3.10+ from https://www.python.org/downloads/
     echo Make sure to check "Add Python to PATH" during installation.
     pause
     exit /b 1
@@ -42,7 +42,7 @@ echo Found uv
 echo.
 
 REM Set installation directory
-set INSTALL_DIR=%USERPROFILE%\enhanced-abletonbridge
+set INSTALL_DIR=%USERPROFILE%\ablebridge
 echo Installation directory: %INSTALL_DIR%
 echo.
 
@@ -54,7 +54,7 @@ if not exist "%INSTALL_DIR%" (
 
 REM Copy files
 echo Copying files...
-xcopy /E /I /Y "%~dp0.." "%INSTALL_DIR%"
+xcopy /E /I /Y "%~dp0.." "%INSTALL_DIR%" >nul
 if errorlevel 1 (
     echo ERROR: Failed to copy files
     pause
@@ -86,11 +86,11 @@ if not exist "%ABLETON_DIR%" (
     echo Please manually copy AbletonBridge_Remote_Script to your Remote Scripts folder.
     echo.
 ) else (
-    if not exist "%ABLETON_DIR%\AbletonBridge" (
-        mkdir "%ABLETON_DIR%\AbletonBridge"
+    if not exist "%ABLETON_DIR%\EnhancedAbletonBridge" (
+        mkdir "%ABLETON_DIR%\EnhancedAbletonBridge"
     )
-    xcopy /E /I /Y "%INSTALL_DIR%\AbletonBridge_Remote_Script" "%ABLETON_DIR%\AbletonBridge"
-    echo Remote Script installed to: %ABLETON_DIR%\AbletonBridge
+    xcopy /E /I /Y "%INSTALL_DIR%\AbletonBridge_Remote_Script" "%ABLETON_DIR%\EnhancedAbletonBridge" >nul
+    echo Remote Script installed to: %ABLETON_DIR%\EnhancedAbletonBridge
 )
 
 echo.
@@ -101,14 +101,14 @@ echo.
 echo Next steps:
 echo.
 echo 1. Open Ableton Live
-echo 2. Go to Preferences → Link, Tempo & MIDI
-echo 3. Under "Control Surface", select "AbletonBridge"
-echo 4. Set Input and Output to "AbletonBridge"
+echo 2. Go to Preferences - Link, Tempo ^& MIDI
+echo 3. Under "Control Surface", select "EnhancedAbletonBridge"
+echo 4. Set Input and Output to "EnhancedAbletonBridge"
 echo.
 echo To start the MCP Server:
 echo    cd %INSTALL_DIR%
 echo    uv run python -m MCP_Server.server
 echo.
-echo For more information, see README.md
+echo For more information, see README.md and CHANGELOG.md
 echo.
 pause

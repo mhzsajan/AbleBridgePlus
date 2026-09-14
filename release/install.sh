@@ -4,15 +4,15 @@ echo "========================================"
 echo "AbleBridge++ Installer v0.3.0"
 echo "========================================"
 echo ""
-echo "Based on AbletonBridge by hidingwill"
-echo "https://github.com/mhzsajan/enhanced-abletonbridge"
+echo "MCP bridge for Ableton Live - 417 tools"
+echo "https://github.com/mhzsajan/ablebridge-dev"
 echo ""
 
 # Check for Python
 echo "Checking for Python installation..."
 if ! command -v python3 &> /dev/null; then
     echo "ERROR: Python3 not found!"
-    echo "Please install Python 3.8+ from https://www.python.org/downloads/"
+    echo "Please install Python 3.10+ from https://www.python.org/downloads/"
     exit 1
 fi
 
@@ -36,7 +36,7 @@ echo "Found uv"
 echo ""
 
 # Set installation directory
-INSTALL_DIR="$HOME/enhanced-abletonbridge"
+INSTALL_DIR="$HOME/ablebridge"
 echo "Installation directory: $INSTALL_DIR"
 echo ""
 
@@ -87,11 +87,11 @@ if [ ! -d "$ABLETON_DIR" ]; then
     echo "Please manually copy AbletonBridge_Remote_Script to your Remote Scripts folder."
     echo ""
 else
-    if [ ! -d "$ABLETON_DIR/AbletonBridge" ]; then
-        mkdir -p "$ABLETON_DIR/AbletonBridge"
+    if [ ! -d "$ABLETON_DIR/EnhancedAbletonBridge" ]; then
+        mkdir -p "$ABLETON_DIR/EnhancedAbletonBridge"
     fi
-    cp -r "$INSTALL_DIR/AbletonBridge_Remote_Script"/* "$ABLETON_DIR/AbletonBridge/"
-    echo "Remote Script installed to: $ABLETON_DIR/AbletonBridge"
+    cp -r "$INSTALL_DIR/AbletonBridge_Remote_Script"/* "$ABLETON_DIR/EnhancedAbletonBridge/"
+    echo "Remote Script installed to: $ABLETON_DIR/EnhancedAbletonBridge"
 fi
 
 echo ""
@@ -102,13 +102,13 @@ echo ""
 echo "Next steps:"
 echo ""
 echo "1. Open Ableton Live"
-echo "2. Go to Preferences → Link, Tempo & MIDI"
-echo "3. Under 'Control Surface', select 'AbletonBridge'"
-echo "4. Set Input and Output to 'AbletonBridge'"
+echo "2. Go to Preferences -> Link, Tempo & MIDI"
+echo "3. Under 'Control Surface', select 'EnhancedAbletonBridge'"
+echo "4. Set Input and Output to 'EnhancedAbletonBridge'"
 echo ""
 echo "To start the MCP Server:"
 echo "   cd $INSTALL_DIR"
 echo "   uv run python -m MCP_Server.server"
 echo ""
-echo "For more information, see README.md"
+echo "For more information, see README.md and CHANGELOG.md"
 echo ""
