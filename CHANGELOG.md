@@ -38,6 +38,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Scene macros
   - Backup presets
 
+## [0.3.0] - 2026-09-14
+
+### Added
+- **Full core toolset port** from original AbletonBridge (293 new-style tools)
+  - Clips (56), Session (51), M4L Bridge (40), Tracks (29), Snapshots (19)
+  - Creative (17), Arrangement (17), Mixer (13), Browser (12), Automation (12)
+  - Workflows (10), Scenes (10), MIDI CC (5), Grid (2)
+- **Live Show Control categories** (from the 75-tool roadmap)
+  - Emergency control (5): `emergency_stop`, `panic_mute`, `panic_unmute`, `activate_backup_scene`, `get_emergency_status`
+  - Performance analytics (10): session/track stats, trends, peak/average levels, export report
+  - Session backup (4): `backup_session`, `restore_session`, `list_backups`, `delete_backup`
+  - Audio presets (14): reverb, delay, compressor, EQ save/load
+  - Video/Lighting (10): video presets, transitions, DMX channel control, lighting scenes
+  - AI enhancement (5): genre suggestions, auto gain staging, mix optimization, sound design help
+  - Scene macros (4): create/fire/delete/list scene macros
+  - Backup presets (4): save/load/activate backup presets
+- **Browser cache** — BFS scan of Ableton's browser tree, disk cache (gzip), instant search, URI resolution for samples/devices
+- **Robust connection layer** — sync TCP with newline-delimited JSON, automatic retry/reconnect, command delay tiers, per-command timeouts
+- **Shared module-level state** (`MCP_Server.state`) — connections, stores, browser cache, M4L ping cache
+- **Tests** — 29 validation tests (all passing)
+
+### Changed
+- Tool registration now supports both `register_tools(mcp)` modules and `@tool()` decorators via a FastMCP-compatible adapter
+- `requires-python` >= 3.10 (mcp package requirement)
+- `mcp<2` pinned (v1 API — FastMCP import)
+- Server now registers **417 tools** (verified via `tools/list`)
+
+### Fixed
+- Server failed to boot: missing connection accessors, validation aliases, browser cache functions, state attributes, command tables
+- `tool()` decorator rejected `inputSchema` keyword
+- `get_m4l_status` missing from dashboard
+- `_m4l_batch_set_params` missing from devices
+
+---
+
 ## [0.2.1] - 2026-09-14
 
 ### Fixed
