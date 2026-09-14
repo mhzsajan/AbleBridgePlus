@@ -1,5 +1,5 @@
 """
-Video Routing Tools for Enhanced AbletonBridge MCP Server.
+Video Routing Tools for AbleBridge++ MCP Server.
 
 These tools provide Videosync2 integration for video routing and control.
 """

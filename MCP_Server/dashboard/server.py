@@ -1,5 +1,5 @@
 """
-Web Dashboard Server for Enhanced AbletonBridge MCP Server.
+Web Dashboard Server for AbleBridge++ MCP Server.
 """
 
 import asyncio
@@ -38,7 +38,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Enhanced AbletonBridge Dashboard</title>
+    <title>AbleBridge++ Dashboard</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 20px; }
         h1 { color: #333; }
@@ -50,7 +50,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
     </style>
 </head>
 <body>
-    <h1>Enhanced AbletonBridge Dashboard</h1>
+        <h1>AbleBridge++ Dashboard</h1>
     <div class="status" id="status">Loading...</div>
     <div class="tools">
         <h2>Available Tools</h2>

@@ -1,5 +1,5 @@
 """
-Browser Handler for Enhanced AbletonBridge Remote Script.
+Browser Handler for AbleBridge++ Remote Script.
 """
 
 import logging

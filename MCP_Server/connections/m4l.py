@@ -1,5 +1,5 @@
 """
-M4L Bridge UDP/OSC Connection for Enhanced AbletonBridge MCP Server.
+M4L Bridge UDP/OSC Connection for AbleBridge++ MCP Server.
 """
 
 import asyncio

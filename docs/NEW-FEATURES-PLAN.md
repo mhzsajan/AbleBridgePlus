@@ -1,4 +1,4 @@
-# Enhanced AbletonBridge — New Features Plan
+# AbleBridge++ — New Features Plan
 
 **Target:** Add 70+ new tools across 7 categories  
 **Total after update:** 510+ tools

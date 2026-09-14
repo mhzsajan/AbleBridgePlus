@@ -1,5 +1,5 @@
 """
-Mixer Handler for Enhanced AbletonBridge Remote Script.
+Mixer Handler for AbleBridge++ Remote Script.
 """
 
 import logging

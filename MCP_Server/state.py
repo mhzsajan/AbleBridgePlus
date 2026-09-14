@@ -1,5 +1,5 @@
 """
-Global State Management for Enhanced AbletonBridge MCP Server.
+Global State Management for AbleBridge++ MCP Server.
 """
 
 import json

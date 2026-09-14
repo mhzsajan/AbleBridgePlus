@@ -1,6 +1,6 @@
-# Enhanced AbletonBridge Examples
+# AbleBridge++ Examples
 
-This directory contains example usage of Enhanced AbletonBridge.
+This directory contains example usage of AbleBridge++.
 
 ## Basic Examples
 

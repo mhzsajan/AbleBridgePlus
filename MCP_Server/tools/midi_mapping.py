@@ -1,5 +1,5 @@
 """
-MIDI Mapping Tools for Enhanced AbletonBridge MCP Server.
+MIDI Mapping Tools for AbleBridge++ MCP Server.
 
 These tools provide MIDI controller integration for mapping physical controllers
 to Ableton parameters.

@@ -1,5 +1,5 @@
 """
-Advanced Routing Tools for Enhanced AbletonBridge MCP Server.
+Advanced Routing Tools for AbleBridge++ MCP Server.
 
 These tools provide advanced routing capabilities including side-chain and multi-output.
 """

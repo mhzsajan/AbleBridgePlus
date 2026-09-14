@@ -1,22 +1,55 @@
 # Changelog
 
-All notable changes to Enhanced AbletonBridge will be documented in this file.
+All notable changes to AbleBridge++ will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [0.3.0] - 2026-09-14
+
+### Changed
+- **Renamed project** from "Enhanced AbletonBridge" to "AbleBridge++"
+  - Updated all references across codebase
+  - Cleaner, more memorable name
+
+### Added
+- **Live Show Control** (15 tools)
+  - Show clock & timer
+  - Emergency stop / panic mute
+  - Backup scene activation
+  - Scene macros
+- **Performance Analytics** (12 tools)
+  - Session & track statistics
+  - Mix history tracking
+  - CPU/memory history
+- **Session Management** (10 tools)
+  - Auto-backup & restore
+  - Session comparison
+- **Audio/MIDI Presets** (12 tools)
+  - Reverb, delay, compressor, EQ presets
+  - Arpeggiator & chord presets
+- **Video/Lighting** (10 tools)
+  - Video effect presets
+  - DMX lighting control
+- **AI Enhancement** (8 tools)
+  - Genre-based mixing suggestions
+  - Auto gain staging
+- **Advanced Show Control** (8 tools)
+  - Scene macros
+  - Backup presets
 
 ## [0.2.1] - 2026-09-14
 
 ### Fixed
 - **Remote Script loading in Ableton Live 12.4.1**
-  - Renamed class from `AbletonBridge` to `EnhancedAbletonBridge` to avoid conflict with original
+  - Renamed class from `AbletonBridge` to `AbleBridgePP` to avoid conflict with original
   - Fixed Unicode encoding corruption in `__init__.py` (em-dash mojibake `â??` → ASCII `-`)
   - Added missing `_helpers.py` handler module
-  - Installation now works from User Library: `Documents/Ableton/User Library/Remote Scripts/EnhancedAbletonBridge`
+  - Installation now works from User Library: `Documents/Ableton/User Library/Remote Scripts/AbleBridge++`
 
 ### Changed
-- Log messages now show "EnhancedAbletonBridge" instead of "AbletonBridge"
-- `create_instance()` returns `EnhancedAbletonBridge` instance
+- Log messages now show "AbleBridge++" instead of "AbletonBridge"
+- `create_instance()` returns `AbleBridgePP` instance
 
 ## [0.2.0] - 2026-09-13
 

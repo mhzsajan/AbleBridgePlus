@@ -1,10 +1,10 @@
 # Architecture
 
-This document describes the architecture of Enhanced AbletonBridge.
+This document describes the architecture of AbleBridge++.
 
 ## System Overview
 
-Enhanced AbletonBridge is an AI integration layer for Ableton Live that uses the Model Context Protocol (MCP) to connect AI tools with Ableton's Live Object Model (LOM).
+AbleBridge++ is an AI integration layer for Ableton Live that uses the Model Context Protocol (MCP) to connect AI tools with Ableton's Live Object Model (LOM).
 
 ```
 ┌─────────────────────────────────────────────────────────────┐

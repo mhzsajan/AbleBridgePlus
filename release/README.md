@@ -1,6 +1,6 @@
-# Enhanced AbletonBridge Release
+# AbleBridge++ Release
 
-This directory contains the release files for Enhanced AbletonBridge.
+This directory contains the release files for AbleBridge++.
 
 ## Quick Install
 

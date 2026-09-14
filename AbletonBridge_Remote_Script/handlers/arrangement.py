@@ -1,5 +1,5 @@
 """
-Arrangement Handler for Enhanced AbletonBridge Remote Script.
+Arrangement Handler for AbleBridge++ Remote Script.
 """
 
 import logging

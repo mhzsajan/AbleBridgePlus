@@ -1,5 +1,5 @@
 """
-Session Handler for Enhanced AbletonBridge Remote Script.
+Session Handler for AbleBridge++ Remote Script.
 """
 
 import logging

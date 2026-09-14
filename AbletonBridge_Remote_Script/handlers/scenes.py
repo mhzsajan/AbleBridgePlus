@@ -1,5 +1,5 @@
 """
-Scene Handler for Enhanced AbletonBridge Remote Script.
+Scene Handler for AbleBridge++ Remote Script.
 """
 
 import logging

@@ -1,5 +1,5 @@
 """
-Template System Tools for Enhanced AbletonBridge MCP Server.
+Template System Tools for AbleBridge++ MCP Server.
 
 These tools provide template management for sessions, tracks, and devices.
 """

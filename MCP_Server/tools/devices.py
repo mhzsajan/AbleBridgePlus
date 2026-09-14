@@ -1,5 +1,5 @@
 """
-Device management tools for Enhanced AbletonBridge.
+Device management tools for AbleBridge++.
 
 These tools handle loading instruments, effects, and managing devices on tracks.
 """

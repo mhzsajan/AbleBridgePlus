@@ -1,5 +1,5 @@
 """
-HTML Templates for Enhanced AbletonBridge Dashboard.
+HTML Templates for AbleBridge++ Dashboard.
 """
 
 
@@ -11,7 +11,7 @@ def get_dashboard_html() -> str:
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enhanced AbletonBridge Dashboard</title>
+    <title>AbleBridge++ Dashboard</title>
     <style>
         * {
             margin: 0;
@@ -108,7 +108,7 @@ def get_dashboard_html() -> str:
 </head>
 <body>
     <div class="container">
-        <h1>Enhanced AbletonBridge Dashboard</h1>
+        <h1>AbleBridge++ Dashboard</h1>
         
         <button class="refresh-btn" onclick="refreshData()">Refresh</button>
         

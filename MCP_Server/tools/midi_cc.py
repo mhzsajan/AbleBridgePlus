@@ -1,4 +1,4 @@
-"""MIDI CC plugin control for Enhanced AbletonBridge.
+"""MIDI CC plugin control for AbleBridge++.
 
 Sends MIDI CC to a virtual port ('AbletonBridge') to control plugin parameters
 that VST3/AU Configure mode doesn't expose. Covers Arturia V Collection 11 Pro
