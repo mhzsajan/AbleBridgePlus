@@ -1,5 +1,5 @@
 """
-Enhanced AbletonBridge Remote Script Handlers Package.
+AbleBridge++ Remote Script Handlers Package.
 """
 
 from AbletonBridge_Remote_Script.handlers.tracks import TrackHandler

@@ -62,7 +62,7 @@ jobs:
             enhanced-abletonbridge-windows.zip
             enhanced-abletonbridge-linux.tar.gz
           body: |
-            ## Enhanced AbletonBridge v${{ github.ref_name }}
+            ## AbleBridge++ v${{ github.ref_name }}
             
             AI-integrated live show engineering system for Ableton Live.
             

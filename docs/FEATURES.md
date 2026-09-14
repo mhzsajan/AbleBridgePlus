@@ -1,6 +1,6 @@
 # Features
 
-Complete feature list for Enhanced AbletonBridge.
+Complete feature list for AbleBridge++.
 
 ## Core Features (from AbletonBridge)
 

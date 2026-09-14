@@ -3,8 +3,8 @@ Constants for Enhanced AbletonBridge MCP Server.
 """
 
 # Server Configuration
-SERVER_NAME = "Enhanced AbletonBridge"
-SERVER_VERSION = "0.1.0"
+SERVER_NAME = "AbleBridge++"
+SERVER_VERSION = "0.3.0"
 PROTOCOL_VERSION = "2024-11-05"
 
 # Default Ports

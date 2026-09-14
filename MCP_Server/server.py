@@ -1,5 +1,5 @@
 """
-Enhanced AbletonBridge MCP Server
+AbleBridge++ MCP Server
 
 A comprehensive AI integration layer for Ableton Live, built on the foundation of
 AbletonBridge by hidingwill (https://github.com/hidingwill/AbletonBridge).
@@ -44,7 +44,7 @@ class MCPServer:
         # Register all tools
         self._register_tools()
         
-        logger.info("Enhanced AbletonBridge MCP Server initialized")
+        logger.info("AbleBridge++ MCP Server initialized")
     
     def _register_tools(self):
         """Register all available tools."""
@@ -61,6 +61,12 @@ class MCPServer:
         from MCP_Server.tools import audio_analysis, template_system
         from MCP_Server.tools import advanced_routing, ai_integration
         
+        # v0.3.0 Live Show Control tools
+        from MCP_Server.tools import show_clock, emergency_control, session_backup
+        from MCP_Server.tools import performance_analytics, audio_presets
+        from MCP_Server.tools import video_lighting, ai_enhancement
+        from MCP_Server.tools import scene_macros, backup_presets
+        
         # Register all tool modules
         tool_modules = [
             tracks, clips, devices, mixer, browser,
@@ -72,7 +78,12 @@ class MCPServer:
             video_routing, setlist_management,
             performance, quick_presets,
             audio_analysis, template_system,
-            advanced_routing, ai_integration
+            advanced_routing, ai_integration,
+            # v0.3.0 Live Show Control tools
+            show_clock, emergency_control, session_backup,
+            performance_analytics, audio_presets,
+            video_lighting, ai_enhancement,
+            scene_macros, backup_presets
         ]
         
         for module in tool_modules:
@@ -123,8 +134,8 @@ class MCPServer:
                 'resources': {}
             },
             'serverInfo': {
-                'name': 'Enhanced AbletonBridge',
-                'version': '0.1.0'
+                'name': 'AbleBridge++',
+                'version': '0.3.0'
             }
         }
     
@@ -184,7 +195,7 @@ class MCPServer:
     
     async def start(self):
         """Start the MCP server."""
-        logger.info("Starting Enhanced AbletonBridge MCP Server...")
+        logger.info("Starting AbleBridge++ MCP Server...")
         
         # Connect to Ableton
         try:
@@ -202,12 +213,12 @@ class MCPServer:
             logger.warning(f"Could not connect to M4L Bridge: {e}")
             logger.info("Server will start without M4L Bridge")
         
-        logger.info("Enhanced AbletonBridge MCP Server started")
+        logger.info("AbleBridge++ MCP Server started")
         logger.info("Ready to accept connections")
     
     async def stop(self):
         """Stop the MCP server."""
-        logger.info("Stopping Enhanced AbletonBridge MCP Server...")
+        logger.info("Stopping AbleBridge++ MCP Server...")
         
         # Disconnect from Ableton
         try:
@@ -221,7 +232,7 @@ class MCPServer:
         except Exception as e:
             logger.error(f"Error disconnecting from M4L Bridge: {e}")
         
-        logger.info("Enhanced AbletonBridge MCP Server stopped")
+        logger.info("AbleBridge++ MCP Server stopped")
 
 
 async def main():

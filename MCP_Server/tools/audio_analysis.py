@@ -1,5 +1,5 @@
 """
-Audio Analysis Tools for Enhanced AbletonBridge MCP Server.
+Audio Analysis Tools for AbleBridge++ MCP Server.
 
 These tools provide audio analysis, spectrum, and chord detection.
 """

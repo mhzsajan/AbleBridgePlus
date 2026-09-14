@@ -1,5 +1,5 @@
 """
-Tests for Enhanced AbletonBridge validation module.
+Tests for AbleBridge++ validation module.
 """
 
 import pytest

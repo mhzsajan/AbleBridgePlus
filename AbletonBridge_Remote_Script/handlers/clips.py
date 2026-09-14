@@ -1,5 +1,5 @@
 """
-Clip Handler for Enhanced AbletonBridge Remote Script.
+Clip Handler for AbleBridge++ Remote Script.
 """
 
 import logging

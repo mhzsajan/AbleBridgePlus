@@ -1,5 +1,5 @@
 """
-MIDI Handler for Enhanced AbletonBridge Remote Script.
+MIDI Handler for AbleBridge++ Remote Script.
 """
 
 import logging

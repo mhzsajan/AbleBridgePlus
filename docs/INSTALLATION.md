@@ -1,6 +1,6 @@
 # Installation Guide
 
-This guide will walk you through installing Enhanced AbletonBridge and getting it up and running.
+This guide will walk you through installing AbleBridge++ and getting it up and running.
 
 ## Prerequisites
 

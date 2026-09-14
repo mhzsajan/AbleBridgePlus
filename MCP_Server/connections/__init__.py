@@ -1,5 +1,5 @@
 """
-Enhanced AbletonBridge MCP Server Connections Package.
+AbleBridge++ MCP Server Connections Package.
 """
 
 from MCP_Server.connections.ableton import AbletonConnection

@@ -1,5 +1,5 @@
 """
-AI Integration Tools for Enhanced AbletonBridge MCP Server.
+AI Integration Tools for AbleBridge++ MCP Server.
 
 These tools provide AI-specific features for session analysis and suggestions.
 """

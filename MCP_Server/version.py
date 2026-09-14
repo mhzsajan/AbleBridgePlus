@@ -1,5 +1,5 @@
 """
-Enhanced AbletonBridge - AI-integrated live show engineering system for Ableton Live.
+AbleBridge++ - AI-integrated live show engineering system for Ableton Live.
 
 Based on AbletonBridge by hidingwill (https://github.com/hidingwill/AbletonBridge).
 Enhanced with 440+ tools across 14 categories for live show engineering.

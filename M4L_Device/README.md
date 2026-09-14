@@ -1,6 +1,6 @@
-# M4L Device for Enhanced AbletonBridge
+# M4L Device for AbleBridge++
 
-This directory contains the Max for Live device for Enhanced AbletonBridge.
+This directory contains the Max for Live device for AbleBridge++.
 
 ## Overview
 

@@ -2,7 +2,7 @@
 setlocal enabledelayedexpansion
 
 echo ========================================
-echo Enhanced AbletonBridge Installer v0.1.0
+echo AbleBridge++ Installer v0.3.0
 echo ========================================
 echo.
 echo Based on AbletonBridge by hidingwill

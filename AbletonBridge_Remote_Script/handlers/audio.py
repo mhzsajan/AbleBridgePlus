@@ -1,5 +1,5 @@
 """
-Audio Handler for Enhanced AbletonBridge Remote Script.
+Audio Handler for AbleBridge++ Remote Script.
 """
 
 import logging

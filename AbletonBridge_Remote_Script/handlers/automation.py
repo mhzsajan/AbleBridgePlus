@@ -1,5 +1,5 @@
 """
-Automation Handler for Enhanced AbletonBridge Remote Script.
+Automation Handler for AbleBridge++ Remote Script.
 """
 
 import logging

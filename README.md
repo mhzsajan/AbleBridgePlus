@@ -1,6 +1,6 @@
-# Enhanced AbletonBridge
+# AbleBridge++
 
-MCP bridge connecting AI/LLM tools to Ableton Live, enhanced for live show performances. 450+ tools for AI-assisted music production and real-time show control.
+MCP bridge connecting AI/LLM tools to Ableton Live, enhanced for live show performances. 510+ tools for AI-assisted music production and real-time show control.
 
 **By Sajan Maharjan**  
 *Inspiration from [AbletonBridge](https://github.com/hidingwill/AbletonBridge) by [hidingwill](https://github.com/hidingwill)*
@@ -13,7 +13,7 @@ MCP bridge connecting AI/LLM tools to Ableton Live, enhanced for live show perfo
 
 ## Features
 
-**450+ tools** across **15 categories** for complete Ableton Live control.
+**510+ tools** across **15 categories** for complete Ableton Live control.
 
 | Category | Tools | Description |
 |----------|-------|-------------|
@@ -35,9 +35,9 @@ MCP bridge connecting AI/LLM tools to Ableton Live, enhanced for live show perfo
 
 ## Side-by-Side Comparison
 
-| Category | Original AbletonBridge | Enhanced AbletonBridge |
+| Category | Original AbletonBridge | AbleBridge++ |
 |----------|----------------------|----------------------|
-| **Tool Count** | 353 | 450+ |
+| **Tool Count** | 353 | 510+ |
 | **Tracks** | create, delete, duplicate, group, arm, freeze | + routing channels exposed |
 | **Clips** | create, fire, stop, notes, quantize, humanize | + batch operations |
 | **Devices** | parameters, presets, snapshots, hidden params | + plugin management, track_type support |

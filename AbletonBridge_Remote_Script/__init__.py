@@ -1,4 +1,4 @@
-# EnhancedAbletonBridge / init.py
+# AbleBridge++ / init.py
 from __future__ import absolute_import, print_function, unicode_literals
 
 from _Framework.ControlSurface import ControlSurface
@@ -576,17 +576,17 @@ _READONLY_HANDLERS = {
 
 
 def create_instance(c_instance):
-    """Create and return the AbletonBridge script instance"""
-    return EnhancedAbletonBridge(c_instance)
+    """Create and return the AbleBridge++ script instance"""
+    return AbleBridgePP(c_instance)
 
 
-class EnhancedAbletonBridge(ControlSurface):
-    """AbletonBridge Remote Script for Ableton Live"""
+class AbleBridgePP(ControlSurface):
+    """AbleBridge++ Remote Script for Ableton Live"""
 
     def __init__(self, c_instance):
         """Initialize the control surface"""
         ControlSurface.__init__(self, c_instance)
-        self.log_message("EnhancedAbletonBridge Remote Script initializing...")
+        self.log_message("AbleBridge++ Remote Script initializing...")
 
         # Socket server for communication
         self.server = None
@@ -605,10 +605,10 @@ class EnhancedAbletonBridge(ControlSurface):
         self.start_server()
         self.start_udp_server()
 
-        self.log_message("EnhancedAbletonBridge initialized")
+        self.log_message("AbleBridge++ initialized")
 
         # Show a message in Ableton
-        self.show_message("EnhancedAbletonBridge: TCP " + str(DEFAULT_PORT) + " / UDP " + str(UDP_REALTIME_PORT))
+        self.show_message("AbleBridge++: TCP " + str(DEFAULT_PORT) + " / UDP " + str(UDP_REALTIME_PORT))
 
     @property
     def _song(self):
@@ -617,7 +617,7 @@ class EnhancedAbletonBridge(ControlSurface):
 
     def disconnect(self):
         """Called when Ableton closes or the control surface is removed"""
-        self.log_message("EnhancedAbletonBridge disconnecting...")
+        self.log_message("AbleBridge++ disconnecting...")
         self.running = False
 
         # Close UDP socket FIRST to unblock recvfrom(), THEN clear the flag.
@@ -667,7 +667,7 @@ class EnhancedAbletonBridge(ControlSurface):
                 client_thread.join(3.0)
 
         ControlSurface.disconnect(self)
-        self.log_message("EnhancedAbletonBridge disconnected")
+        self.log_message("AbleBridge++ disconnected")
 
     def start_server(self):
         """Start the socket server in a separate thread"""
@@ -685,7 +685,7 @@ class EnhancedAbletonBridge(ControlSurface):
             self.log_message("Server started on port " + str(DEFAULT_PORT))
         except Exception as e:
             self.log_message("Error starting server: " + str(e))
-            self.show_message("EnhancedAbletonBridge: Error starting server - " + str(e))
+            self.show_message("AbleBridge++: Error starting server - " + str(e))
 
     def start_udp_server(self):
         """Start the UDP real-time parameter server in a separate thread."""
@@ -789,7 +789,7 @@ class EnhancedAbletonBridge(ControlSurface):
                 try:
                     client, address = self.server.accept()
                     self.log_message("Connection accepted from " + str(address))
-                    self.show_message("EnhancedAbletonBridge: Client connected")
+                    self.show_message("AbleBridge++: Client connected")
 
                     client_thread = threading.Thread(
                         target=self._handle_client,

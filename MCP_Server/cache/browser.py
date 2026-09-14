@@ -1,5 +1,5 @@
 """
-Browser Cache for Enhanced AbletonBridge MCP Server.
+Browser Cache for AbleBridge++ MCP Server.
 """
 
 import json

@@ -1,6 +1,6 @@
-# Enhanced AbletonBridge Tests
+# AbleBridge++ Tests
 
-This directory contains tests for Enhanced AbletonBridge.
+This directory contains tests for AbleBridge++.
 
 ## Running Tests
 

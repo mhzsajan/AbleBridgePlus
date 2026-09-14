@@ -1,5 +1,5 @@
 """
-Plugin Management Tools for Enhanced AbletonBridge MCP Server.
+Plugin Management Tools for AbleBridge++ MCP Server.
 
 These tools provide plugin scanning, configuration, and management.
 """

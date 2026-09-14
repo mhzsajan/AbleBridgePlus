@@ -1,5 +1,5 @@
 """
-Show Clock and Timer Tools for Enhanced AbletonBridge MCP Server.
+Show Clock and Timer Tools for AbleBridge++ MCP Server.
 
 These tools provide timing, countdown, and show clock features for live performances.
 """

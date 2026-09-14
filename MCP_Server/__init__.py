@@ -1,5 +1,5 @@
 """
-Enhanced AbletonBridge MCP Server Package.
+AbleBridge++ MCP Server Package.
 
 A comprehensive AI integration layer for Ableton Live, built on the foundation of
 AbletonBridge by hidingwill (https://github.com/hidingwill/AbletonBridge).

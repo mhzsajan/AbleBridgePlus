@@ -1,5 +1,5 @@
 """
-Track Handler for Enhanced AbletonBridge Remote Script.
+Track Handler for AbleBridge++ Remote Script.
 
 This handler provides track management functionality including:
 - Track information
