@@ -5,6 +5,19 @@ All notable changes to Enhanced AbletonBridge will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.1] - 2026-09-14
+
+### Fixed
+- **Remote Script loading in Ableton Live 12.4.1**
+  - Renamed class from `AbletonBridge` to `EnhancedAbletonBridge` to avoid conflict with original
+  - Fixed Unicode encoding corruption in `__init__.py` (em-dash mojibake `â??` → ASCII `-`)
+  - Added missing `_helpers.py` handler module
+  - Installation now works from User Library: `Documents/Ableton/User Library/Remote Scripts/EnhancedAbletonBridge`
+
+### Changed
+- Log messages now show "EnhancedAbletonBridge" instead of "AbletonBridge"
+- `create_instance()` returns `EnhancedAbletonBridge` instance
+
 ## [0.2.0] - 2026-09-13
 
 ### Added
