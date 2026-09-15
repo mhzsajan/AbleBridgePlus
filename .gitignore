@@ -15,4 +15,5 @@ dist/
 .vscode/
 .idea/
 .DS_Store
-Thumbs.dbsweep*.txt
+Thumbs.db
+sweep*.txt
