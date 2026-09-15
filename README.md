@@ -1,299 +1,246 @@
 # AbleBridgePlus
 
-MCP bridge connecting AI/LLM tools to Ableton Live, enhanced for live show performances. **417 tools registered** for AI-assisted music production and real-time show control.
-
-**By Sajan Maharjan**  
-*Inspiration from [AbletonBridge](https://github.com/hidingwill/AbletonBridge) by [hidingwill](https://github.com/hidingwill)*
+**Control Ableton Live by chatting with an AI.**
 
 [![Release](https://img.shields.io/github/v/release/mhzsajan/AbleBridgePlus)](https://github.com/mhzsajan/AbleBridgePlus/releases)
 [![License](https://img.shields.io/github/license/mhzsajan/AbleBridgePlus)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+[![Tests](https://img.shields.io/badge/tests-37%20passing-brightgreen.svg)]()
+
+AbleBridgePlus is a free, open-source bridge that connects **AI assistants** (Claude, OpenCode, Cursor, any MCP-compatible tool) to **Ableton Live**. Once connected, you can produce music, fix problems, and run live shows by describing what you want in plain language — the AI does the clicking.
+
+- **448 tools** covering virtually everything in Live
+- **Works with your existing AI tools** via the open MCP standard
+- **Free and open source** (MIT)
+
+> Inspired by [AbletonBridge](https://github.com/hidingwill/AbletonBridge) by [hidingwill](https://github.com/hidingwill). Built and maintained by **Sajan Maharjan**.
 
 ---
 
-## What is AbleBridgePlus?
+## 🎵 For Musicians — What can it actually do?
 
-AbleBridgePlus is the next iteration of **Enhanced AbletonBridge** — a Model Context Protocol (MCP) server that lets AI tools (OpenCode, Claude, etc.) control Ableton Live through its Remote Script. It adds the full core toolset from the original AbletonBridge **plus** a complete live-show engineering layer: emergency control, performance analytics, session backup/restore, audio presets, video/lighting, and scene macros.
+Imagine having a producer friend sitting next to you who never gets tired. You talk, they work inside Ableton:
+
+### "Make me a track"
+> **You:** *"produce a demo: energetic 128 BPM house in G minor"*
+
+It sets the tempo, builds Intro / Verse / Chorus / Drop scenes, writes the chords, bassline, drums, and a lead hook — each in key, ready to play. Every change is checkpointed first, so one `undo`-style restore takes it all back if you don't like it.
+
+### "Play what I just played"
+> **You:** *"turn what I hummed on my MIDI keyboard into a full clip"*
+
+It captures your playing, quantizes the timing, and adds matching chord pads underneath — automatically in the right key.
+
+### "Listen to this audio"
+> **You:** *"what key and BPM is that sample on track 3?"*
+
+It analyzes the actual audio (real DSP, not guesswork) and tells you the key, tempo, and confidence. Then it can convert that audio into playable MIDI — melody, chords, or drums.
+
+### "Fix my mix"
+> **You:** *"do any of my tracks clash with each other?"*
+
+It checks which tracks occupy the same frequency range with similar pan and suggests fixes: pan one away, EQ the collision, or duck it a few dB.
+
+### "Keep my computer fast"
+> **You:** *"Ableton is getting heavy, freeze what I don't need"*
+
+It finds the most device-heavy, currently-playing tracks and freezes them — then verifies.
+
+### "Remember how I like things"
+> **You:** *"remember I always work at 124 BPM in F# minor"*
+
+It stores your preferences permanently. Tomorrow's session starts with your taste already loaded. And at any time: *"what did you change today?"* — it keeps an automatic journal of every modification it made.
+
+### "Run my live show"
+> **You:** *"fire scene 5, then automatically go to the next scene every 16 bars"*
+
+Hands-free scene sequencing for live sets, with tempo changes per section. Plus one-command **emergency stop**, **panic mute**, and **session backups** — the safety net every performer wishes they had.
+
+### …and all the everyday work
+Create tracks and clips, edit MIDI notes, warp and quantize, automate, set up sidechain, load any instrument or effect from the browser, save/load presets, manage MIDI controllers, control video and DMX lighting, run timers and setlists — **448 tools** across the whole app.
+
+**What it can't do (honest limits):** it can't render/export audio (Live's scripting API doesn't expose that), it can't hear your speakers' output in real time, and key/BPM detection is an estimate — always confirm by ear.
+
+---
+
+## 💻 For Developers & Advanced Users
+
+### Architecture
 
 ```
-AI Tool (OpenCode, Claude, ...)
-        │  MCP Protocol
-        ▼
-  MCP Server (AbleBridgePlus)
-        │  TCP (9877) / UDP/OSC (9878-9882)
-        ▼
-  Ableton Live (Remote Script + M4L Bridge)
+┌─────────────────────────────┐
+│  AI client (MCP host)       │  Claude Desktop, OpenCode, Cursor, any MCP client
+│  sees 448 tools             │
+└──────────────┬──────────────┘
+               │ MCP over stdio (JSON-RPC) or TCP :9891
+               ▼
+┌─────────────────────────────┐
+│  AbleBridgePlus MCP server  │  Python, stdlib-only DSP, zero heavy deps
+│  MCP_Server/                │
+└──────────────┬──────────────┘
+               │ TCP :9877 (newline-JSON RPC)  ·  UDP/OSC :9878–9882 (realtime, M4L)
+               ▼
+┌─────────────────────────────┐
+│  Ableton Live               │
+│  AbleBridgePlus control     │  Remote Script (Python, runs inside Live)
+│  surface + optional M4L     │  · schedules all LOM calls on Live's main thread
+│  bridge device              │  · optional Max for Live bridge: hidden params,
+└─────────────────────────────┘    rack internals, chunked discovery
 ```
 
----
+**Key design points**
 
-## Features
+- **Two registration styles coexist** — new-style modules (`register_tools(mcp)` + `@mcp.tool()` + a central `@_tool_handler` wrapper providing semaphore gating, per-tool timeout, uniform error envelope, and the change-journal hook) and legacy `@tool(...)` modules. `_FastMCPAdapter` registers both into one `ToolRegistry`.
+- **Connections**: synchronous TCP with automatic retry/reconnect, drain-on-send, command delay tiers, per-command timeouts. All Live Object Model (LOM) calls are dispatched onto Live's main thread via `schedule_message` — never from background threads.
+- **Shared state** lives at module level (`MCP_Server.state`): connections, browser cache, checkpoints, M4L ping cache.
+- **Handshake never blocks**: stdio transport answers MCP `initialize` in <1s and connects to Ableton lazily on first tool use.
+- **JSON-RPC envelope is spec-correct** — a bug that silently stalled strict clients (OpenCode) was found and fixed; replay tests now lock the wire format in.
 
-**448 tools** across **24 categories** for complete Ableton Live control.
+### Feature areas (448 tools)
 
-| Category | Tools | Description |
-|----------|-------|-------------|
-| Session & Transport | 61 | Playback, tempo, loops, scenes, recording |
-| Clips | 56 | Create, edit, fire, notes, warp, quantize |
-| M4L Device Bridge | 40 | Hidden parameters, rack internals, deep LOM |
-| Tracks | 29 | Create, route, group, freeze, arm |
-| Snapshots | 19 | Device/session snapshots, morph, compare |
-| Creative & Grid | 19 | Chord progressions, drum patterns, AI generation |
-| AI Music Toolkit (v0.4) | 5 | Prompt-to-clip, chord progressions, basslines, advanced drums, song skeletons |
-| Project Context (v0.4) | 8 | One-call session map, clip context, checkpoints with diff & restore |
-| Doctor & Monitoring (v0.4) | 3 | One-call diagnosis, integrity report, live session watch |
-| Show Autopilot (v0.4) | 3 | Hands-free timed scene sequencing for live sets |
-| Audio Intelligence (v0.5) | 4 | Key/BPM detection (DSP), audio->MIDI, mix clash finder, hum-to-clip |
-| Producer Pipeline (v0.5) | 3 | One-prompt-to-demo, smart freeze (CPU), reference track matching |
-| Studio Memory (v0.5) | 5 | Persistent preferences, automatic change journal — taste + accountability |
-| Arrangement | 17 | Clip/time editing, automation lanes |
-| Mixer | 13 | Volume, pan, sends, crossfader, delay |
-| Browser & Search | 12 | Cached browser tree, instant search, URI loading |
-| Automation | 12 | Clip/track envelopes, curves, templates |
-| Workflows | 10 | Compound multi-step operations |
-| Audio Presets | 14 | Reverb, delay, compressor, EQ presets |
-| Video / Lighting | 16 | Videosync2, Spout, DMX, lighting scenes |
-| Performance Analytics | 16 | CPU/memory/latency, trends, reports |
-| Show Clock & Setlist | 24 | Timers, AbleSet integration, quick presets |
-| Live Show Control | 17 | Emergency stop, panic mute, session backup, scene macros |
-| Templates & Routing | 11 | Session/device templates, side-chain, multi-output |
-| MIDI (Mapping + CC) | 11 | Controller maps, 100+ plugin CC maps |
-| Plugins & AI | 23 | Plugin scanning, mix suggestions, MIDI generation |
+| Area | Highlights |
+|---|---|
+| Session & transport (61) | playback, tempo, loop, scenes, record, quantization settings |
+| Clips (56) | create/edit/fire, notes, warp modes, quantize, launch modes |
+| M4L bridge (40) | hidden device params, rack chains, batch set, chunked discovery |
+| Tracks (29) | create/route/group/freeze/arm, color, fold |
+| Arrangement (17) | clip moves, time edits, locators, automation lanes |
+| Creative & grid (19) | progressions, drum patterns, AI generation |
+| Snapshots (19) | device/session snapshots, morph, compare |
+| **AI Music Toolkit** | `generate_clip_from_prompt`, `build_chord_progression`, `build_bassline_for_progression`, `generate_advanced_drum_pattern` (7 genres + humanize), `build_song_skeleton` |
+| **Project Context** | `get_project_context` (whole session map, 1 call), `get_clip_context`, `create/diff/restore_checkpoint` |
+| **Doctor & monitoring** | `doctor` (connection, script-version drift, port, cache checks + plain-language fixes), `session_integrity_report`, `watch_session` |
+| **Show Autopilot** | timed scene chains, per-step tempo, loops, follows live tempo |
+| **Audio Intelligence** | `analyze_audio_key_bpm` (Goertzel chroma + Krumhansl profiles, onset autocorrelation), `audio_clip_to_midi`, `find_mix_clashes`, `hum_to_clip` |
+| **Producer Pipeline** | `produce_idea_from_prompt` (fault-tolerant end-to-end), `smart_freeze`, `match_reference_track` |
+| **Studio Memory** | persistent preferences (`~/.ablebridge/memory.json`), automatic change journal (`journal.jsonl`), recall with session suggestions |
+| Show control (17) | emergency stop, panic mute, session backup, scene macros |
+| Setlist & clock (24) | AbleSet-style songs, transitions, timers |
+| Video / lighting (16) | Videosync2, Spout, DMX scenes |
+| Analytics (16) | CPU/memory/latency, trends, exportable reports |
+| MIDI (11) | controller mappings, 100+ plugin CC maps (NI, Arturia) |
+| Browser (12) | cached tree, instant search, URI loading |
+| Presets & templates (32) | reverb/delay/comp/EQ, session/track/device templates |
 
-*Counts are the live `tools/list` output of the server — always accurate.*
+*Tool counts are the live `tools/list` output — always accurate.*
 
----
+### Install
 
-## Enhanced AbletonBridge vs AbleBridgePlus
-
-AbleBridgePlus is what Enhanced AbletonBridge grows into. The table below shows what changed between the two.
-
-| Area | Enhanced AbletonBridge (v0.2.x) | AbleBridgePlus (v0.3.0) |
-|------|--------------------------------|------------------------|
-| **Registered tools** | 450+ (enhanced categories only) | **417 registered** — full core toolset + enhanced + live-show categories |
-| **Core toolset** | ❌ Not ported | ✅ Full port: clips (56), session (51), tracks (29), mixer, browser, arrangement, automation, creative, grid, scenes, snapshots, workflows |
-| **Tool registration** | Old-style `@tool()` decorators only | ✅ **Hybrid**: new-style `register_tools(mcp)` modules (293 tools) + old-style `@tool()` modules (127) |
-| **Connection layer** | Simple async TCP | ✅ **Original sync connection**: newline-delimited JSON, automatic retry/reconnect, command delay tiers (0/50ms/100ms), per-command timeouts |
-| **M4L Bridge** | Basic OSC | ✅ Full bridge: hidden params, `_m4l_batch_set_params`, ping cache, version check |
-| **Browser cache** | ❌ | ✅ **Instant search**: BFS scan of the browser tree, disk cache (gzip), URI resolution for samples/devices |
-| **Emergency control** | ❌ | ✅ emergency_stop, panic_mute, backup scene activation |
-| **Performance analytics** | Basic CPU/memory | ✅ Session/track stats, trends, peak/average levels, export reports |
-| **Session backup** | ❌ | ✅ backup/restore/list/delete, auto-backup |
-| **Audio/MIDI presets** | ❌ | ✅ Reverb, delay, compressor, EQ, arpeggiator, chord presets |
-| **Video / Lighting** | Video routing only | ✅ + video presets, transitions, **DMX lighting**, lighting scenes |
-| **Scene macros** | ❌ | ✅ create/fire/delete/list scene macros |
-| **Backup presets** | ❌ | ✅ save/load/activate backup presets |
-| **AI enhancement** | Suggestions only | ✅ Genre suggestions, auto gain staging, mix optimization, sound design help |
-| **State management** | Class-based `GlobalState` | ✅ **Module-level shared state** (`MCP_Server.state`) + `GlobalState` — connections, stores, browser cache, M4L ping all shared |
-| **Tests** | 0 | ✅ 29 validation tests |
-| **Python** | >=3.8 | ✅ >=3.10, `mcp<2` (v1 API) |
-
----
-
-## Side-by-Side: Original AbletonBridge vs AbleBridgePlus
-
-| Category | Original AbletonBridge | AbleBridgePlus |
-|----------|------------------------|--------------|
-| **Tool Count** | 353 | 417+ |
-| **Tracks** | create, delete, duplicate, group, arm, freeze | + routing channels exposed |
-| **Clips** | create, fire, stop, notes, quantize, humanize | + batch operations |
-| **Devices** | parameters, presets, snapshots, hidden params | + plugin management, track_type support |
-| **Mixer** | volume, pan, mute, solo, sends | + batch set multiple tracks |
-| **Browser** | tree, search, load instruments/effects | + plugin scanning, master/return loading, **cached instant search** |
-| **Automation** | clip envelopes, track automation, curves | + presets, templates |
-| **Creative** | chord progression, bass line, drum patterns | + AI generation |
-| **MIDI Mapping** | ❌ | ✅ 6 tools (get, create, delete, save/load) |
-| **MIDI CC Control** | ❌ | ✅ 5 tools (100+ maps: NI Komplete + Arturia V Collection) |
-| **Plugin Management** | ❌ | ✅ 6 tools (scan, list, configure, presets) |
-| **Video Integration** | ❌ | ✅ 16 tools (Videosync2, Spout, DMX, video presets) |
-| **Setlist Management** | ❌ | ✅ 8 tools (AbleSet, songs, transitions) |
-| **Performance Monitoring** | ❌ | ✅ 16 tools (CPU, memory, latency, trends, reports) |
-| **Live Show Presets** | ❌ | ✅ 8 tools (save/load, scene presets) |
-| **Emergency Control** | ❌ | ✅ 5 tools (emergency stop, panic mute, backup scene) |
-| **AI Integration** | ❌ | ✅ 11 tools (snapshots, suggestions, MIDI generation) |
-| **Audio Analysis** | ❌ | ✅ 6 tools (spectrum, levels, chords, dynamics) |
-| **Template System** | ❌ | ✅ 7 tools (session, track, device templates) |
-| **Advanced Routing** | ❌ | ✅ 4 tools (side-chain, multi-output, presets) |
-| **Automation Enhancement** | ❌ | ✅ presets, templates, batch |
-
----
-
-## Use Cases
-
-| Use Case | Original | Enhanced | AbleBridgePlus |
-|----------|----------|----------|--------------|
-| General Ableton control | ✅ | ✅ | ✅ |
-| Live show engineering | ❌ | ✅ | ✅ (emergency + analytics + backups) |
-| Video integration | ❌ | ✅ | ✅ (+ DMX lighting) |
-| AI-assisted mixing | ❌ | ✅ | ✅ (+ auto gain staging) |
-| Plugin management | ❌ | ✅ | ✅ |
-| MIDI controller mapping | ❌ | ✅ | ✅ |
-| Performance monitoring | ❌ | ✅ | ✅ (+ trends, reports) |
-| Setlist management | ❌ | ✅ | ✅ |
-| Session backup/restore | ❌ | ❌ | ✅ |
-
----
-
-## Roadmap
-
-### ✅ Implemented in v0.3.0
-- Show clock & timer (8 tools)
-- Emergency control (5 tools)
-- Session backup/restore (4 tools)
-- Performance analytics (10 tools)
-- Audio presets (14 tools)
-- Video/lighting incl. DMX (16 tools)
-- AI enhancement (5 tools)
-- Scene macros (4 tools)
-- Backup presets (4 tools)
-
-### ⏳ Planned
-- Session comparison & change history
-- MIDI effect presets (arpeggiator, chord)
-- Multi-DAW support
-- TouchDesigner integration
-- LIA plugin integration (when available)
-
----
-
-## Quick Install
-
-### From GitHub Releases
-```bash
-# Windows
-install.bat
-
-# macOS/Linux
-chmod +x install.sh && ./install.sh
-```
-
-### Manual Install
 ```bash
 git clone https://github.com/mhzsajan/AbleBridgePlus.git
 cd AbleBridgePlus
-uv sync
+uv sync                      # or: pip install -e .
 ```
 
----
-
-## Setup
-
-1. Copy `AbleBridgePlus` to Ableton's Remote Scripts folder:
-   - **Windows:** `Documents/Ableton/User Library/Remote Scripts/`
-   - **macOS:** `~/Music/Ableton/User Library/Remote Scripts/`
-
-2. Open Ableton → Preferences → Link, Tempo & MIDI → Select **"AbleBridgePlus"** as Control Surface
-
-3. Start the MCP Server:
-   ```bash
-   uv run python -m MCP_Server.server
-   ```
-
----
-
-## Usage Examples
-
-### Basic Control
-```python
-create_midi_track()
-load_instrument_or_effect(track_index=0, uri="Wavetable")
-create_clip_with_notes(
-    track_index=0, clip_index=0, length=4.0,
-    notes=[{"pitch": 60, "start_time": 0, "duration": 1.0, "velocity": 100}]
-)
-```
-
-### Live Show
-```python
-start_show_clock(tempo=128)
-load_live_preset(preset_name="Concert")
-fire_scene(scene_index=0)
-set_next_song(song_name="Kutu Ma Timi")
-emergency_stop()          # stop everything instantly
-panic_mute()              # mute all tracks
-backup_session()          # snapshot the session before the show
-```
-
-### Performance & Analytics
-```python
-get_cpu_usage()
-get_session_stats()
-get_performance_trends()
-export_performance_report()
-```
-
-### Video & Lighting
-```python
-configure_spout(enabled=True, port=5000)
-play_video_clip(track_index=14, clip_index=0)
-set_dmx_channel(channel=1, value=255)
-save_lighting_scene(name="Verse")
-```
-
-### Browser & Search
-```python
-search_browser(query="Operator")
-load_sample(track_index=0, sample_uri="query:UserLibrary#kick.wav")
-refresh_browser_cache()   # after installing new packs
-```
-
-### AI Integration
-```python
-snapshot = get_session_snapshot()
-suggestions = get_ai_suggestions(context="mixing")
-generate_midi(track_index=0, clip_index=0, style="melody", scale="minor", root=60)
-```
-
----
-
-## Natural Language Commands
-
-- "Create a MIDI track and load Operator"
-- "Write a 4-bar chord progression in C minor"
-- "Set up side-chain compression on the bass track"
-- "Load the 'Concert' preset"
-- "Fire scene 3"
-- "Emergency stop!"
-- "Show CPU usage"
-- "Back up the session"
-- "Search the browser for a nice pad"
-
----
-
-## Development
+Then either run the installer for Live-side files (recommended), or copy manually:
 
 ```bash
-uv sync                    # install dependencies
-uv run python -m MCP_Server.server   # run the server
-uv run --with pytest pytest tests/   # run tests
-python scripts/check_imports.py      # verify every module imports cleanly
+# from a GitHub release:
+#   Windows → unzip, run install.bat
+#   macOS/Linux → untar, ./install.sh
+# manual: copy the AbleBridgePlus/ folder to:
+#   Windows: %USERPROFILE%\Documents\Ableton\User Library\Remote Scripts\
+#   macOS:   ~/Music/Ableton/User Library/Remote Scripts\
 ```
 
-### Architecture Notes (v0.3.0)
+Start Ableton → Preferences → **Link, Tempo & MIDI** → set a Control Surface to **AbleBridgePlus**.
 
-- **Two tool styles coexist**: new-style modules expose `register_tools(mcp)` (decorated with `@mcp.tool()` + `@_tool_handler`) and old-style modules use `@tool(...)`. The server's `_FastMCPAdapter` lets both register into the same `ToolRegistry`.
-- **Shared state** lives in `MCP_Server.state` (module-level) — connections, browser cache, stores, M4L ping cache.
-- **Browser cache** scans Ableton's browser tree (BFS, depth 3) and persists to `~/.ableton-bridge/browser_cache.json.gz` for instant search.
-- **Connections** are synchronous with automatic retry, reconnect, and per-command delay tiers to keep Ableton's main thread stable.
+### Connect an AI client
+
+**OpenCode** (`~/.config/opencode/opencode.jsonc`):
+
+```jsonc
+"mcp": {
+  "ablebridge": {
+    "type": "local",
+    "command": ["C:/path/to/AbleBridgePlus/.venv/Scripts/AbleBridgePlus.exe", "--transport", "stdio"]
+  }
+}
+```
+
+**Claude Desktop** (`claude_desktop_config.json`):
+
+```json
+{
+  "mcpServers": {
+    "ablebridge": {
+      "command": "python",
+      "args": ["C:/path/to/AbleBridgePlus/mcp_stdio_launcher.py", "--transport", "stdio"]
+    }
+  }
+}
+```
+
+Full guides with troubleshooting: [docs/OPENCODE.md](docs/OPENCODE.md) · [docs/CLAUDE_DESKTOP.md](docs/CLAUDE_DESKTOP.md)
+
+**Run manually** (TCP mode, with web dashboard on :9880):
+
+```bash
+AbleBridgePlus --transport tcp --tcp-port 9891
+```
+
+### Verify
+
+```bash
+# 1. Is everything healthy? (connection, script version drift, ports, cache)
+#    → ask your AI: "run the doctor"
+
+# 2. Unit + replay tests (no Ableton needed)
+uv run --with pytest pytest tests/ -q          # 37 tests
+
+# 3. Full tool sweep against a live Ableton
+.venv/Scripts/python scripts/test_tools.py --all
+
+# 4. Every module imports cleanly
+python scripts/check_imports.py
+```
+
+### Trouble?
+
+Ask your AI to run **`doctor`** — it diagnoses the usual suspects in plain language: Ableton not reachable, control surface not selected, **script/version drift** (installed script older than the server), port conflicts, stale browser cache — each with a suggested fix. Spent debugging time on this bridge drops to near zero.
+
+See also [docs/INSTALLATION.md](docs/INSTALLATION.md) and [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+
+### Version history & maturity
+
+| Version | Milestone |
+|---|---|
+| v0.3.x | Rename to AbleBridgePlus, JSON-RPC transport fixes, OpenCode integration |
+| v0.4.0 | AI Music Toolkit, Project Context Engine, Doctor, Show Autopilot |
+| **v0.5.0** | **Audio Intelligence (DSP), Producer Pipeline, Studio Memory, replay-based CI, dashboard** |
+
+Full details: [CHANGELOG.md](CHANGELOG.md)
+
+### Roadmap
+
+- Deeper arrangement editing (tempo track, automation breakpoints)
+- Session comparison & richer change history
+- TouchDesigner integration
+- Multi-DAW support (experiment)
 
 ---
 
-## Documentation
+## FAQ
 
-- [Installation Guide](docs/INSTALLATION.md)
-- [Features](docs/FEATURES.md)
-- [Architecture](docs/ARCHITECTURE.md)
-- [New Features Plan](docs/NEW-FEATURES-PLAN.md)
-- [Changelog](CHANGELOG.md)
+**Does it modify my music without asking?**
+No — the AI only acts when you ask. Risky operations (producer pipeline) auto-checkpoint first, and the change journal records everything it does.
+
+**Does it need internet?**
+No. Everything runs locally between the AI client, the server, and Live.
+
+**Which Live versions?**
+Live 11+ for core features. Live 12 required for audio→MIDI conversion. The optional M4L bridge needs a Max for Live device (included in `M4L_Device/`).
+
+**Is my project safe?**
+The bridge talks to Live's official scripting API. It can only do what a human could do in the UI — and checkpoints + the change journal make experimentation reversible.
 
 ---
 
 ## Credits
 
-Inspiration from [AbletonBridge](https://github.com/hidingwill/AbletonBridge) by [hidingwill](https://github.com/hidingwill). See [LICENSE](LICENSE) for details.
-
----
+- Original concept: [AbletonBridge](https://github.com/hidingwill/AbletonBridge) by [hidingwill](https://github.com/hidingwill)
+- AbleBridgePlus: **Sajan Maharjan**
 
 ## License
 
-MIT License — see [LICENSE](LICENSE) for details.
+MIT — see [LICENSE](LICENSE).
