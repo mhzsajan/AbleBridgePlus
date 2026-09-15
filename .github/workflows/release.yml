@@ -56,6 +56,20 @@ jobs:
           # Clean up
           rm -rf release-package
 
+      - name: Extract changelog section for this tag
+        run: |
+          python3 - <<'PYEOF'
+          import re
+          tag = "${{ github.ref_name }}".lstrip("v")
+          txt = open("CHANGELOG.md", encoding="utf-8").read()
+          # find the section for this version, up to the next '## [' header
+          m = re.search(r"## \[" + re.escape(tag) + r"\][^\n]*\n(.*?)(?=\n## \[|\Z)", txt, re.S)
+          section = m.group(1).strip() if m else "See [CHANGELOG.md](https://github.com/mhzsajan/AbleBridgePlus/blob/master/CHANGELOG.md) for details."
+          with open("release_section.md", "w", encoding="utf-8") as f:
+              f.write(section)
+          print("extracted", len(section), "chars for", tag)
+          PYEOF
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
@@ -63,39 +77,55 @@ jobs:
           files: |
             ablebridge-windows.zip
             ablebridge-linux.tar.gz
-          body: |
+          body_path: release_section.md
+          append_body: true
+          header: |
             ## AbleBridgePlus v${{ github.ref_name }}
 
-            MCP bridge connecting AI/LLM tools to Ableton Live — **417 tools registered** for AI-assisted music production and real-time show control.
+            MCP bridge connecting AI/LLM tools to Ableton Live — AI-assisted music production and real-time show control.
 
-            ### What's New in v0.3.0
-            - **Full core toolset port** from original AbletonBridge (293 tools): clips, session, tracks, mixer, browser, arrangement, automation, creative, grid, scenes, snapshots, workflows
-            - **Live Show Control**: emergency stop / panic mute, session backup/restore, scene macros, backup presets
-            - **Performance analytics**: session/track stats, trends, peak/average levels, export reports
-            - **Audio presets**: reverb, delay, compressor, EQ save/load
-            - **Video/Lighting**: video presets, transitions, DMX channel control, lighting scenes
-            - **AI enhancement**: genre suggestions, auto gain staging, mix optimization
-            - **Browser cache**: instant search, disk cache, URI resolution for samples/devices
-            - **Robust connection layer**: retry/reconnect, command delay tiers, per-command timeouts
-            - **29 tests** (all passing)
+      - name: Append install + docs links to the release
+        run: |
+          python3 - <<'PYEOF'
+          import json, os, urllib.request
 
-            ### Full changelog
-            See [CHANGELOG.md](https://github.com/mhzsajan/AbleBridgePlus/blob/master/CHANGELOG.md) for the complete history.
+          tag = "${{ github.ref_name }}"
+          token = "${{ secrets.GITHUB_TOKEN }}"
+          repo = "${{ github.repository }}"
+          url = "https://api.github.com/repos/{0}/releases/tags/{1}".format(repo, tag)
+          req = urllib.request.Request(url, headers={
+              "Authorization": "Bearer " + token,
+              "Accept": "application/vnd.github+json",
+          })
+          release = json.loads(urllib.request.urlopen(req).read())
 
-            ### Quick Install
+          trailer = """
 
-            **Windows:**
-            1. Download `ablebridge-windows.zip`
-            2. Extract and run `install.bat`
+          ### Quick Install
 
-            **macOS/Linux:**
-            1. Download `ablebridge-linux.tar.gz`
-            2. Extract and run `./install.sh`
+          **Windows:**
+          1. Download `ablebridge-windows.zip`
+          2. Extract and run `install.bat`
 
-            ### Documentation
-            - [Installation Guide](https://github.com/mhzsajan/AbleBridgePlus/blob/master/docs/INSTALLATION.md)
-            - [Features](https://github.com/mhzsajan/AbleBridgePlus/blob/master/docs/FEATURES.md)
-            - [Architecture](https://github.com/mhzsajan/AbleBridgePlus/blob/master/docs/ARCHITECTURE.md)
+          **macOS/Linux:**
+          1. Download `ablebridge-linux.tar.gz`
+          2. Extract and run `./install.sh`
 
-            ### Credits
-            Based on [AbletonBridge](https://github.com/hidingwill/AbletonBridge) by [hidingwill](https://github.com/hidingwill).
+          ### Documentation
+          - [Installation Guide](https://github.com/mhzsajan/AbleBridgePlus/blob/master/docs/INSTALLATION.md)
+          - [Features](https://github.com/mhzsajan/AbleBridgePlus/blob/master/docs/FEATURES.md)
+          - [Architecture](https://github.com/mhzsajan/AbleBridgePlus/blob/master/docs/ARCHITECTURE.md)
+
+          ### Credits
+          Based on [AbletonBridge](https://github.com/hidingwill/AbletonBridge) by [hidingwill](https://github.com/hidingwill).
+          """
+          body = (release.get("body") or "") + trailer
+          patch = json.dumps({"body": body}).encode()
+          req = urllib.request.Request(url, data=patch, method="PATCH", headers={
+              "Authorization": "Bearer " + token,
+              "Accept": "application/vnd.github+json",
+              "Content-Type": "application/json",
+          })
+          urllib.request.urlopen(req)
+          print("release body updated:", len(body), "chars")
+          PYEOF
