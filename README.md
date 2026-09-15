@@ -13,7 +13,24 @@ AbleBridgePlus is a free, open-source bridge that connects **AI assistants** (Cl
 - **Works with your existing AI tools** via the open MCP standard
 - **Free and open source** (MIT)
 
-> Inspired by [AbletonBridge](https://github.com/hidingwill/AbletonBridge) by [hidingwill](https://github.com/hidingwill). Built and maintained by **Sajan Maharjan**.
+---
+
+<table>
+<tr>
+<td align="center" width="50%">
+  <sub><b>Built and maintained by</b></sub><br>
+  <b><a href="https://github.com/mhzsajan">SAJAN MAHARJAN</a></b><br>
+  <sub><a href="https://github.com/mhzsajan/AbleBridgePlus/issues">⭐ Star the repo · 🐛 Report issues · 💡 Suggest features</a></sub>
+</td>
+<td align="center" width="50%">
+  <sub>Inspired by</sub><br>
+  <b><a href="https://github.com/hidingwill/AbletonBridge">AbletonBridge</a></b><br>
+  <sub>by <a href="https://github.com/hidingwill">hidingwill</a></sub>
+</td>
+</tr>
+</table>
+
+---
 
 ---
 
