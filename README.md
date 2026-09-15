@@ -13,6 +13,8 @@ AbleBridgePlus is a free, open-source bridge that connects **AI assistants** (Cl
 - **Works with your existing AI tools** via the open MCP standard
 - **Free and open source** (MIT)
 
+📄 **[Complete tool reference — all 448 tools, organized by what they do](docs/FEATURES.md)**
+
 ---
 
 <table>
@@ -224,7 +226,7 @@ python scripts/check_imports.py
 
 Ask your AI to run **`doctor`** — it diagnoses the usual suspects in plain language: Ableton not reachable, control surface not selected, **script/version drift** (installed script older than the server), port conflicts, stale browser cache — each with a suggested fix. Spent debugging time on this bridge drops to near zero.
 
-See also [docs/INSTALLATION.md](docs/INSTALLATION.md) and [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+Full list of every tool: **[docs/FEATURES.md](docs/FEATURES.md)** · Also [docs/INSTALLATION.md](docs/INSTALLATION.md) and [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
 ### Version history & maturity
 
