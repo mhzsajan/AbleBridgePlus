@@ -1,5 +1,5 @@
 """
-Show Clock and Timer Tools for AbleBridge++ MCP Server.
+Show Clock and Timer Tools for AbleBridgePlus MCP Server.
 
 These tools provide timing, countdown, and show clock features for live performances.
 """

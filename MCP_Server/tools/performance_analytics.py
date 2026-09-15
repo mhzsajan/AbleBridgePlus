@@ -1,5 +1,5 @@
 """
-Performance Analytics Tools for AbleBridge++ MCP Server.
+Performance Analytics Tools for AbleBridgePlus MCP Server.
 
 Provides session statistics, performance tracking, and analytics.
 """

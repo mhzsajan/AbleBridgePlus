@@ -1,5 +1,5 @@
 """
-Show Autopilot for AbleBridge++.
+Show Autopilot for AbleBridgePlus.
 
 Timed, hands-free scene sequencing for live performance: fire a scene,
 have the next one launch automatically after a set length in bars, with

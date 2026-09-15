@@ -1,5 +1,5 @@
 """
-AI Music Toolkit for AbleBridge++.
+AI Music Toolkit for AbleBridgePlus.
 
 Purpose-built generators so an AI assistant can produce real musical
 content in one call instead of hand-placing notes: prompt-to-clip

@@ -1,17 +1,17 @@
-# Using AbleBridge++ with OpenCode
+# Using AbleBridgePlus with OpenCode
 
-AbleBridge++ ships a real MCP server (stdio transport), so AI agents like
+AbleBridgePlus ships a real MCP server (stdio transport), so AI agents like
 OpenCode can control Ableton Live directly as tools.
 
-## 1. Install the AbleBridge++ package
+## 1. Install the AbleBridgePlus package
 
 From the repo root:
 
 ```bash
-uv sync        # creates .venv with the ablebridge-plus console command
+uv sync        # creates .venv with the AbleBridgePlus console command
 ```
 
-Or after `pip install ablebridge-plus`, the command `ablebridge-plus` is on
+Or after `pip install AbleBridgePlus`, the command `AbleBridgePlus` is on
 your PATH.
 
 ## 2. Make sure Ableton is running
@@ -32,7 +32,7 @@ In `~/.config/opencode/opencode.jsonc` (Windows:
     "ablebridge": {
       "type": "local",
       "command": [
-        "C:\\path\\to\\.venv\\Scripts\\ablebridge-plus.exe",
+        "C:\\path\\to\\.venv\\Scripts\\AbleBridgePlus.exe",
         "--transport", "stdio"
       ],
       "enabled": true,
@@ -66,7 +66,7 @@ create a MIDI track called "AI Bass", then create a 4-bar clip in slot 0
 For the dashboard or multiple local clients sharing one Ableton connection:
 
 ```bash
-ablebridge-plus --transport tcp --tcp-port 9891
+AbleBridgePlus --transport tcp --tcp-port 9891
 ```
 
 Then in OpenCode config use `"type": "remote", "url": "http://127.0.0.1:9891"`.

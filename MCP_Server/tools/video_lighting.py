@@ -1,5 +1,5 @@
 """
-Video/Lighting Tools for AbleBridge++ MCP Server.
+Video/Lighting Tools for AbleBridgePlus MCP Server.
 
 Provides video preset management and lighting control integration.
 """

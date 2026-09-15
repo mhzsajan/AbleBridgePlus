@@ -2,11 +2,11 @@
 setlocal enabledelayedexpansion
 
 echo ========================================
-echo AbleBridge++ Installer v0.3.0
+echo AbleBridgePlus Installer v0.3.0
 echo ========================================
 echo.
 echo MCP bridge for Ableton Live - 417 tools
-echo https://github.com/mhzsajan/ablebridge-dev
+echo https://github.com/mhzsajan/AbleBridgePlus
 echo.
 
 REM Check for Python

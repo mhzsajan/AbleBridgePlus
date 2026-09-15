@@ -1,5 +1,5 @@
 """
-AbleBridge++ MCP Server
+AbleBridgePlus MCP Server
 
 A comprehensive AI integration layer for Ableton Live, built on the foundation of
 AbletonBridge by hidingwill (https://github.com/hidingwill/AbletonBridge).
@@ -85,7 +85,7 @@ class MCPServer:
         # Register all tools
         self._register_tools()
         
-        logger.info("AbleBridge++ MCP Server initialized")
+        logger.info("AbleBridgePlus MCP Server initialized")
     
     def _register_tools(self):
         """Register all available tools."""
@@ -190,7 +190,7 @@ class MCPServer:
                 'resources': {}
             },
             'serverInfo': {
-                'name': 'AbleBridge++',
+                'name': 'AbleBridgePlus',
                 'version': '0.5.0'
             }
         }
@@ -257,7 +257,7 @@ class MCPServer:
     
     async def start(self):
         """Start the MCP server."""
-        logger.info("Starting AbleBridge++ MCP Server...")
+        logger.info("Starting AbleBridgePlus MCP Server...")
         
         # Connect to Ableton
         try:
@@ -276,12 +276,12 @@ class MCPServer:
             logger.info("Server will start without M4L Bridge")
         
         state.server_start_time = time.time()
-        logger.info("AbleBridge++ MCP Server started")
+        logger.info("AbleBridgePlus MCP Server started")
         logger.info("Ready to accept connections")
     
     async def stop(self):
         """Stop the MCP server."""
-        logger.info("Stopping AbleBridge++ MCP Server...")
+        logger.info("Stopping AbleBridgePlus MCP Server...")
         
         # Disconnect from Ableton
         try:
@@ -295,7 +295,7 @@ class MCPServer:
         except Exception as e:
             logger.error(f"Error disconnecting from M4L Bridge: {e}")
         
-        logger.info("AbleBridge++ MCP Server stopped")
+        logger.info("AbleBridgePlus MCP Server stopped")
 
 
 def main(argv=None):
@@ -306,7 +306,7 @@ def main(argv=None):
     --no-banner            suppress the startup banner
     """
     import argparse
-    parser = argparse.ArgumentParser(description='AbleBridge++ MCP Server')
+    parser = argparse.ArgumentParser(description='AbleBridgePlus MCP Server')
     parser.add_argument('--transport', choices=['stdio', 'tcp'], default='stdio')
     parser.add_argument('--tcp-port', type=int, default=9891)
     parser.add_argument('--no-banner', action='store_true')
@@ -341,7 +341,7 @@ def main(argv=None):
                 banner = (
                     "\n"
                     "  ╔══════════════════════════════════════════╗\n"
-                    "  ║   AbleBridge++ MCP Server (TCP)          ║\n"
+                    "  ║   AbleBridgePlus MCP Server (TCP)          ║\n"
                     "  ║   Tools: {n:>3}                            ║\n"
                     "  ║   Listening on 127.0.0.1:{port:<6}         ║\n"
                     "  ╚══════════════════════════════════════════╝\n"

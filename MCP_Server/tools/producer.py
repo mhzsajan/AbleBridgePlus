@@ -1,5 +1,5 @@
 """
-Producer pipeline for AbleBridge++.
+Producer pipeline for AbleBridgePlus.
 
 - produce_idea_from_prompt: one sentence in, playable demo out. Chains the
   v0.4 music toolkit (skeleton -> chords/bass/drums -> melody -> tempo,

@@ -1,5 +1,5 @@
 """
-Studio Memory for AbleBridge++.
+Studio Memory for AbleBridgePlus.
 
 Two halves:
 

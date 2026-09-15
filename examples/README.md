@@ -1,6 +1,6 @@
-# AbleBridge++ Examples
+# AbleBridgePlus Examples
 
-This directory contains example usage of AbleBridge++.
+This directory contains example usage of AbleBridgePlus.
 
 ## Basic Examples
 

@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to AbleBridge++ will be documented in this file.
+All notable changes to AbleBridgePlus will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
@@ -92,11 +92,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.3.2] - 2026-09-15
 
 ### Renamed
-- **Remote script folder is now `AbleBridgePlus`** — this is the name shown in Ableton's Preferences → Link/Tempo/MIDI → Control Surface list (was "EnhancedAbletonBridge")
-- Python package renamed to `ablebridge-plus`; console command `ablebridge-plus`
-- Persistent data directory moved from `~/.enhanced-abletonbridge` to `~/.ablebridge`
-- Installer now removes the legacy `EnhancedAbletonBridge` folder automatically
-- Brand string **AbleBridge++** is kept in display messages and the dashboard title
+- **Remote script folder is now `AbleBridgePlus`** — this is the name shown in Ableton's Preferences → Link/Tempo/MIDI → Control Surface list (was "AbleBridgePlus")
+- Python package renamed to `AbleBridgePlus`; console command `AbleBridgePlus`
+- Persistent data directory moved from `~/.AbleBridgePlus` to `~/.ablebridge`
+- Installer now removes the legacy `AbleBridgePlus` folder automatically
+- Brand string **AbleBridgePlus** is kept in display messages and the dashboard title
 
 ### Note
 - After upgrading, restart Ableton once and select **AbleBridgePlus** as the control surface (the old entry no longer exists once the old folder is removed)
@@ -117,7 +117,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Duplicate tool names**: `start/stop_song_timer` and `get_song_timings` existed twice (show clock vs performance analytics) and silently overwrote each other; analytics variants renamed to `start/stop_performance_timer` and `get_performance_timings`
 - `get_arrangement_suggestions` accepts sections as strings or dicts (crashed on strings)
 - Added missing `psutil` dependency (`get_memory_usage` crashed without it)
-- Remote script: fixed absolute imports that prevented the control surface from loading under its installed folder name (`EnhancedAbletonBridge`)
+- Remote script: fixed absolute imports that prevented the control surface from loading under its installed folder name (`AbleBridgePlus`)
 
 ### Improved
 - Systematic test sweep against live Ableton: **154 → 211 tools passing, 0 exceptions, 0 timeouts** (421 tools registered)
@@ -126,7 +126,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.3.0] - 2026-09-14
 
 ### Changed
-- **Renamed project** from "Enhanced AbletonBridge" to "AbleBridge++"
+- **Renamed project** from "Enhanced AbletonBridge" to "AbleBridgePlus"
   - Updated all references across codebase
   - Cleaner, more memorable name
 
@@ -195,14 +195,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - **Remote Script loading in Ableton Live 12.4.1**
-  - Renamed class from `AbletonBridge` to `AbleBridgePP` to avoid conflict with original
+  - Renamed class from `AbletonBridge` to `AbleBridgePlus` to avoid conflict with original
   - Fixed Unicode encoding corruption in `__init__.py` (em-dash mojibake `â??` → ASCII `-`)
   - Added missing `_helpers.py` handler module
-  - Installation now works from User Library: `Documents/Ableton/User Library/Remote Scripts/AbleBridge++`
+  - Installation now works from User Library: `Documents/Ableton/User Library/Remote Scripts/AbleBridgePlus`
 
 ### Changed
-- Log messages now show "AbleBridge++" instead of "AbletonBridge"
-- `create_instance()` returns `AbleBridgePP` instance
+- Log messages now show "AbleBridgePlus" instead of "AbletonBridge"
+- `create_instance()` returns `AbleBridgePlus` instance
 
 ## [0.2.0] - 2026-09-13
 

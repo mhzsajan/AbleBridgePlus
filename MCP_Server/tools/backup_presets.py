@@ -1,5 +1,5 @@
 """
-Backup Presets Tools for AbleBridge++ MCP Server.
+Backup Presets Tools for AbleBridgePlus MCP Server.
 
 Provides backup preset management for live shows.
 """

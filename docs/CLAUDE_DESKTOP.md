@@ -1,6 +1,6 @@
-# Connecting Claude Desktop to AbleBridge++
+# Connecting Claude Desktop to AbleBridgePlus
 
-AbleBridge++ speaks standard MCP over stdio, so Claude Desktop can drive
+AbleBridgePlus speaks standard MCP over stdio, so Claude Desktop can drive
 your Ableton Live session directly from chat.
 
 ## 1. Prerequisites
@@ -26,7 +26,7 @@ Add:
     "ablebridge": {
       "command": "python",
       "args": [
-        "C:/path/to/ablebridge-dev/mcp_stdio_launcher.py",
+        "C:/path/to/AbleBridgePlus/mcp_stdio_launcher.py",
         "--transport", "stdio"
       ]
     }
@@ -37,16 +37,16 @@ Add:
 Notes:
 
 - Use **forward slashes** in JSON paths, even on Windows
-- Replace `C:/path/to/ablebridge-dev` with where you installed the repo,
-  or a pip install location if you installed the `ablebridge-plus` package
-  (then `command` can be `ablebridge-plus` with args `["--transport","stdio"]`)
+- Replace `C:/path/to/AbleBridgePlus` with where you installed the repo,
+  or a pip install location if you installed the `AbleBridgePlus` package
+  (then `command` can be `AbleBridgePlus` with args `["--transport","stdio"]`)
 - On macOS, `command` may need the absolute interpreter path
   (find it with `which python3`)
 
 ## 3. Restart Claude Desktop
 
 Quit fully (system tray → Quit, not just the window) and reopen. You should
-see a tools icon (hammer/🔌) — AbleBridge++ exposes 448 tools.
+see a tools icon (hammer/🔌) — AbleBridgePlus exposes 448 tools.
 
 ## 4. Try it
 

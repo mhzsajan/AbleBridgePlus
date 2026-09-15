@@ -1,5 +1,5 @@
 """
-Scene Macros Tools for AbleBridge++ MCP Server.
+Scene Macros Tools for AbleBridgePlus MCP Server.
 
 Provides scene macro creation and management for live shows.
 """

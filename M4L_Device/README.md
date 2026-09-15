@@ -1,6 +1,6 @@
-# M4L Device for AbleBridge++
+# M4L Device for AbleBridgePlus
 
-This directory contains the Max for Live device for AbleBridge++.
+This directory contains the Max for Live device for AbleBridgePlus.
 
 ## Overview
 

@@ -1,5 +1,5 @@
 """
-Input Validation for AbleBridge++ MCP Server.
+Input Validation for AbleBridgePlus MCP Server.
 """
 
 from typing import Any, Dict, List, Optional, Union

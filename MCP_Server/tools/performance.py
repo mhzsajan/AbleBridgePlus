@@ -1,5 +1,5 @@
 """
-Performance Monitoring Tools for AbleBridge++ MCP Server.
+Performance Monitoring Tools for AbleBridgePlus MCP Server.
 
 These tools provide CPU, memory, and latency monitoring.
 """

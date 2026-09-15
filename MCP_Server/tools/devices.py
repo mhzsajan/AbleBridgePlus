@@ -1,5 +1,5 @@
 """
-Device management tools for AbleBridge++.
+Device management tools for AbleBridgePlus.
 
 These tools handle loading instruments, effects, and managing devices on tracks.
 """

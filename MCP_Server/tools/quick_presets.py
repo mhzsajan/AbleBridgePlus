@@ -1,5 +1,5 @@
 """
-Quick Presets Tools for AbleBridge++ MCP Server.
+Quick Presets Tools for AbleBridgePlus MCP Server.
 
 These tools provide live show preset management for quick recall.
 """

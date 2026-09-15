@@ -1,5 +1,5 @@
 """
-Session Backup Tools for AbleBridge++ MCP Server.
+Session Backup Tools for AbleBridgePlus MCP Server.
 
 Provides session backup, restore, and comparison functionality.
 """

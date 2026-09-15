@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "ablebridge-plus"
+name = "AbleBridgePlus"
 version = "0.5.0"
 description = "AI-integrated live show engineering system for Ableton Live"
 readme = "README.md"
@@ -34,12 +34,12 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/mhzsajan/ablebridge-plus"
-Repository = "https://github.com/mhzsajan/ablebridge-plus"
-Issues = "https://github.com/mhzsajan/ablebridge-plus/issues"
+Homepage = "https://github.com/mhzsajan/AbleBridgePlus"
+Repository = "https://github.com/mhzsajan/AbleBridgePlus"
+Issues = "https://github.com/mhzsajan/AbleBridgePlus/issues"
 
 [project.scripts]
-ablebridge-plus = "MCP_Server.server:main"
+AbleBridgePlus = "MCP_Server.server:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["MCP_Server", "AbleBridgePlus"]

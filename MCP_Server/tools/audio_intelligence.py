@@ -1,5 +1,5 @@
 """
-Audio Intelligence ("Ears") for AbleBridge++.
+Audio Intelligence ("Ears") for AbleBridgePlus.
 
 Lets the AI listen to the *actual audio* in the session:
 

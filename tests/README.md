@@ -1,6 +1,6 @@
-# AbleBridge++ Tests
+# AbleBridgePlus Tests
 
-This directory contains tests for AbleBridge++.
+This directory contains tests for AbleBridgePlus.
 
 ## Running Tests
 

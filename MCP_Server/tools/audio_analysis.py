@@ -1,5 +1,5 @@
 """
-Audio Analysis Tools for AbleBridge++ MCP Server.
+Audio Analysis Tools for AbleBridgePlus MCP Server.
 
 These tools provide audio analysis, spectrum, and chord detection.
 """

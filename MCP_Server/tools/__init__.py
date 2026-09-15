@@ -1,5 +1,5 @@
 """
-AbleBridge++ MCP Server Tools Package.
+AbleBridgePlus MCP Server Tools Package.
 
 This package contains all the tools for controlling Ableton Live via MCP.
 """

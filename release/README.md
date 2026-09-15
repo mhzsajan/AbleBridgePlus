@@ -1,17 +1,17 @@
-# AbleBridge++ Release
+# AbleBridgePlus Release
 
-This directory contains the release files for AbleBridge++ — the MCP bridge for Ableton Live (**417 tools**).
+This directory contains the release files for AbleBridgePlus — the MCP bridge for Ableton Live (**417 tools**).
 
 ## Quick Install
 
 ### Windows
-1. Download the latest release from [GitHub Releases](https://github.com/mhzsajan/ablebridge-dev/releases)
+1. Download the latest release from [GitHub Releases](https://github.com/mhzsajan/AbleBridgePlus/releases)
 2. Extract the ZIP file
 3. Run `install.bat`
 4. Follow the on-screen instructions
 
 ### macOS/Linux
-1. Download the latest release from [GitHub Releases](https://github.com/mhzsajan/ablebridge-dev/releases)
+1. Download the latest release from [GitHub Releases](https://github.com/mhzsajan/AbleBridgePlus/releases)
 2. Extract the ZIP file
 3. Open terminal and navigate to the extracted directory
 4. Run `chmod +x install.sh`
@@ -28,8 +28,8 @@ This directory contains the release files for AbleBridge++ — the MCP bridge fo
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/mhzsajan/ablebridge-dev.git
-   cd ablebridge-dev
+   git clone https://github.com/mhzsajan/AbleBridgePlus.git
+   cd AbleBridgePlus
    ```
 
 2. Install dependencies:
@@ -83,7 +83,7 @@ Install uv with: `pip install uv`
 ## Support
 
 For issues and questions:
-- [GitHub Issues](https://github.com/mhzsajan/ablebridge-dev/issues)
+- [GitHub Issues](https://github.com/mhzsajan/AbleBridgePlus/issues)
 - [Documentation](docs/)
 - [README](../README.md)
 

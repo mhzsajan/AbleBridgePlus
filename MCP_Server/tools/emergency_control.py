@@ -1,5 +1,5 @@
 """
-Emergency Control Tools for AbleBridge++ MCP Server.
+Emergency Control Tools for AbleBridgePlus MCP Server.
 
 Provides emergency stop, panic mute, and backup scene activation for live shows.
 """

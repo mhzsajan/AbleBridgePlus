@@ -6,7 +6,7 @@ import os
 from typing import Dict, List, Tuple
 
 # Server Configuration
-SERVER_NAME = "AbleBridge++"
+SERVER_NAME = "AbleBridgePlus"
 SERVER_VERSION = "0.3.0"
 PROTOCOL_VERSION = "2024-11-05"
 

@@ -1,5 +1,5 @@
 """
-Global State Management for AbleBridge++ MCP Server.
+Global State Management for AbleBridgePlus MCP Server.
 """
 
 import json

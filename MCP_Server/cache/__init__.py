@@ -1,5 +1,5 @@
 """
-AbleBridge++ MCP Server Cache Package.
+AbleBridgePlus MCP Server Cache Package.
 """
 
 from MCP_Server.cache.browser import (

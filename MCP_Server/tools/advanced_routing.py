@@ -1,5 +1,5 @@
 """
-Advanced Routing Tools for AbleBridge++ MCP Server.
+Advanced Routing Tools for AbleBridgePlus MCP Server.
 
 These tools provide advanced routing capabilities including side-chain and multi-output.
 """

@@ -1,6 +1,6 @@
 # Installation Guide
 
-This guide will walk you through installing AbleBridge++ and getting it up and running.
+This guide will walk you through installing AbleBridgePlus and getting it up and running.
 
 ## Prerequisites
 
@@ -17,8 +17,8 @@ This guide will walk you through installing AbleBridge++ and getting it up and r
 ## Step 1: Clone the Repository
 
 ```bash
-git clone https://github.com/mhzsajan/ablebridge-plus.git
-cd ablebridge-plus
+git clone https://github.com/mhzsajan/AbleBridgePlus.git
+cd AbleBridgePlus
 ```
 
 ## Step 2: Install Dependencies
@@ -75,7 +75,7 @@ Add to your `claude_desktop_config.json`:
     "abletonbridge": {
       "command": "uv",
       "args": ["run", "python", "-m", "MCP_Server.server"],
-      "cwd": "/path/to/ablebridge-plus"
+      "cwd": "/path/to/AbleBridgePlus"
     }
   }
 }
@@ -89,7 +89,7 @@ Add to your MCP configuration:
   "abletonbridge": {
     "command": "uv",
     "args": ["run", "python", "-m", "MCP_Server.server"],
-    "cwd": "/path/to/ablebridge-plus"
+    "cwd": "/path/to/AbleBridgePlus"
   }
 }
 ```
@@ -102,7 +102,7 @@ Add to your MCP configuration:
   "abletonbridge": {
     "command": "uv",
     "args": ["run", "python", "-m", "MCP_Server.server"],
-    "cwd": "/path/to/ablebridge-plus"
+    "cwd": "/path/to/AbleBridgePlus"
   }
 }
 ```

@@ -1,4 +1,4 @@
-# AbleBridge++ — New Features Plan
+# AbleBridgePlus — New Features Plan
 
 **Target:** Add 70+ new tools across 7 categories  
 **Total after update:** 510+ tools

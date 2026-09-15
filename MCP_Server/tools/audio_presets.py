@@ -1,5 +1,5 @@
 """
-Audio/MIDI Preset Tools for AbleBridge++ MCP Server.
+Audio/MIDI Preset Tools for AbleBridgePlus MCP Server.
 
 Provides preset management for audio and MIDI effects.
 """

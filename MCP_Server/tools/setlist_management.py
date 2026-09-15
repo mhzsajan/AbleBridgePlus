@@ -1,5 +1,5 @@
 """
-Setlist Management Tools for AbleBridge++ MCP Server.
+Setlist Management Tools for AbleBridgePlus MCP Server.
 
 These tools provide AbleSet integration for setlist management during live shows.
 """

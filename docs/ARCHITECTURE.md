@@ -1,10 +1,10 @@
 # Architecture
 
-This document describes the architecture of AbleBridge++.
+This document describes the architecture of AbleBridgePlus.
 
 ## System Overview
 
-AbleBridge++ is an AI integration layer for Ableton Live that uses the Model Context Protocol (MCP) to connect AI tools with Ableton's Live Object Model (LOM).
+AbleBridgePlus is an AI integration layer for Ableton Live that uses the Model Context Protocol (MCP) to connect AI tools with Ableton's Live Object Model (LOM).
 
 ```
 ┌─────────────────────────────────────────────────────────────┐

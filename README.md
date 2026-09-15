@@ -1,25 +1,25 @@
-# AbleBridge++
+# AbleBridgePlus
 
 MCP bridge connecting AI/LLM tools to Ableton Live, enhanced for live show performances. **417 tools registered** for AI-assisted music production and real-time show control.
 
 **By Sajan Maharjan**  
 *Inspiration from [AbletonBridge](https://github.com/hidingwill/AbletonBridge) by [hidingwill](https://github.com/hidingwill)*
 
-[![Release](https://img.shields.io/github/v/release/mhzsajan/ablebridge-dev)](https://github.com/mhzsajan/ablebridge-dev/releases)
-[![License](https://img.shields.io/github/license/mhzsajan/ablebridge-dev)](LICENSE)
+[![Release](https://img.shields.io/github/v/release/mhzsajan/AbleBridgePlus)](https://github.com/mhzsajan/AbleBridgePlus/releases)
+[![License](https://img.shields.io/github/license/mhzsajan/AbleBridgePlus)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 
 ---
 
-## What is AbleBridge++?
+## What is AbleBridgePlus?
 
-AbleBridge++ is the next iteration of **Enhanced AbletonBridge** — a Model Context Protocol (MCP) server that lets AI tools (OpenCode, Claude, etc.) control Ableton Live through its Remote Script. It adds the full core toolset from the original AbletonBridge **plus** a complete live-show engineering layer: emergency control, performance analytics, session backup/restore, audio presets, video/lighting, and scene macros.
+AbleBridgePlus is the next iteration of **Enhanced AbletonBridge** — a Model Context Protocol (MCP) server that lets AI tools (OpenCode, Claude, etc.) control Ableton Live through its Remote Script. It adds the full core toolset from the original AbletonBridge **plus** a complete live-show engineering layer: emergency control, performance analytics, session backup/restore, audio presets, video/lighting, and scene macros.
 
 ```
 AI Tool (OpenCode, Claude, ...)
         │  MCP Protocol
         ▼
-  MCP Server (AbleBridge++)
+  MCP Server (AbleBridgePlus)
         │  TCP (9877) / UDP/OSC (9878-9882)
         ▼
   Ableton Live (Remote Script + M4L Bridge)
@@ -64,11 +64,11 @@ AI Tool (OpenCode, Claude, ...)
 
 ---
 
-## Enhanced AbletonBridge vs AbleBridge++
+## Enhanced AbletonBridge vs AbleBridgePlus
 
-AbleBridge++ is what Enhanced AbletonBridge grows into. The table below shows what changed between the two.
+AbleBridgePlus is what Enhanced AbletonBridge grows into. The table below shows what changed between the two.
 
-| Area | Enhanced AbletonBridge (v0.2.x) | AbleBridge++ (v0.3.0) |
+| Area | Enhanced AbletonBridge (v0.2.x) | AbleBridgePlus (v0.3.0) |
 |------|--------------------------------|------------------------|
 | **Registered tools** | 450+ (enhanced categories only) | **417 registered** — full core toolset + enhanced + live-show categories |
 | **Core toolset** | ❌ Not ported | ✅ Full port: clips (56), session (51), tracks (29), mixer, browser, arrangement, automation, creative, grid, scenes, snapshots, workflows |
@@ -90,9 +90,9 @@ AbleBridge++ is what Enhanced AbletonBridge grows into. The table below shows wh
 
 ---
 
-## Side-by-Side: Original AbletonBridge vs AbleBridge++
+## Side-by-Side: Original AbletonBridge vs AbleBridgePlus
 
-| Category | Original AbletonBridge | AbleBridge++ |
+| Category | Original AbletonBridge | AbleBridgePlus |
 |----------|------------------------|--------------|
 | **Tool Count** | 353 | 417+ |
 | **Tracks** | create, delete, duplicate, group, arm, freeze | + routing channels exposed |
@@ -120,7 +120,7 @@ AbleBridge++ is what Enhanced AbletonBridge grows into. The table below shows wh
 
 ## Use Cases
 
-| Use Case | Original | Enhanced | AbleBridge++ |
+| Use Case | Original | Enhanced | AbleBridgePlus |
 |----------|----------|----------|--------------|
 | General Ableton control | ✅ | ✅ | ✅ |
 | Live show engineering | ❌ | ✅ | ✅ (emergency + analytics + backups) |
@@ -169,8 +169,8 @@ chmod +x install.sh && ./install.sh
 
 ### Manual Install
 ```bash
-git clone https://github.com/mhzsajan/ablebridge-dev.git
-cd ablebridge-dev
+git clone https://github.com/mhzsajan/AbleBridgePlus.git
+cd AbleBridgePlus
 uv sync
 ```
 

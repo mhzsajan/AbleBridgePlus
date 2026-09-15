@@ -1,5 +1,5 @@
 """
-Web Dashboard Server for AbleBridge++ MCP Server.
+Web Dashboard Server for AbleBridgePlus MCP Server.
 """
 
 import asyncio
@@ -63,7 +63,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
 <!DOCTYPE html>
 <html>
 <head>
-    <title>AbleBridge++ Dashboard</title>
+    <title>AbleBridgePlus Dashboard</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 20px; }
         h1 { color: #333; }
@@ -75,7 +75,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
     </style>
 </head>
 <body>
-        <h1>AbleBridge++ Dashboard</h1>
+        <h1>AbleBridgePlus Dashboard</h1>
     <div class="status" id="status">Loading...</div>
     <div class="tools">
         <h2>Available Tools</h2>

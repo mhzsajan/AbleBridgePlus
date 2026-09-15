@@ -64,7 +64,7 @@ jobs:
             ablebridge-windows.zip
             ablebridge-linux.tar.gz
           body: |
-            ## AbleBridge++ v${{ github.ref_name }}
+            ## AbleBridgePlus v${{ github.ref_name }}
 
             MCP bridge connecting AI/LLM tools to Ableton Live — **417 tools registered** for AI-assisted music production and real-time show control.
 
@@ -80,7 +80,7 @@ jobs:
             - **29 tests** (all passing)
 
             ### Full changelog
-            See [CHANGELOG.md](https://github.com/mhzsajan/ablebridge-dev/blob/master/CHANGELOG.md) for the complete history.
+            See [CHANGELOG.md](https://github.com/mhzsajan/AbleBridgePlus/blob/master/CHANGELOG.md) for the complete history.
 
             ### Quick Install
 
@@ -93,9 +93,9 @@ jobs:
             2. Extract and run `./install.sh`
 
             ### Documentation
-            - [Installation Guide](https://github.com/mhzsajan/ablebridge-dev/blob/master/docs/INSTALLATION.md)
-            - [Features](https://github.com/mhzsajan/ablebridge-dev/blob/master/docs/FEATURES.md)
-            - [Architecture](https://github.com/mhzsajan/ablebridge-dev/blob/master/docs/ARCHITECTURE.md)
+            - [Installation Guide](https://github.com/mhzsajan/AbleBridgePlus/blob/master/docs/INSTALLATION.md)
+            - [Features](https://github.com/mhzsajan/AbleBridgePlus/blob/master/docs/FEATURES.md)
+            - [Architecture](https://github.com/mhzsajan/AbleBridgePlus/blob/master/docs/ARCHITECTURE.md)
 
             ### Credits
             Based on [AbletonBridge](https://github.com/hidingwill/AbletonBridge) by [hidingwill](https://github.com/hidingwill).

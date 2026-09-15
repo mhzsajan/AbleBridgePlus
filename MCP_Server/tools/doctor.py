@@ -1,5 +1,5 @@
 """
-Doctor & monitoring tools for AbleBridge++.
+Doctor & monitoring tools for AbleBridgePlus.
 
 Self-diagnosis: one `doctor` call that checks everything that has ever
 broken in the field — control-surface connection, script version drift,
@@ -33,7 +33,7 @@ def register_tools(mcp):
     @_tool_handler("running doctor")
     def doctor(ctx: Context, deep: bool = False) -> str:
         """
-        Full health check of the AbleBridge++ stack. Checks: Ableton
+        Full health check of the AbleBridgePlus stack. Checks: Ableton
         reachable, round-trip latency, remote-script version drift vs this
         server, M4L bridge status, browser cache age, and (with
         deep=true) Ableton's own log for script errors. Returns plain

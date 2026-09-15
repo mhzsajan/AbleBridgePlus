@@ -1,6 +1,6 @@
 # Features
 
-Complete feature list for AbleBridge++.
+Complete feature list for AbleBridgePlus.
 
 ## Core Features (from AbletonBridge)
 

@@ -1,5 +1,5 @@
 """
-MCP protocol transports for AbleBridge++.
+MCP protocol transports for AbleBridgePlus.
 
 Two ways for an MCP client (OpenCode, Claude Desktop, ...) to reach the
 server:

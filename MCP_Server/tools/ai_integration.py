@@ -1,5 +1,5 @@
 """
-AI Integration Tools for AbleBridge++ MCP Server.
+AI Integration Tools for AbleBridgePlus MCP Server.
 
 These tools provide AI-specific features for session analysis and suggestions.
 """

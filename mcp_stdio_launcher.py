@@ -1,4 +1,4 @@
-"""Absolute-path launcher for the AbleBridge++ stdio MCP server.
+"""Absolute-path launcher for the AbleBridgePlus stdio MCP server.
 
 MCP clients spawn this without a useful working directory, so -m
 MCP_Server.server fails; this bootstraps sys.path from the file location.

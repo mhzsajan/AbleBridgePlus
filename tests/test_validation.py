@@ -1,5 +1,5 @@
 """
-Tests for AbleBridge++ validation module.
+Tests for AbleBridgePlus validation module.
 """
 
 import pytest

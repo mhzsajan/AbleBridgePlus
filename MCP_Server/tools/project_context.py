@@ -1,5 +1,5 @@
 """
-Project Context Engine for AbleBridge++.
+Project Context Engine for AbleBridgePlus.
 
 Gives an AI a compact, high-signal view of the whole Live set in one call,
 plus server-side checkpoints so experiments can be diffed and reverted

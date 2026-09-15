@@ -1,5 +1,5 @@
 """
-AI Enhancement Tools for AbleBridge++ MCP Server.
+AI Enhancement Tools for AbleBridgePlus MCP Server.
 
 Provides smart suggestions and intelligent automation for mixing and sound design.
 """

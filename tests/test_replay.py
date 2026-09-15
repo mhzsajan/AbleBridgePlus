@@ -1,5 +1,5 @@
 """
-Replay-based tests for AbleBridge++ — full tool layer, no Ableton needed.
+Replay-based tests for AbleBridgePlus — full tool layer, no Ableton needed.
 
 How it works:
 - Each test drives MCPServer.handle_request with a scripted sequence of

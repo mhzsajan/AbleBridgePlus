@@ -1,4 +1,4 @@
-# AbleBridge++ / init.py
+# AbleBridgePlus / init.py
 from __future__ import absolute_import, print_function, unicode_literals
 
 from _Framework.ControlSurface import ControlSurface
@@ -579,17 +579,17 @@ _READONLY_HANDLERS = {
 
 
 def create_instance(c_instance):
-    """Create and return the AbleBridge++ script instance"""
-    return AbleBridgePP(c_instance)
+    """Create and return the AbleBridgePlus script instance"""
+    return AbleBridgePlus(c_instance)
 
 
-class AbleBridgePP(ControlSurface):
-    """AbleBridge++ Remote Script for Ableton Live"""
+class AbleBridgePlus(ControlSurface):
+    """AbleBridgePlus Remote Script for Ableton Live"""
 
     def __init__(self, c_instance):
         """Initialize the control surface"""
         ControlSurface.__init__(self, c_instance)
-        self.log_message("AbleBridge++ Remote Script initializing...")
+        self.log_message("AbleBridgePlus Remote Script initializing...")
 
         # Socket server for communication
         self.server = None
@@ -608,10 +608,10 @@ class AbleBridgePP(ControlSurface):
         self.start_server()
         self.start_udp_server()
 
-        self.log_message("AbleBridge++ initialized")
+        self.log_message("AbleBridgePlus initialized")
 
         # Show a message in Ableton
-        self.show_message("AbleBridge++: TCP " + str(DEFAULT_PORT) + " / UDP " + str(UDP_REALTIME_PORT))
+        self.show_message("AbleBridgePlus: TCP " + str(DEFAULT_PORT) + " / UDP " + str(UDP_REALTIME_PORT))
 
     @property
     def _song(self):
@@ -620,7 +620,7 @@ class AbleBridgePP(ControlSurface):
 
     def disconnect(self):
         """Called when Ableton closes or the control surface is removed"""
-        self.log_message("AbleBridge++ disconnecting...")
+        self.log_message("AbleBridgePlus disconnecting...")
         self.running = False
 
         # Close UDP socket FIRST to unblock recvfrom(), THEN clear the flag.
@@ -670,7 +670,7 @@ class AbleBridgePP(ControlSurface):
                 client_thread.join(3.0)
 
         ControlSurface.disconnect(self)
-        self.log_message("AbleBridge++ disconnected")
+        self.log_message("AbleBridgePlus disconnected")
 
     def start_server(self):
         """Start the socket server in a separate thread"""
@@ -688,7 +688,7 @@ class AbleBridgePP(ControlSurface):
             self.log_message("Server started on port " + str(DEFAULT_PORT))
         except Exception as e:
             self.log_message("Error starting server: " + str(e))
-            self.show_message("AbleBridge++: Error starting server - " + str(e))
+            self.show_message("AbleBridgePlus: Error starting server - " + str(e))
 
     def start_udp_server(self):
         """Start the UDP real-time parameter server in a separate thread."""
@@ -792,7 +792,7 @@ class AbleBridgePP(ControlSurface):
                 try:
                     client, address = self.server.accept()
                     self.log_message("Connection accepted from " + str(address))
-                    self.show_message("AbleBridge++: Client connected")
+                    self.show_message("AbleBridgePlus: Client connected")
 
                     client_thread = threading.Thread(
                         target=self._handle_client,
