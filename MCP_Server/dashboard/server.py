@@ -52,6 +52,8 @@ class DashboardHandler(BaseHTTPRequestHandler):
             self._serve_status()
         elif self.path == '/api/tools':
             self._serve_tools()
+        elif self.path == '/api/session':
+            self._serve_session()
         else:
             self._send_404()
     
@@ -130,6 +132,36 @@ class DashboardHandler(BaseHTTPRequestHandler):
         self.send_header('Content-type', 'application/json')
         self.end_headers()
         self.wfile.write(json.dumps({'tools': tools}).encode())
+    
+    def _serve_session(self):
+        """Serve a live snapshot of the Ableton session (read-only)."""
+        snapshot = {'error': 'Ableton not connected'}
+        try:
+            import MCP_Server.state as state_mod
+            conn = state_mod.ableton_connection
+            if conn is not None and getattr(conn, '_connected', False):
+                session = conn.send_command('get_session_info')
+                transport = conn.send_command('get_song_transport')
+                meters = conn.send_command('get_track_meters')
+                snapshot = {
+                    'tempo': session.get('tempo'),
+                    'time_signature': '{}/{}'.format(
+                        session.get('signature_numerator', 4),
+                        session.get('signature_denominator', 4)),
+                    'track_count': session.get('track_count'),
+                    'transport': transport,
+                    'tracks': [
+                        {'index': t.get('index'), 'name': t.get('name'),
+                         'level': t.get('output_meter_level'),
+                         'playing_slot': t.get('playing_slot_index')}
+                        for t in (meters.get('tracks') or [])],
+                }
+        except Exception as e:
+            snapshot = {'error': str(e)}
+        self.send_response(200)
+        self.send_header('Content-type', 'application/json')
+        self.end_headers()
+        self.wfile.write(json.dumps(snapshot, default=str).encode())
     
     def _send_404(self):
         """Send 404 response."""

@@ -29,7 +29,7 @@ AI Tool (OpenCode, Claude, ...)
 
 ## Features
 
-**436 tools** across **20+ categories** for complete Ableton Live control.
+**448 tools** across **24 categories** for complete Ableton Live control.
 
 | Category | Tools | Description |
 |----------|-------|-------------|
@@ -43,6 +43,9 @@ AI Tool (OpenCode, Claude, ...)
 | Project Context (v0.4) | 8 | One-call session map, clip context, checkpoints with diff & restore |
 | Doctor & Monitoring (v0.4) | 3 | One-call diagnosis, integrity report, live session watch |
 | Show Autopilot (v0.4) | 3 | Hands-free timed scene sequencing for live sets |
+| Audio Intelligence (v0.5) | 4 | Key/BPM detection (DSP), audio->MIDI, mix clash finder, hum-to-clip |
+| Producer Pipeline (v0.5) | 3 | One-prompt-to-demo, smart freeze (CPU), reference track matching |
+| Studio Memory (v0.5) | 5 | Persistent preferences, automatic change journal — taste + accountability |
 | Arrangement | 17 | Clip/time editing, automation lanes |
 | Mixer | 13 | Volume, pan, sends, crossfader, delay |
 | Browser & Search | 12 | Cached browser tree, instant search, URI loading |

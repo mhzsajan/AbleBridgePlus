@@ -5,6 +5,30 @@ from ._helpers import get_track
 from . import devices as dev_mod
 
 
+def get_track_sends(song, track_index, ctrl=None):
+    """Get the send levels of a track to each return track (read-only).
+
+    Lets the MCP server's reference-track matching copy send levels.
+    """
+    try:
+        track = get_track(song, track_index)
+        sends = []
+        for i, send in enumerate(track.mixer_device.sends):
+            sends.append({
+                "index": i,
+                "name": send.name if hasattr(send, "name") else "Send " + chr(65 + i),
+                "value": send.value,
+                "min": send.min,
+                "max": send.max,
+            })
+        return {"track_index": track_index, "sends": sends,
+                "count": len(sends)}
+    except Exception as e:
+        if ctrl:
+            ctrl.log_message("Error getting track sends: " + str(e))
+        raise
+
+
 def set_track_volume(song, track_index, volume, ctrl=None):
     """Set track volume."""
     try:

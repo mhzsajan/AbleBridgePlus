@@ -438,6 +438,8 @@ _READONLY_HANDLERS = {
     "get_view_state": lambda song, p, ctrl: handlers.session.get_view_state(song, ctrl),
     "get_playing_clips": lambda song, p, ctrl: handlers.session.get_playing_clips(song, ctrl),
     "get_song_file_path": lambda song, p, ctrl: handlers.session.get_song_file_path(song, ctrl),
+    "get_clip_file_path": lambda song, p, ctrl: handlers.session.get_clip_file_path(
+        song, p.get("track_index", 0), p.get("clip_index", 0), ctrl),
 
     # --- Tracks ---
     "get_track_info": lambda song, p, ctrl: handlers.tracks.get_track_info(song, p.get("track_index", 0), ctrl),
@@ -462,6 +464,7 @@ _READONLY_HANDLERS = {
     "get_master_track_info": lambda song, p, ctrl: handlers.mixer.get_master_track_info(song, ctrl),
     "get_crossfader": lambda song, p, ctrl: handlers.mixer.get_crossfader(song, ctrl),
     "get_track_delay": lambda song, p, ctrl: handlers.mixer.get_track_delay(song, p.get("track_index", 0), ctrl),
+    "get_track_sends": lambda song, p, ctrl: handlers.mixer.get_track_sends(song, p.get("track_index", 0), ctrl),
 
     # --- Devices ---
     "get_device_parameters": lambda song, p, ctrl: handlers.devices.get_device_parameters(

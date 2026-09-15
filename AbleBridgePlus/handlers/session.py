@@ -5,10 +5,16 @@ from __future__ import absolute_import, print_function, unicode_literals
 from ._helpers import get_track, get_clip
 
 
+# Version marker of the remote script build. The MCP server's `doctor` tool
+# compares this against its own expected version to detect script drift.
+SCRIPT_VERSION = "0.5.0"
+
+
 def get_session_info(song, ctrl=None):
     """Get information about the current session."""
     try:
         result = {
+            "version": SCRIPT_VERSION,
             "tempo": song.tempo,
             "signature_numerator": song.signature_numerator,
             "signature_denominator": song.signature_denominator,
@@ -1144,6 +1150,28 @@ def get_song_file_path(song, ctrl=None):
     except Exception as e:
         if ctrl:
             ctrl.log_message("Error getting song file path: " + str(e))
+        raise
+
+
+def get_clip_file_path(song, track_index, clip_index, ctrl=None):
+    """Get the absolute file path of an audio clip's sample (read-only).
+
+    Lets the MCP server read the sample file directly for DSP analysis
+    (key/BPM detection) that Live's embedded Python cannot run.
+    """
+    try:
+        track = song.tracks[track_index]
+        clip = track.clip_slots[clip_index].clip
+        if clip is None:
+            raise ValueError("No clip in slot {0}".format(clip_index))
+        if not getattr(clip, "is_audio_clip", False):
+            raise ValueError("Clip is not an audio clip")
+        sample = getattr(clip, "sample", None)
+        raw = getattr(sample, "file_path", None) if sample is not None else None
+        return {"file_path": str(raw) if raw else None}
+    except Exception as e:
+        if ctrl:
+            ctrl.log_message("Error getting clip file path: " + str(e))
         raise
 
 

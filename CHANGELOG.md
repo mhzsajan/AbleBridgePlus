@@ -5,6 +5,43 @@ All notable changes to AbleBridge++ will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.0] - 2026-09-15
+
+### Added — Audio Intelligence ("Ears")
+- `analyze_audio_key_bpm` — key + BPM detection of audio samples: Live warp metadata plus server-side DSP (Goertzel chroma with Krumhansl-Schmuckler profiles, onset autocorrelation for tempo). The AI can now *hear* the key it's writing in
+- `audio_clip_to_midi` — one-call Live 12 audio->MIDI (melody/harmony/drums) with a report of where the MIDI landed
+- `find_mix_clashes` — heuristic frequency/mask clash finder across tracks with suggestions
+- `hum_to_clip` — capture what you just played, quantize it, and add chord pads in-key
+
+### Added — Producer Pipeline
+- `produce_idea_from_prompt` — one sentence to a playable demo: parses BPM/key/genre, sets tempo, builds skeleton scenes, writes chord/bass/drum/lead clips per scene, checkpoints first, fault-tolerant at every step
+- `smart_freeze` — CPU guardian: ranks tracks by device load and playing state, freezes the heaviest (dry-run supported)
+- `match_reference_track` — copy a reference track's pan/volume/send levels/device on-off pattern onto a target
+
+### Added — Studio Memory (Taste & Accountability)
+- `remember_preference` / `recall_preferences` / `forget_preference` — persistent taste across sessions (~/.ablebridge/memory.json), with session-start suggestions
+- Automatic **change journal** — every mutating tool call is recorded to ~/.ablebridge/journal.jsonl; `get_change_journal` answers "what did the AI change?"; `clear_change_journal` resets
+
+### Added — Platform
+- **Replay-based CI tests** (tests/test_replay.py): the full tool layer runs against recorded responses — no Ableton needed in CI
+- **Web dashboard now starts in TCP mode** with a live `/api/session` endpoint (tempo, transport, per-track levels)
+- Claude Desktop setup guide (docs/CLAUDE_DESKTOP.md)
+- Remote script: `get_clip_file_path`, `get_track_sends` (read-only) and a SCRIPT_VERSION marker the doctor uses for drift detection
+
+### Fixed
+- `produce_idea_from_prompt` called the skeleton tool as a remote handler (wrong layer) — skeleton logic now runs against the live connection
+- Note format in the producer lead melody used "start" instead of "start_time"
+- Duplicate demo tracks: skeleton now matches the newest MIDI track by name and verifies it accepts MIDI clips
+- `get_track_meters` called with an invalid index -1 by smart_freeze
+
+### Verified live
+- 448 tools registered; sweep 260 OK, 0 exceptions, 0 timeouts; 37/37 tests
+- Key/BPM DSP: A-minor triad -> "A minor" (conf 0.68), 120 BPM clicks -> 121.6
+- Full producer pipeline ran against the live set: 7/7 steps, 0 errors, scenes + clips + lead hook created
+- Journal, preferences, doctor (version-drift check working), smart_freeze, mix clashes all verified
+
+**Upgrade note:** the remote script changed — reinstall and restart Ableton once; the doctor will confirm version 0.5.0.
+
 ## [0.4.0] - 2026-09-15
 
 ### Added — AI Music Toolkit

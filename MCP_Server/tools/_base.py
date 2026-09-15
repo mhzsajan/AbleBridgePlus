@@ -16,6 +16,23 @@ _ableton_semaphore = asyncio.Semaphore(1)
 _TOOL_TIMEOUT_SECONDS = 120.0
 
 
+# Change-journal classification: tool names that mutate the set.
+_MUTATION_PREFIXES = (
+    "set_", "create_", "add_", "delete_", "remove_", "move_", "rename_",
+    "duplicate_", "apply_", "freeze_", "unfreeze_", "fire_", "launch_",
+    "quantize_", "generate_", "build_", "produce_", "convert_",
+    "transpose_", "slice_", "consolidate_", "clear_", "swap_", "copy_",
+)
+_MUTATION_EXACT = {
+    "start_show_autopilot", "stop_show_autopilot", "smart_freeze",
+    "audio_clip_to_midi", "hum_to_clip", "restore_checkpoint",
+    "match_reference_track", "record_clip", "start_recording",
+    "stop_playback", "start_playback", "tap_tempo", "undo", "redo",
+    "capture_and_insert_scene", "emergency_stop", "panic_mute",
+    "remember_preference", "forget_preference", "clear_change_journal",
+}
+
+
 def _tool_handler(error_prefix: str):
     """Decorator that wraps tool functions with standard error handling.
 
@@ -36,12 +53,29 @@ def _tool_handler(error_prefix: str):
     def decorator(func):
         @functools.wraps(func)
         async def wrapper(*args, **kwargs):
+            # Change-journal hook: mutating tools get recorded (best-effort,
+            # never on the hot path's failure domain).
+            journal_tool = None
+            if func.__name__.startswith(_MUTATION_PREFIXES) or func.__name__ in _MUTATION_EXACT:
+                journal_tool = func.__name__
             try:
                 async with _ableton_semaphore:
                     result = await asyncio.wait_for(
                         asyncio.to_thread(func, *args, **kwargs),
                         timeout=_TOOL_TIMEOUT_SECONDS,
                     )
+                if journal_tool:
+                    from MCP_Server.tools.studio_memory import journal_append
+                    args_summary = json.dumps(
+                        [a for a in args[1:] if not hasattr(a, "report_progress")],
+                        default=str) if len(args) > 1 else ""
+                    status = "ok"
+                    try:
+                        parsed = json.loads(result) if isinstance(result, str) else {}
+                        status = parsed.get("status", "ok")
+                    except (json.JSONDecodeError, TypeError, AttributeError):
+                        pass
+                    journal_append(journal_tool, args_summary, status)
                 if isinstance(result, str):
                     stripped = result.strip()
                     if stripped.startswith(("{", "[")):

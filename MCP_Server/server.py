@@ -110,6 +110,8 @@ class MCPServer:
         
         # v0.4.0: context engine, music toolkit, doctor, autopilot
         from MCP_Server.tools import project_context, music_gen, doctor, show_autopilot
+        # v0.5.0: audio intelligence, producer pipeline, studio memory
+        from MCP_Server.tools import audio_intelligence, producer, studio_memory
 
         # Register all tool modules
         tool_modules = [
@@ -129,7 +131,9 @@ class MCPServer:
             video_lighting, ai_enhancement,
             scene_macros, backup_presets,
             # v0.4.0
-            project_context, music_gen, doctor, show_autopilot
+            project_context, music_gen, doctor, show_autopilot,
+            # v0.5.0
+            audio_intelligence, producer, studio_memory
         ]
         
         adapter = _FastMCPAdapter(self.tool_registry)
@@ -187,7 +191,7 @@ class MCPServer:
             },
             'serverInfo': {
                 'name': 'AbleBridge++',
-                'version': '0.4.0'
+                'version': '0.5.0'
             }
         }
     
@@ -322,6 +326,17 @@ def main(argv=None):
             serve_stdio_sync(server, loop)
         else:
             loop.run_until_complete(server.start())
+            # Web dashboard rides along with TCP mode (port 9880).
+            try:
+                from MCP_Server.dashboard import DashboardServer
+                dashboard = DashboardServer()
+                dashboard.ableton_connected = bool(
+                    getattr(server.ableton_connection, "_connected", False))
+                dashboard.tool_count = server.tool_registry.tool_count
+                dashboard.set_tools_func(server.tool_registry.get_all_tools)
+                dashboard.start()
+            except Exception as dash_err:
+                logger.warning("Dashboard not started: %s", dash_err)
             if not args.no_banner:
                 banner = (
                     "\n"
