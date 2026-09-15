@@ -1,29 +1,28 @@
-"""
-AbleBridge++ Remote Script Handlers Package.
-"""
+# AbletonBridge Remote Script handlers.
+# Each module exposes standalone functions(song, ..., ctrl=None) for command implementation.
 
-from AbletonBridge_Remote_Script.handlers.tracks import TrackHandler
-from AbletonBridge_Remote_Script.handlers.clips import ClipHandler
-from AbletonBridge_Remote_Script.handlers.devices import DeviceHandler
-from AbletonBridge_Remote_Script.handlers.mixer import MixerHandler
-from AbletonBridge_Remote_Script.handlers.browser import BrowserHandler
-from AbletonBridge_Remote_Script.handlers.automation import AutomationHandler
-from AbletonBridge_Remote_Script.handlers.arrangement import ArrangementHandler
-from AbletonBridge_Remote_Script.handlers.audio import AudioHandler
-from AbletonBridge_Remote_Script.handlers.midi import MidiHandler
-from AbletonBridge_Remote_Script.handlers.scenes import SceneHandler
-from AbletonBridge_Remote_Script.handlers.session import SessionHandler
+from . import session
+from . import tracks
+from . import clips
+from . import mixer
+from . import devices
+from . import browser
+from . import scenes
+from . import arrangement
+from . import audio
+from . import midi
+from . import automation
 
 __all__ = [
-    'TrackHandler',
-    'ClipHandler',
-    'DeviceHandler',
-    'MixerHandler',
-    'BrowserHandler',
-    'AutomationHandler',
-    'ArrangementHandler',
-    'AudioHandler',
-    'MidiHandler',
-    'SceneHandler',
-    'SessionHandler'
+    "session",
+    "tracks",
+    "clips",
+    "mixer",
+    "devices",
+    "browser",
+    "scenes",
+    "arrangement",
+    "audio",
+    "midi",
+    "automation",
 ]

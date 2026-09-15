@@ -1,475 +1,821 @@
-"""
-Track Handler for AbleBridge++ Remote Script.
+"""Track creation, deletion, properties, arm, color, group."""
 
-This handler provides track management functionality including:
-- Track information
-- Track creation/deletion
-- Track routing (with enhanced channel exposure)
-- Track properties
-"""
+from __future__ import absolute_import, print_function, unicode_literals
 
-import logging
-from typing import Any, Dict, List, Optional
-
-logger = logging.getLogger('AbletonBridge_Remote_Script.handlers.tracks')
+from ._helpers import get_track, get_clip
 
 
-class TrackHandler:
-    """Handler for track operations."""
-    
-    def __init__(self, control_surface):
-        """
-        Initialize the track handler.
-        
-        Args:
-            control_surface: Ableton control surface
-        """
-        self._control_surface = control_surface
-        self._song = control_surface.song()
-    
-    def get_all_tracks_info(self) -> Dict[str, Any]:
-        """
-        Get information about all tracks.
-        
-        Returns:
-            Dictionary with track information
-        """
-        tracks = []
-        
-        for i, track in enumerate(self._song.tracks):
-            track_info = self._get_track_info(track, i)
-            tracks.append(track_info)
-        
+def get_track_info(song, track_index, ctrl=None):
+    """Get information about a track."""
+    try:
+        track = get_track(song, track_index)
+
+        # Get clip slots
+        clip_slots = []
+        try:
+            for slot_index, slot in enumerate(track.clip_slots):
+                clip_info = None
+                try:
+                    if slot.has_clip:
+                        clip = slot.clip
+                        clip_info = {
+                            "name": clip.name,
+                            "length": clip.length if hasattr(clip, 'length') else 0,
+                            "is_playing": clip.is_playing if hasattr(clip, 'is_playing') else False,
+                            "is_recording": clip.is_recording if hasattr(clip, 'is_recording') else False,
+                        }
+                except Exception:
+                    clip_info = None
+                clip_slots.append({
+                    "index": slot_index,
+                    "has_clip": slot.has_clip,
+                    "clip": clip_info,
+                })
+        except Exception:
+            pass
+
+        # Get devices
+        from . import devices as dev_mod
+        devices_list = []
+        try:
+            for device_index, device in enumerate(track.devices):
+                devices_list.append({
+                    "index": device_index,
+                    "name": device.name,
+                    "class_name": device.class_name,
+                    "type": dev_mod.get_device_type(device, ctrl),
+                })
+        except Exception:
+            pass
+
+        # Safely read properties -- group tracks don't support all of these
+        try:
+            arm = track.arm if track.can_be_armed else False
+        except Exception:
+            arm = False
+
+        try:
+            is_group = track.is_foldable
+        except Exception:
+            is_group = False
+
+        try:
+            is_audio = track.has_audio_input
+        except Exception:
+            is_audio = False
+
+        try:
+            is_midi = track.has_midi_input
+        except Exception:
+            is_midi = False
+
+        # Group relationships
+        try:
+            is_grouped = track.is_grouped
+        except Exception:
+            is_grouped = False
+
+        group_track_index = None
+        if is_grouped:
+            try:
+                gt = track.group_track
+                if gt:
+                    for i, t in enumerate(song.tracks):
+                        if t == gt:
+                            group_track_index = i
+                            break
+            except Exception:
+                pass
+
+        try:
+            is_visible = track.is_visible
+        except Exception:
+            is_visible = True
+
+        try:
+            is_showing_chains = track.is_showing_chains
+        except Exception:
+            is_showing_chains = False
+
+        try:
+            can_show_chains = track.can_show_chains
+        except Exception:
+            can_show_chains = False
+
+        try:
+            playing_slot_index = track.playing_slot_index
+        except Exception:
+            playing_slot_index = -1
+
+        try:
+            fired_slot_index = track.fired_slot_index
+        except Exception:
+            fired_slot_index = -1
+
+        result = {
+            "index": track_index,
+            "name": track.name,
+            "is_group_track": is_group,
+            "is_audio_track": is_audio,
+            "is_midi_track": is_midi,
+            "mute": track.mute,
+            "solo": track.solo,
+            "arm": arm,
+            "volume": track.mixer_device.volume.value,
+            "panning": track.mixer_device.panning.value,
+            "is_grouped": is_grouped,
+            "group_track_index": group_track_index,
+            "is_visible": is_visible,
+            "is_showing_chains": is_showing_chains,
+            "can_show_chains": can_show_chains,
+            "playing_slot_index": playing_slot_index,
+            "fired_slot_index": fired_slot_index,
+            "clip_slots": clip_slots,
+            "devices": devices_list,
+        }
+        return result
+    except Exception as e:
+        if ctrl:
+            ctrl.log_message("Error getting track info: " + str(e))
+        raise
+
+
+def create_midi_track(song, index, ctrl=None):
+    """Create a new MIDI track at the specified index."""
+    try:
+        song.create_midi_track(index)
+        new_track_index = len(song.tracks) - 1 if index == -1 else index
+        new_track = song.tracks[new_track_index]
+        return {"index": new_track_index, "name": new_track.name}
+    except Exception as e:
+        if ctrl:
+            ctrl.log_message("Error creating MIDI track: " + str(e))
+        raise
+
+
+def create_audio_track(song, index, ctrl=None):
+    """Create a new audio track at the specified index."""
+    try:
+        song.create_audio_track(index)
+        new_track_index = len(song.tracks) - 1 if index == -1 else index
+        new_track = song.tracks[new_track_index]
+        return {"index": new_track_index, "name": new_track.name}
+    except Exception as e:
+        if ctrl:
+            ctrl.log_message("Error creating audio track: " + str(e))
+        raise
+
+
+def set_track_name(song, track_index, name, ctrl=None):
+    """Set the name of a track."""
+    try:
+        track = get_track(song, track_index)
+        track.name = name
+        return {"name": track.name}
+    except Exception as e:
+        if ctrl:
+            ctrl.log_message("Error setting track name: " + str(e))
+        raise
+
+
+def delete_track(song, track_index, ctrl=None):
+    """Delete a track from the session."""
+    try:
+        track = get_track(song, track_index)
+        track_name = track.name
+        song.delete_track(track_index)
         return {
-            'tracks': tracks,
-            'count': len(tracks)
+            "deleted": True,
+            "track_name": track_name,
+            "track_index": track_index,
         }
-    
-    def get_track_info(self, track_index: int) -> Dict[str, Any]:
-        """
-        Get detailed information about a specific track.
-        
-        Args:
-            track_index: Track index
-            
-        Returns:
-            Dictionary with track information
-        """
-        if track_index < 0 or track_index >= len(self._song.tracks):
-            return {'error': f'Invalid track index: {track_index}'}
-        
-        track = self._song.tracks[track_index]
-        return self._get_track_info(track, track_index)
-    
-    def _get_track_info(self, track, index: int) -> Dict[str, Any]:
-        """
-        Get track information dictionary.
-        
-        Args:
-            track: Ableton track object
-            index: Track index
-            
-        Returns:
-            Dictionary with track information
-        """
-        # Get routing information with enhanced channel exposure
-        routing_info = self._get_routing_info(track)
-        
+    except Exception as e:
+        if ctrl:
+            ctrl.log_message("Error deleting track: " + str(e))
+        raise
+
+
+def duplicate_track(song, track_index, ctrl=None):
+    """Duplicate a track with all its devices and clips."""
+    try:
+        track = get_track(song, track_index)
+        source_name = track.name
+        song.duplicate_track(track_index)
+        new_track_index = track_index + 1
+        new_track = song.tracks[new_track_index]
         return {
-            'index': index,
-            'name': track.name,
-            'is_audio_track': track.is_audio_track,
-            'is_midi_track': track.is_midi_track,
-            'is_return_track': track.is_return_track,
-            'is_master_track': track.is_master_track,
-            'is_group_track': track.is_group_track,
-            'is_foldable': track.is_foldable,
-            'fold_state': track.fold_state,
-            'color_index': track.color_index,
-            'mute': track.mute,
-            'solo': track.solo,
-            'arm': track.arm,
-            'volume': track.mixer_device.volume.value,
-            'panning': track.mixer_device.panning.value if hasattr(track.mixer_device, 'panning') else None,
-            'input_routing_type': track.input_routing_type,
-            'input_routing_channel': track.input_routing_channel,
-            'output_routing_type': track.output_routing_type,
-            'output_routing_channel': track.output_routing_channel,
-            'routing': routing_info,
-            'devices_count': len(track.devices),
-            'clips_count': len(track.clip_slots)
+            "duplicated": True,
+            "source_index": track_index,
+            "source_name": source_name,
+            "new_index": new_track_index,
+            "new_name": new_track.name,
         }
-    
-    def _get_routing_info(self, track) -> Dict[str, Any]:
-        """
-        Get routing information for a track with enhanced channel exposure.
-        
-        This is the key enhancement - we now expose all available routing channels.
-        
-        Args:
-            track: Ableton track object
-            
-        Returns:
-            Dictionary with routing information
-        """
-        routing_info = {
-            'available_input_routing_types': [],
-            'available_input_routing_channels': [],
-            'available_output_routing_types': [],
-            'available_output_routing_channels': []
-        }
-        
-        # Get available input routing types
-        try:
-            if hasattr(track, 'available_input_routing_types'):
-                routing_info['available_input_routing_types'] = [
-                    {'name': rt.display_name, 'type': rt.type}
-                    for rt in track.available_input_routing_types
-                ]
-        except Exception as e:
-            logger.warning(f"Could not get input routing types: {e}")
-        
-        # Get available input routing channels (NEW - this was missing in original AbletonBridge)
-        try:
-            if hasattr(track, 'available_input_routing_channels'):
-                routing_info['available_input_routing_channels'] = [
-                    {'name': rc.display_name, 'type': rc.type}
-                    for rc in track.available_input_routing_channels
-                ]
-        except Exception as e:
-            logger.warning(f"Could not get input routing channels: {e}")
-        
-        # Get available output routing types
-        try:
-            if hasattr(track, 'available_output_routing_types'):
-                routing_info['available_output_routing_types'] = [
-                    {'name': rt.display_name, 'type': rt.type}
-                    for rt in track.available_output_routing_types
-                ]
-        except Exception as e:
-            logger.warning(f"Could not get output routing types: {e}")
-        
-        # Get available output routing channels (NEW - this was missing in original AbletonBridge)
-        try:
-            if hasattr(track, 'available_output_routing_channels'):
-                routing_info['available_output_routing_channels'] = [
-                    {'name': rc.display_name, 'type': rc.type}
-                    for rc in track.available_output_routing_channels
-                ]
-        except Exception as e:
-            logger.warning(f"Could not get output routing channels: {e}")
-        
-        return routing_info
-    
-    def get_track_routing(self, track_index: int) -> Dict[str, Any]:
-        """
-        Get routing information for a track.
-        
-        Args:
-            track_index: Track index
-            
-        Returns:
-            Dictionary with routing information
-        """
-        if track_index < 0 or track_index >= len(self._song.tracks):
-            return {'error': f'Invalid track index: {track_index}'}
-        
-        track = self._song.tracks[track_index]
-        return self._get_routing_info(track)
-    
-    def set_track_routing(self, track_index: int, input_type: Optional[str] = None,
-                         input_channel: Optional[str] = None, output_type: Optional[str] = None,
-                         output_channel: Optional[str] = None) -> Dict[str, Any]:
-        """
-        Set routing for a track.
-        
-        Args:
-            track_index: Track index
-            input_type: Input routing type name
-            input_channel: Input routing channel name
-            output_type: Output routing type name
-            output_channel: Output routing channel name
-            
-        Returns:
-            Dictionary with result
-        """
-        if track_index < 0 or track_index >= len(self._song.tracks):
-            return {'error': f'Invalid track index: {track_index}'}
-        
-        track = self._song.tracks[track_index]
-        
-        try:
-            # Set input routing type
-            if input_type:
-                for rt in track.available_input_routing_types:
-                    if rt.display_name == input_type:
-                        track.input_routing_type = rt
-                        break
-            
-            # Set input routing channel
-            if input_channel:
-                for rc in track.available_input_routing_channels:
-                    if rc.display_name == input_channel:
-                        track.input_routing_channel = rc
-                        break
-            
-            # Set output routing type
-            if output_type:
-                for rt in track.available_output_routing_types:
-                    if rt.display_name == output_type:
-                        track.output_routing_type = rt
-                        break
-            
-            # Set output routing channel
-            if output_channel:
-                for rc in track.available_output_routing_channels:
-                    if rc.display_name == output_channel:
-                        track.output_routing_channel = rc
-                        break
-            
-            return {'success': True, 'message': 'Routing updated'}
-            
-        except Exception as e:
-            return {'error': str(e)}
-    
-    def create_midi_track(self, index: int = -1) -> Dict[str, Any]:
-        """
-        Create a new MIDI track.
-        
-        Args:
-            index: Position to insert the track (-1 = end)
-            
-        Returns:
-            Dictionary with result
-        """
-        try:
-            self._song.create_midi_track(index)
-            return {'success': True, 'message': 'MIDI track created'}
-        except Exception as e:
-            return {'error': str(e)}
-    
-    def create_audio_track(self, index: int = -1) -> Dict[str, Any]:
-        """
-        Create a new audio track.
-        
-        Args:
-            index: Position to insert the track (-1 = end)
-            
-        Returns:
-            Dictionary with result
-        """
-        try:
-            self._song.create_audio_track(index)
-            return {'success': True, 'message': 'Audio track created'}
-        except Exception as e:
-            return {'error': str(e)}
-    
-    def delete_track(self, track_index: int) -> Dict[str, Any]:
-        """
-        Delete a track.
-        
-        Args:
-            track_index: Track index
-            
-        Returns:
-            Dictionary with result
-        """
-        if track_index < 0 or track_index >= len(self._song.tracks):
-            return {'error': f'Invalid track index: {track_index}'}
-        
-        try:
-            track = self._song.tracks[track_index]
-            self._song.delete_track(track)
-            return {'success': True, 'message': 'Track deleted'}
-        except Exception as e:
-            return {'error': str(e)}
-    
-    def duplicate_track(self, track_index: int) -> Dict[str, Any]:
-        """
-        Duplicate a track.
-        
-        Args:
-            track_index: Track index
-            
-        Returns:
-            Dictionary with result
-        """
-        if track_index < 0 or track_index >= len(self._song.tracks):
-            return {'error': f'Invalid track index: {track_index}'}
-        
-        try:
-            track = self._song.tracks[track_index]
-            self._song.duplicate_track(track)
-            return {'success': True, 'message': 'Track duplicated'}
-        except Exception as e:
-            return {'error': str(e)}
-    
-    def set_track_name(self, track_index: int, name: str) -> Dict[str, Any]:
-        """
-        Set track name.
-        
-        Args:
-            track_index: Track index
-            name: New track name
-            
-        Returns:
-            Dictionary with result
-        """
-        if track_index < 0 or track_index >= len(self._song.tracks):
-            return {'error': f'Invalid track index: {track_index}'}
-        
-        try:
-            track = self._song.tracks[track_index]
-            track.name = name
-            return {'success': True, 'message': 'Track name updated'}
-        except Exception as e:
-            return {'error': str(e)}
-    
-    def set_track_color(self, track_index: int, color_index: int) -> Dict[str, Any]:
-        """
-        Set track color.
-        
-        Args:
-            track_index: Track index
-            color_index: Color index (0-69)
-            
-        Returns:
-            Dictionary with result
-        """
-        if track_index < 0 or track_index >= len(self._song.tracks):
-            return {'error': f'Invalid track index: {track_index}'}
-        
-        if color_index < 0 or color_index > 69:
-            return {'error': f'Invalid color index: {color_index}'}
-        
-        try:
-            track = self._song.tracks[track_index]
-            track.color_index = color_index
-            return {'success': True, 'message': 'Track color updated'}
-        except Exception as e:
-            return {'error': str(e)}
-    
-    def select_track(self, track_index: int) -> Dict[str, Any]:
-        """
-        Select a track.
-        
-        Args:
-            track_index: Track index
-            
-        Returns:
-            Dictionary with result
-        """
-        if track_index < 0 or track_index >= len(self._song.tracks):
-            return {'error': f'Invalid track index: {track_index}'}
-        
-        try:
-            track = self._song.tracks[track_index]
-            self._view.selected_track = track
-            return {'success': True, 'message': 'Track selected'}
-        except Exception as e:
-            return {'error': str(e)}
-    
-    def set_track_arm(self, track_index: int, arm: bool) -> Dict[str, Any]:
-        """
-        Set track arm state.
-        
-        Args:
-            track_index: Track index
-            arm: Arm state
-            
-        Returns:
-            Dictionary with result
-        """
-        if track_index < 0 or track_index >= len(self._song.tracks):
-            return {'error': f'Invalid track index: {track_index}'}
-        
-        try:
-            track = self._song.tracks[track_index]
-            track.arm = arm
-            return {'success': True, 'message': f'Track arm set to {arm}'}
-        except Exception as e:
-            return {'error': str(e)}
-    
-    def set_track_monitoring(self, track_index: int, state: int) -> Dict[str, Any]:
-        """
-        Set track monitoring state.
-        
-        Args:
-            track_index: Track index
-            state: 0=IN, 1=AUTO, 2=OFF
-            
-        Returns:
-            Dictionary with result
-        """
-        if track_index < 0 or track_index >= len(self._song.tracks):
-            return {'error': f'Invalid track index: {track_index}'}
-        
-        if state not in [0, 1, 2]:
-            return {'error': f'Invalid monitoring state: {state}'}
-        
-        try:
-            track = self._song.tracks[track_index]
-            track.monitoring_state = state
-            return {'success': True, 'message': f'Monitoring state set to {state}'}
-        except Exception as e:
-            return {'error': str(e)}
-    
-    def freeze_track(self, track_index: int) -> Dict[str, Any]:
-        """
-        Freeze a track.
-        
-        Args:
-            track_index: Track index
-            
-        Returns:
-            Dictionary with result
-        """
-        if track_index < 0 or track_index >= len(self._song.tracks):
-            return {'error': f'Invalid track index: {track_index}'}
-        
-        try:
-            track = self._song.tracks[track_index]
-            track.freeze()
-            return {'success': True, 'message': 'Track frozen'}
-        except Exception as e:
-            return {'error': str(e)}
-    
-    def unfreeze_track(self, track_index: int) -> Dict[str, Any]:
-        """
-        Unfreeze a track.
-        
-        Args:
-            track_index: Track index
-            
-        Returns:
-            Dictionary with result
-        """
-        if track_index < 0 or track_index >= len(self._song.tracks):
-            return {'error': f'Invalid track index: {track_index}'}
-        
-        try:
-            track = self._song.tracks[track_index]
-            track.unfreeze()
-            return {'success': True, 'message': 'Track unfrozen'}
-        except Exception as e:
-            return {'error': str(e)}
-    
-    def group_tracks(self, track_indices: List[int]) -> Dict[str, Any]:
-        """
-        Group tracks together.
-        
-        Note: This is documented as not fully supported via LOM.
-        Grouping requires manual UI interaction.
-        
-        Args:
-            track_indices: List of track indices to group
-            
-        Returns:
-            Dictionary with result
-        """
-        # Note: LOM grouping is limited
-        # This is documented in ARCHITECTURE.md
+    except Exception as e:
+        if ctrl:
+            ctrl.log_message("Error duplicating track: " + str(e))
+        raise
+
+
+# --- New commands from MacWhite ---
+
+
+def create_return_track(song, ctrl=None):
+    """Create a new return track."""
+    try:
+        song.create_return_track()
+        new_index = len(song.return_tracks) - 1
+        new_track = song.return_tracks[new_index]
+        return {"index": new_index, "name": new_track.name}
+    except Exception as e:
+        if ctrl:
+            ctrl.log_message("Error creating return track: " + str(e))
+        raise
+
+
+def set_track_color(song, track_index, color_index, ctrl=None):
+    """Set track color."""
+    try:
+        track = get_track(song, track_index)
+        track.color_index = color_index
+        return {"track_index": track_index, "color_index": track.color_index}
+    except Exception as e:
+        if ctrl:
+            ctrl.log_message("Error setting track color: " + str(e))
+        raise
+
+
+def arm_track(song, track_index, ctrl=None):
+    """Arm a track for recording."""
+    try:
+        track = get_track(song, track_index)
+        if not track.can_be_armed:
+            raise ValueError("Track cannot be armed (may be a group track or lack input)")
+        track.arm = True
         return {
-            'error': 'Grouping tracks requires manual UI interaction',
-            'message': 'Please group tracks manually in Ableton Live'
+            "track_index": track_index,
+            "track_name": track.name,
+            "armed": track.arm,
         }
+    except Exception as e:
+        if ctrl:
+            ctrl.log_message("Error arming track: " + str(e))
+        raise
+
+
+def disarm_track(song, track_index, ctrl=None):
+    """Disarm a track from recording."""
+    try:
+        track = get_track(song, track_index)
+        if not track.can_be_armed:
+            return {
+                "track_index": track_index,
+                "track_name": track.name,
+                "armed": False,
+            }
+        track.arm = False
+        return {
+            "track_index": track_index,
+            "track_name": track.name,
+            "armed": track.arm,
+        }
+    except Exception as e:
+        if ctrl:
+            ctrl.log_message("Error disarming track: " + str(e))
+        raise
+
+
+def group_tracks(song, track_indices, name, ctrl=None):
+    """Group tracks — not supported by Remote Script API. Selects first track and returns guidance."""
+    if not track_indices or len(track_indices) == 0:
+        raise ValueError("No tracks specified")
+    for i in track_indices:
+        if i < 0 or i >= len(song.tracks):
+            raise IndexError("Track index {0} out of range".format(i))
+    song.view.selected_track = song.tracks[track_indices[0]]
+    msg = ("Track grouping is not available via the Remote Script API. "
+           "Select the tracks in Ableton and use Edit > Group Tracks (Ctrl+G / Cmd+G).")
+    if ctrl:
+        ctrl.log_message(
+            "group_tracks: '{0}' — selected track {1}. {2}".format(
+                name, track_indices[0], msg))
+    raise NotImplementedError(msg)
+
+
+def get_all_tracks_info(song, ctrl=None):
+    """Get summary info for all tracks at once."""
+    try:
+        tracks_list = []
+        for i, track in enumerate(song.tracks):
+            devices_list = []
+            for d in track.devices:
+                devices_list.append({"name": d.name, "class_name": d.class_name})
+            track_info = {
+                "index": i,
+                "name": track.name,
+                "is_audio": track.has_audio_input if hasattr(track, 'has_audio_input') else False,
+                "is_midi": track.has_midi_input if hasattr(track, 'has_midi_input') else False,
+                "mute": track.mute,
+                "solo": track.solo,
+                "volume": track.mixer_device.volume.value,
+                "panning": track.mixer_device.panning.value,
+                "color_index": track.color_index if hasattr(track, 'color_index') else 0,
+                "devices": devices_list,
+            }
+            try:
+                track_info["arm"] = track.arm if track.can_be_armed else False
+            except Exception:
+                track_info["arm"] = False
+            try:
+                track_info["is_group_track"] = track.is_foldable
+            except Exception:
+                track_info["is_group_track"] = False
+            tracks_list.append(track_info)
+        return {"tracks": tracks_list, "count": len(tracks_list)}
+    except Exception as e:
+        if ctrl:
+            ctrl.log_message("Error getting all tracks info: " + str(e))
+        raise
+
+
+def get_return_tracks_info(song, ctrl=None):
+    """Get info for all return tracks."""
+    try:
+        returns = []
+        for i, track in enumerate(song.return_tracks):
+            devices_list = []
+            for d in track.devices:
+                devices_list.append({"name": d.name, "class_name": d.class_name})
+            returns.append({
+                "index": i,
+                "name": track.name,
+                "volume": track.mixer_device.volume.value,
+                "panning": track.mixer_device.panning.value,
+                "color_index": track.color_index if hasattr(track, 'color_index') else 0,
+                "devices": devices_list,
+            })
+        return {"return_tracks": returns, "count": len(returns)}
+    except Exception as e:
+        if ctrl:
+            ctrl.log_message("Error getting return tracks info: " + str(e))
+        raise
+
+
+def get_track_routing(song, track_index, ctrl=None):
+    """Get current input/output routing and available options for a track."""
+    try:
+        track = get_track(song, track_index)
+        result = {
+            "track_index": track_index,
+            "track_name": track.name,
+        }
+        # Current routing
+        try:
+            result["input_routing_type"] = str(track.input_routing_type.display_name)
+        except Exception:
+            result["input_routing_type"] = None
+        try:
+            result["input_routing_channel"] = str(track.input_routing_channel.display_name)
+        except Exception:
+            result["input_routing_channel"] = None
+        try:
+            result["output_routing_type"] = str(track.output_routing_type.display_name)
+        except Exception:
+            result["output_routing_type"] = None
+        try:
+            result["output_routing_channel"] = str(track.output_routing_channel.display_name)
+        except Exception:
+            result["output_routing_channel"] = None
+        # Available input types
+        try:
+            result["available_input_types"] = [
+                str(r.display_name) for r in track.available_input_routing_types
+            ]
+        except Exception:
+            result["available_input_types"] = []
+        # Available output types
+        try:
+            result["available_output_types"] = [
+                str(r.display_name) for r in track.available_output_routing_types
+            ]
+        except Exception:
+            result["available_output_types"] = []
+        return result
+    except Exception as e:
+        if ctrl:
+            ctrl.log_message("Error getting track routing: " + str(e))
+        raise
+
+
+def set_track_monitoring(song, track_index, state, ctrl=None):
+    """Set the monitoring state of a track.
+
+    Args:
+        state: 0=IN (always monitor), 1=AUTO (monitor when armed), 2=OFF (never monitor)
+    """
+    try:
+        track = get_track(song, track_index)
+        state = int(state)
+        if state < 0 or state > 2:
+            raise ValueError("Monitoring state must be 0 (IN), 1 (AUTO), or 2 (OFF)")
+        track.current_monitoring_state = state
+        return {
+            "track_index": track_index,
+            "track_name": track.name,
+            "monitoring_state": track.current_monitoring_state,
+        }
+    except Exception as e:
+        if ctrl:
+            ctrl.log_message("Error setting track monitoring: " + str(e))
+        raise
+
+
+def create_midi_track_with_simpler(song, track_index, clip_index, ctrl=None):
+    """Create a new MIDI track with a Simpler containing an audio clip's sample."""
+    try:
+        _, clip = get_clip(song, track_index, clip_index)
+        if not clip.is_audio_clip:
+            raise ValueError("Clip is not an audio clip")
+        try:
+            from Live.Conversions import create_midi_track_with_simpler as _create
+        except ImportError as e:
+            raise RuntimeError("create_midi_track_with_simpler requires Live 12+") from e
+        _create(song, clip)
+        return {
+            "created": True,
+            "source_clip": clip.name,
+            "source_track_index": track_index,
+        }
+    except Exception as e:
+        if ctrl:
+            ctrl.log_message("Error creating MIDI track with Simpler: " + str(e))
+        raise
+
+
+def get_track_meters(song, track_index=None, ctrl=None):
+    """Get live output meter levels and playing slot info for one or all tracks."""
+    try:
+        tracks_data = []
+        if track_index is not None:
+            get_track(song, track_index)  # validate bounds
+            indices = [track_index]
+        else:
+            indices = range(len(song.tracks))
+        for i in indices:
+            track = song.tracks[i]
+            info = {
+                "index": i,
+                "name": track.name,
+            }
+            try:
+                info["output_meter_left"] = round(track.output_meter_left, 4)
+                info["output_meter_right"] = round(track.output_meter_right, 4)
+            except Exception:
+                try:
+                    info["output_meter_level"] = round(track.output_meter_level, 4)
+                except Exception:
+                    info["output_meter_level"] = None
+            try:
+                info["playing_slot_index"] = track.playing_slot_index
+            except Exception:
+                info["playing_slot_index"] = -1
+            try:
+                info["fired_slot_index"] = track.fired_slot_index
+            except Exception:
+                info["fired_slot_index"] = -1
+            tracks_data.append(info)
+        if track_index is not None:
+            return tracks_data[0]
+        return {"tracks": tracks_data, "count": len(tracks_data)}
+    except Exception as e:
+        if ctrl:
+            ctrl.log_message("Error getting track meters: " + str(e))
+        raise
+
+
+def set_track_fold(song, track_index, fold_state, ctrl=None):
+    """Collapse or expand a group track.
+
+    Args:
+        fold_state: True to fold (collapse), False to unfold (expand).
+    """
+    try:
+        track = get_track(song, track_index)
+        if not track.is_foldable:
+            raise TypeError("Track '{0}' is not a group track (not foldable)".format(track.name))
+        track.fold_state = bool(fold_state)
+        return {
+            "track_index": track_index,
+            "track_name": track.name,
+            "fold_state": track.fold_state,
+        }
+    except Exception as e:
+        if ctrl:
+            ctrl.log_message("Error setting track fold: " + str(e))
+        raise
+
+
+def set_track_routing(song, track_index, input_type=None, input_channel=None,
+                      output_type=None, output_channel=None, ctrl=None):
+    """Set track input/output routing by display name.
+
+    Args:
+        input_type: Display name of input routing type (e.g. 'Ext. In', 'No Input')
+        input_channel: Display name of input channel (e.g. '1/2', 'All Channels')
+        output_type: Display name of output routing type (e.g. 'Master', 'Sends Only')
+        output_channel: Display name of output channel
+    """
+    try:
+        track = get_track(song, track_index)
+        changes = {}
+
+        # Phase 1: resolve and apply routing *types* first, since
+        # available channels depend on the currently active type.
+        if input_type is not None:
+            for rt in track.available_input_routing_types:
+                if str(rt.display_name) == input_type:
+                    track.input_routing_type = rt
+                    changes["input_routing_type"] = input_type
+                    break
+            else:
+                raise ValueError("Input type '{0}' not found".format(input_type))
+        if output_type is not None:
+            for rt in track.available_output_routing_types:
+                if str(rt.display_name) == output_type:
+                    track.output_routing_type = rt
+                    changes["output_routing_type"] = output_type
+                    break
+            else:
+                raise ValueError("Output type '{0}' not found".format(output_type))
+
+        # Phase 2: resolve and apply channels against the (now-refreshed)
+        # available channel lists.
+        if input_channel is not None:
+            for ch in track.available_input_routing_channels:
+                if str(ch.display_name) == input_channel:
+                    track.input_routing_channel = ch
+                    changes["input_routing_channel"] = input_channel
+                    break
+            else:
+                raise ValueError("Input channel '{0}' not found".format(input_channel))
+        if output_channel is not None:
+            for ch in track.available_output_routing_channels:
+                if str(ch.display_name) == output_channel:
+                    track.output_routing_channel = ch
+                    changes["output_routing_channel"] = output_channel
+                    break
+            else:
+                raise ValueError("Output channel '{0}' not found".format(output_channel))
+
+        changes["track_index"] = track_index
+        changes["track_name"] = track.name
+        return changes
+    except Exception as e:
+        if ctrl:
+            ctrl.log_message("Error setting track routing: " + str(e))
+        raise
+
+
+# --- Take Lanes ---
+
+
+def get_take_lanes(song, track_index, ctrl=None):
+    """Get take lanes for a track (used for comping in Arrangement)."""
+    try:
+        track = get_track(song, track_index)
+        lanes = []
+        try:
+            for i, lane in enumerate(track.take_lanes):
+                clips = []
+                try:
+                    for clip in lane.arrangement_clips:
+                        clips.append({
+                            "name": clip.name,
+                            "start_time": clip.start_time,
+                            "length": clip.length,
+                        })
+                except Exception:
+                    pass
+                lanes.append({
+                    "index": i,
+                    "name": lane.name,
+                    "clip_count": len(clips),
+                    "clips": clips,
+                })
+        except Exception:
+            pass
+        return {
+            "track_index": track_index,
+            "track_name": track.name,
+            "take_lanes": lanes,
+            "count": len(lanes),
+        }
+    except Exception as e:
+        if ctrl:
+            ctrl.log_message("Error getting take lanes: " + str(e))
+        raise
+
+
+def create_take_lane(song, track_index, ctrl=None):
+    """Create a new take lane for a track."""
+    try:
+        track = get_track(song, track_index)
+        track.create_take_lane()
+        lane_count = len(list(track.take_lanes))
+        return {
+            "created": True,
+            "track_index": track_index,
+            "take_lane_count": lane_count,
+        }
+    except Exception as e:
+        if ctrl:
+            ctrl.log_message("Error creating take lane: " + str(e))
+        raise
+
+
+# --- Insert Device by Name (Live 12.3+) ---
+
+
+def insert_device(song, track_index, device_name, target_index=None, ctrl=None):
+    """Insert a native Live device by name into a track's device chain.
+
+    Args:
+        track_index: Track to insert device into.
+        device_name: Name of the device as shown in Live's UI.
+        target_index: Position in the device chain (None = end of chain).
+    Note: Only native Live devices are supported. M4L and plugins are not.
+    """
+    try:
+        track = get_track(song, track_index)
+        if not hasattr(track, "insert_device"):
+            msg = "insert_device not supported (requires Live 12.3+)"
+            if ctrl:
+                ctrl.log_message(msg)
+            return {
+                "inserted": False,
+                "reason": msg,
+                "track_index": track_index,
+            }
+        if target_index is not None:
+            track.insert_device(str(device_name), int(target_index))
+        else:
+            track.insert_device(str(device_name))
+        return {
+            "inserted": True,
+            "device_name": device_name,
+            "track_index": track_index,
+            "track_name": track.name,
+        }
+    except Exception as e:
+        if ctrl:
+            ctrl.log_message("Error inserting device: " + str(e))
+        raise
+
+
+# --- Delete Return Track & Track Collapse ---
+
+
+def delete_return_track(song, return_index, ctrl=None):
+    """Delete a return track by index."""
+    try:
+        if return_index < 0 or return_index >= len(song.return_tracks):
+            raise IndexError("Return track index {0} out of range".format(return_index))
+        track_name = song.return_tracks[return_index].name
+        song.delete_return_track(return_index)
+        return {
+            "deleted": True,
+            "track_name": track_name,
+            "return_index": return_index,
+        }
+    except Exception as e:
+        if ctrl:
+            ctrl.log_message("Error deleting return track: " + str(e))
+        raise
+
+
+def set_track_collapse(song, track_index, collapsed, ctrl=None):
+    """Set the collapsed state of a track in Arrangement view."""
+    try:
+        track = get_track(song, track_index)
+        track.view.is_collapsed = bool(collapsed)
+        return {
+            "track_index": track_index,
+            "track_name": track.name,
+            "is_collapsed": track.view.is_collapsed,
+        }
+    except Exception as e:
+        if ctrl:
+            ctrl.log_message("Error setting track collapse: " + str(e))
+        raise
+
+
+# --- v4.0: Track-level missing features ---
+
+
+def jump_in_running_session_clip(song, track_index, amount, ctrl=None):
+    """Jump forward/backward in the currently playing session clip on a track.
+
+    Args:
+        amount: Relative jump in beats (positive=forward, negative=backward).
+    """
+    try:
+        track = get_track(song, track_index)
+        if not hasattr(track, 'jump_in_running_session_clip'):
+            raise RuntimeError("jump_in_running_session_clip not available")
+        track.jump_in_running_session_clip(float(amount))
+        return {
+            "track_index": track_index,
+            "track_name": track.name,
+            "jumped_by": float(amount),
+        }
+    except Exception as e:
+        if ctrl:
+            ctrl.log_message("Error jumping in running session clip: " + str(e))
+        raise
+
+
+def get_track_data(song, track_index, key, ctrl=None):
+    """Get persistent data stored on a track (survives save/load)."""
+    try:
+        track = get_track(song, track_index)
+        if not hasattr(track, 'get_data'):
+            raise RuntimeError("Track persistent data not available (requires Live 12+)")
+        value = track.get_data(str(key), "")
+        return {
+            "track_index": track_index,
+            "key": key,
+            "value": value,
+        }
+    except Exception as e:
+        if ctrl:
+            ctrl.log_message("Error getting track data: " + str(e))
+        raise
+
+
+def set_track_data(song, track_index, key, value, ctrl=None):
+    """Set persistent data on a track (survives save/load in .als file)."""
+    try:
+        track = get_track(song, track_index)
+        if not hasattr(track, 'set_data'):
+            raise RuntimeError("Track persistent data not available (requires Live 12+)")
+        track.set_data(str(key), str(value))
+        return {
+            "track_index": track_index,
+            "key": key,
+            "value": str(value),
+            "stored": True,
+        }
+    except Exception as e:
+        if ctrl:
+            ctrl.log_message("Error setting track data: " + str(e))
+        raise
+
+
+def set_implicit_arm(song, track_index, enabled, ctrl=None):
+    """Set the implicit arm state of a track.
+
+    Implicit arm means the track is auto-armed when selected (common in Push workflow).
+    """
+    try:
+        track = get_track(song, track_index)
+        if not hasattr(track, 'implicit_arm'):
+            raise RuntimeError("implicit_arm not available on this track")
+        track.implicit_arm = bool(enabled)
+        return {
+            "track_index": track_index,
+            "track_name": track.name,
+            "implicit_arm": track.implicit_arm,
+        }
+    except Exception as e:
+        if ctrl:
+            ctrl.log_message("Error setting implicit arm: " + str(e))
+        raise
+
+
+def get_track_input_meters(song, track_index=None, ctrl=None):
+    """Get input meter levels for one or all tracks."""
+    try:
+        tracks_data = []
+        if track_index is not None:
+            get_track(song, track_index)  # validate bounds
+            indices = [track_index]
+        else:
+            indices = range(len(song.tracks))
+        for i in indices:
+            track = song.tracks[i]
+            info = {"index": i, "name": track.name}
+            try:
+                info["input_meter_left"] = round(track.input_meter_left, 4)
+                info["input_meter_right"] = round(track.input_meter_right, 4)
+            except Exception:
+                try:
+                    info["input_meter_level"] = round(track.input_meter_level, 4)
+                except Exception:
+                    info["input_meter_level"] = None
+            tracks_data.append(info)
+        if track_index is not None:
+            return tracks_data[0]
+        return {"tracks": tracks_data, "count": len(tracks_data)}
+    except Exception as e:
+        if ctrl:
+            ctrl.log_message("Error getting track input meters: " + str(e))
+        raise

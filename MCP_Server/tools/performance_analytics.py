@@ -156,7 +156,7 @@ async def get_session_stats() -> Dict[str, Any]:
 
 
 @tool(
-    name="start_song_timer",
+    name="start_performance_timer",
     description="Start timer for a specific song",
     input_schema={
         "type": "object",
@@ -169,13 +169,13 @@ async def get_session_stats() -> Dict[str, Any]:
         "required": ["song_name"]
     }
 )
-async def start_song_timer(song_name: str) -> Dict[str, Any]:
+async def start_performance_timer(song_name: str) -> Dict[str, Any]:
     """Start timer for a specific song."""
     return _analytics.start_song_timer(song_name)
 
 
 @tool(
-    name="stop_song_timer",
+    name="stop_performance_timer",
     description="Stop timer for a specific song",
     input_schema={
         "type": "object",
@@ -188,13 +188,13 @@ async def start_song_timer(song_name: str) -> Dict[str, Any]:
         "required": ["song_name"]
     }
 )
-async def stop_song_timer(song_name: str) -> Dict[str, Any]:
+async def stop_performance_timer(song_name: str) -> Dict[str, Any]:
     """Stop timer for a specific song."""
     return _analytics.stop_song_timer(song_name)
 
 
 @tool(
-    name="get_song_timings",
+    name="get_performance_timings",
     description="Get all recorded song timings",
     input_schema={
         "type": "object",
@@ -202,7 +202,7 @@ async def stop_song_timer(song_name: str) -> Dict[str, Any]:
         "required": []
     }
 )
-async def get_song_timings() -> Dict[str, Any]:
+async def get_performance_timings() -> Dict[str, Any]:
     """Get all recorded song timings."""
     timings = _analytics.get_song_timings()
     return {

@@ -70,8 +70,15 @@ class AIEnhancement:
         """Get arrangement suggestions."""
         suggestions = []
         
-        # Analyze song structure
-        sections = song_structure.get("sections", [])
+        # Analyze song structure (accept sections as dicts or plain strings)
+        sections = song_structure.get("sections", []) if isinstance(song_structure, dict) else []
+        normalized = []
+        for s in sections:
+            if isinstance(s, dict):
+                normalized.append(s)
+            elif isinstance(s, str):
+                normalized.append({"name": s})
+        sections = normalized
         if len(sections) < 3:
             suggestions.append("Consider adding more sections for better dynamics")
         

@@ -13,6 +13,11 @@ import MCP_Server.state as state
 
 logger = logging.getLogger("AbletonBridge")
 
+
+class CommandError(Exception):
+    """Handler-level error reported by Ableton; the connection itself is healthy."""
+    pass
+
 # Phase 4.5: Non-idempotent commands should NOT be retried automatically
 # because a retry could create duplicate tracks, clips, etc.
 NON_IDEMPOTENT_COMMANDS = frozenset([
@@ -194,8 +199,10 @@ class AbletonConnection:
                     logger.debug("Response status: %s", response.get('status', 'unknown'))
 
                     if response.get("status") == "error":
+                        # The handler raised, but the socket is still healthy:
+                        # surface the error WITHOUT tearing the connection down.
                         logger.error("Ableton error: %s", response.get('message'))
-                        raise Exception(response.get("message", "Unknown error from Ableton"))
+                        raise CommandError(response.get("message", "Unknown error from Ableton"))
 
                     # Post-delay: let Ableton settle before the next command
                     if post_delay:
@@ -203,6 +210,9 @@ class AbletonConnection:
 
                     return response.get("result", {})
 
+                except CommandError:
+                    # Handler-level error: connection is fine, do not retry.
+                    raise
                 except Exception as e:
                     logger.error("Command '%s' attempt %d failed: %s", command_type, attempt, e)
                     # Close the broken socket and clear buffer

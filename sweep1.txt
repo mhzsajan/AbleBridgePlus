@@ -1,0 +1,561 @@
+2026-09-14 20:11:34,690 - MCP_Server - INFO - Registered 417 tools
+2026-09-14 20:11:34,690 - MCP_Server - INFO - AbleBridge++ MCP Server initialized
+2026-09-14 20:11:34,692 - AbletonBridge - WARNING - Existing connection is no longer valid: Socket is None
+2026-09-14 20:11:34,692 - AbletonBridge - INFO - Connecting to Ableton (attempt 1/3)...
+2026-09-14 20:11:34,697 - AbletonBridge - INFO - Connected to Ableton at localhost:9877
+2026-09-14 20:11:34,697 - AbletonBridge - INFO - Created new persistent connection to Ableton
+2026-09-14 20:11:34,931 - AbletonBridge - INFO - Connection validated successfully
+2026-09-14 20:11:35,598 - AbletonBridge - ERROR - Error setting track name: register_tools.<locals>.set_track_name() missing 2 required positional arguments: 'track_index' and 'name'
+2026-09-14 20:11:35,598 - AbletonBridge - ERROR - Error setting track color: register_tools.<locals>.set_track_color() missing 2 required positional arguments: 'track_index' and 'color_index'
+2026-09-14 20:11:35,599 - AbletonBridge - ERROR - Error arming track: register_tools.<locals>.arm_track() missing 1 required positional argument: 'track_index'
+2026-09-14 20:11:35,599 - AbletonBridge - ERROR - Error disarming track: register_tools.<locals>.disarm_track() missing 1 required positional argument: 'track_index'
+2026-09-14 20:11:35,792 - AbletonBridge - ERROR - Error getting return track info: register_tools.<locals>.get_return_track_info() missing 1 required positional argument: 'return_track_index'
+2026-09-14 20:11:36,008 - AbletonBridge - ERROR - Error setting track fold: register_tools.<locals>.set_track_fold() missing 2 required positional arguments: 'track_index' and 'fold_state'
+2026-09-14 20:11:36,008 - AbletonBridge - ERROR - Error setting track collapse: register_tools.<locals>.set_track_collapse() missing 2 required positional arguments: 'track_index' and 'collapsed'
+2026-09-14 20:11:36,230 - AbletonBridge - ERROR - Error setting track routing: register_tools.<locals>.set_track_routing() missing 1 required positional argument: 'track_index'
+2026-09-14 20:11:36,231 - AbletonBridge - ERROR - Error setting track monitoring: register_tools.<locals>.set_track_monitoring() missing 2 required positional arguments: 'track_index' and 'state'
+2026-09-14 20:11:36,458 - AbletonBridge - ERROR - Error getting track data: register_tools.<locals>.get_track_data() missing 2 required positional arguments: 'track_index' and 'key'
+2026-09-14 20:11:36,459 - AbletonBridge - ERROR - Error setting track data: register_tools.<locals>.set_track_data() missing 3 required positional arguments: 'track_index', 'key', and 'value'
+2026-09-14 20:11:36,459 - AbletonBridge - ERROR - Error selecting track: register_tools.<locals>.select_track() missing 1 required positional argument: 'track_index'
+2026-09-14 20:11:36,459 - AbletonBridge - ERROR - Error setting implicit arm: register_tools.<locals>.set_implicit_arm() missing 2 required positional arguments: 'track_index' and 'enabled'
+2026-09-14 20:11:36,681 - AbletonBridge - ERROR - Ableton error: No clip in slot (track=0, clip=0)
+2026-09-14 20:11:36,681 - AbletonBridge - ERROR - Command 'get_clip_info' attempt 1 failed: No clip in slot (track=0, clip=0)
+2026-09-14 20:11:36,793 - AbletonBridge - INFO - Connected to Ableton at localhost:9877
+2026-09-14 20:11:36,793 - AbletonBridge - INFO - Reconnected, retrying command...
+2026-09-14 20:11:36,993 - AbletonBridge - ERROR - Ableton error: No clip in slot (track=0, clip=0)
+2026-09-14 20:11:36,993 - AbletonBridge - ERROR - Command 'get_clip_info' attempt 2 failed: No clip in slot (track=0, clip=0)
+2026-09-14 20:11:36,993 - AbletonBridge - ERROR - Error getting clip info: Command 'get_clip_info' failed after 2 attempts: No clip in slot (track=0, clip=0)
+2026-09-14 20:11:36,994 - AbletonBridge - ERROR - Error adding notes to clip: register_tools.<locals>.add_notes_to_clip() missing 3 required positional arguments: 'track_index', 'clip_index', and 'notes'
+2026-09-14 20:11:36,994 - AbletonBridge - ERROR - Error adding extended notes: register_tools.<locals>.add_notes_extended() missing 3 required positional arguments: 'track_index', 'clip_index', and 'notes'
+2026-09-14 20:11:36,995 - AbletonBridge - ERROR - Error getting clip notes: register_tools.<locals>.get_clip_notes() missing 2 required positional arguments: 'track_index' and 'clip_index'
+2026-09-14 20:11:36,995 - AbletonBridge - ERROR - Error getting extended notes: register_tools.<locals>.get_notes_extended() missing 2 required positional arguments: 'track_index' and 'clip_index'
+2026-09-14 20:11:36,995 - AbletonBridge - ERROR - Error setting clip name: register_tools.<locals>.set_clip_name() missing 3 required positional arguments: 'track_index', 'clip_index', and 'name'
+2026-09-14 20:11:36,996 - AbletonBridge - ERROR - Error setting clip color: register_tools.<locals>.set_clip_color() missing 3 required positional arguments: 'track_index', 'clip_index', and 'color_index'
+2026-09-14 20:11:36,996 - AbletonBridge - ERROR - Error setting clip looping: register_tools.<locals>.set_clip_looping() missing 3 required positional arguments: 'track_index', 'clip_index', and 'looping'
+2026-09-14 20:11:36,996 - AbletonBridge - ERROR - Error setting clip loop points: register_tools.<locals>.set_clip_loop_points() missing 4 required positional arguments: 'track_index', 'clip_index', 'loop_start', and 'loop_end'
+2026-09-14 20:11:36,997 - AbletonBridge - ERROR - Error setting clip start/end markers: register_tools.<locals>.set_clip_start_end() missing 2 required positional arguments: 'track_index' and 'clip_index'
+2026-09-14 20:11:36,997 - AbletonBridge - ERROR - Error setting clip start time: register_tools.<locals>.set_clip_start_time() missing 3 required positional arguments: 'track_index', 'clip_index', and 'time'
+2026-09-14 20:11:36,998 - AbletonBridge - ERROR - Error quantizing clip notes: register_tools.<locals>.quantize_clip_notes() missing 2 required positional arguments: 'track_index' and 'clip_index'
+2026-09-14 20:11:36,998 - AbletonBridge - ERROR - Error transposing clip notes: register_tools.<locals>.transpose_clip_notes() missing 3 required positional arguments: 'track_index', 'clip_index', and 'semitones'
+2026-09-14 20:11:36,998 - AbletonBridge - ERROR - Error setting clip pitch: register_tools.<locals>.set_clip_pitch() missing 2 required positional arguments: 'track_index' and 'clip_index'
+2026-09-14 20:11:36,998 - AbletonBridge - ERROR - Error setting clip launch mode: register_tools.<locals>.set_clip_launch_mode() missing 3 required positional arguments: 'track_index', 'clip_index', and 'launch_mode'
+2026-09-14 20:11:36,999 - AbletonBridge - ERROR - Error setting clip launch quantization: register_tools.<locals>.set_clip_launch_quantization() missing 3 required positional arguments: 'track_index', 'clip_index', and 'quantization'
+2026-09-14 20:11:36,999 - AbletonBridge - ERROR - Error setting clip legato: register_tools.<locals>.set_clip_legato() missing 3 required positional arguments: 'track_index', 'clip_index', and 'legato'
+2026-09-14 20:11:36,999 - AbletonBridge - ERROR - Error setting clip warp: register_tools.<locals>.set_clip_warp() missing 3 required positional arguments: 'track_index', 'clip_index', and 'warping_enabled'
+2026-09-14 20:11:37,000 - AbletonBridge - ERROR - Error setting warp mode: register_tools.<locals>.set_warp_mode() missing 3 required positional arguments: 'track_index', 'clip_index', and 'warp_mode'
+2026-09-14 20:11:37,000 - AbletonBridge - ERROR - Error duplicating clip to arrangement: register_tools.<locals>.duplicate_clip_to_arrangement() missing 3 required positional arguments: 'track_index', 'clip_index', and 'time'
+2026-09-14 20:11:37,001 - AbletonBridge - ERROR - Error setting clip grid: register_tools.<locals>.set_clip_grid() missing 2 required positional arguments: 'track_index' and 'clip_index'
+2026-09-14 20:11:37,001 - AbletonBridge - ERROR - Error getting clip follow actions: register_tools.<locals>.get_clip_follow_actions() missing 2 required positional arguments: 'track_index' and 'clip_index'
+2026-09-14 20:11:37,001 - AbletonBridge - ERROR - Error setting clip follow actions: register_tools.<locals>.set_clip_follow_actions() missing 2 required positional arguments: 'track_index' and 'clip_index'
+2026-09-14 20:11:37,002 - AbletonBridge - ERROR - Error getting clip properties: register_tools.<locals>.get_clip_properties() missing 2 required positional arguments: 'track_index' and 'clip_index'
+2026-09-14 20:11:37,002 - AbletonBridge - ERROR - Error setting clip properties: register_tools.<locals>.set_clip_properties() missing 2 required positional arguments: 'track_index' and 'clip_index'
+2026-09-14 20:11:37,003 - AbletonBridge - ERROR - Error selecting all notes: register_tools.<locals>.select_all_notes() missing 2 required positional arguments: 'track_index' and 'clip_index'
+2026-09-14 20:11:37,003 - AbletonBridge - ERROR - Error deselecting all notes: register_tools.<locals>.deselect_all_notes() missing 2 required positional arguments: 'track_index' and 'clip_index'
+2026-09-14 20:11:37,003 - AbletonBridge - ERROR - Error getting selected notes: register_tools.<locals>.get_selected_notes() missing 2 required positional arguments: 'track_index' and 'clip_index'
+2026-09-14 20:11:37,004 - AbletonBridge - ERROR - Error stopping track clips: register_tools.<locals>.stop_track_clips() missing 1 required positional argument: 'track_index'
+2026-09-14 20:11:37,004 - AbletonBridge - WARNING - Existing connection is no longer valid: Socket is None
+2026-09-14 20:11:37,004 - AbletonBridge - INFO - Connecting to Ableton (attempt 1/3)...
+2026-09-14 20:11:37,015 - AbletonBridge - INFO - Connected to Ableton at localhost:9877
+2026-09-14 20:11:37,015 - AbletonBridge - INFO - Created new persistent connection to Ableton
+2026-09-14 20:11:37,209 - AbletonBridge - INFO - Connection validated successfully
+2026-09-14 20:11:37,441 - AbletonBridge - ERROR - Error getting warp markers: register_tools.<locals>.get_warp_markers() missing 2 required positional arguments: 'track_index' and 'clip_index'
+2026-09-14 20:11:37,442 - AbletonBridge - ERROR - Error adding warp marker: register_tools.<locals>.add_warp_marker() missing 3 required positional arguments: 'track_index', 'clip_index', and 'beat_time'
+2026-09-14 20:11:37,445 - AbletonBridge - ERROR - Error moving warp marker: register_tools.<locals>.move_warp_marker() missing 4 required positional arguments: 'track_index', 'clip_index', 'beat_time', and 'beat_time_distance'
+2026-09-14 20:11:37,445 - AbletonBridge - ERROR - Error removing warp marker: register_tools.<locals>.remove_warp_marker() missing 3 required positional arguments: 'track_index', 'clip_index', and 'beat_time'
+2026-09-14 20:11:37,445 - AbletonBridge - ERROR - Error setting fire button state: register_tools.<locals>.set_fire_button_state() missing 2 required positional arguments: 'track_index' and 'clip_index'
+2026-09-14 20:11:37,446 - AbletonBridge - ERROR - Error scrubbing clip: register_tools.<locals>.clip_scrub_native() missing 3 required positional arguments: 'track_index', 'clip_index', and 'position'
+2026-09-14 20:11:37,446 - AbletonBridge - ERROR - Error stopping clip scrub: register_tools.<locals>.clip_stop_scrub() missing 2 required positional arguments: 'track_index' and 'clip_index'
+2026-09-14 20:11:37,446 - AbletonBridge - ERROR - Error converting beat to sample time: register_tools.<locals>.clip_beat_to_sample_time() missing 3 required positional arguments: 'track_index', 'clip_index', and 'beat_time'
+2026-09-14 20:11:37,446 - AbletonBridge - ERROR - Error converting sample to beat time: register_tools.<locals>.clip_sample_to_beat_time() missing 3 required positional arguments: 'track_index', 'clip_index', and 'sample_time'
+2026-09-14 20:11:37,448 - AbletonBridge - ERROR - Error duplicating clip slot: register_tools.<locals>.duplicate_clip_slot() missing 2 required positional arguments: 'track_index' and 'clip_index'
+2026-09-14 20:11:37,448 - AbletonBridge - ERROR - Error getting clip slot properties: register_tools.<locals>.get_clip_slot_properties() missing 2 required positional arguments: 'track_index' and 'clip_index'
+2026-09-14 20:11:37,449 - AbletonBridge - ERROR - Error setting clip slot properties: register_tools.<locals>.set_clip_slot_properties() missing 2 required positional arguments: 'track_index' and 'clip_index'
+2026-09-14 20:11:37,449 - AbletonBridge - ERROR - Error jumping in running session clip: register_tools.<locals>.jump_in_running_session_clip() missing 2 required positional arguments: 'track_index' and 'amount'
+2026-09-14 20:11:37,449 - AbletonBridge - ERROR - Error setting track arm: register_tools.<locals>.set_track_arm() missing 2 required positional arguments: 'track_index' and 'arm'
+2026-09-14 20:11:37,450 - AbletonBridge - ERROR - Error setting track send: register_tools.<locals>.set_track_send() missing 3 required positional arguments: 'track_index', 'send_index', and 'value'
+2026-09-14 20:11:37,450 - AbletonBridge - ERROR - Error setting crossfader: register_tools.<locals>.set_crossfader() missing 1 required positional argument: 'value'
+2026-09-14 20:11:37,639 - AbletonBridge - ERROR - Error setting cue volume: register_tools.<locals>.set_cue_volume() missing 1 required positional argument: 'value'
+2026-09-14 20:11:37,640 - AbletonBridge - ERROR - Error setting track delay: register_tools.<locals>.set_track_delay() missing 2 required positional arguments: 'track_index' and 'delay'
+2026-09-14 20:11:37,640 - AbletonBridge - ERROR - Error getting track delay: register_tools.<locals>.get_track_delay() missing 1 required positional argument: 'track_index'
+2026-09-14 20:11:37,640 - AbletonBridge - ERROR - Error setting panning mode: register_tools.<locals>.set_panning_mode() missing 2 required positional arguments: 'track_index' and 'mode'
+2026-09-14 20:11:37,641 - AbletonBridge - ERROR - Error setting split stereo pan: register_tools.<locals>.set_split_stereo_pan() missing 1 required positional argument: 'track_index'
+2026-09-14 20:11:37,641 - AbletonBridge - ERROR - Error setting crossfade assign: register_tools.<locals>.set_crossfade_assign() missing 2 required positional arguments: 'track_index' and 'assign'
+2026-09-14 20:11:37,641 - AbletonBridge - ERROR - Error applying groove: register_tools.<locals>.apply_groove() missing 3 required positional arguments: 'track_index', 'clip_index', and 'groove_amount'
+2026-09-14 20:11:37,642 - AbletonBridge - ERROR - Error setting mixer parameters: register_tools.<locals>.set_mixer() missing 1 required positional argument: 'track_index'
+2026-09-14 20:11:38,262 - AbletonBridge - INFO - Connected to Ableton at localhost:9877
+2026-09-14 20:11:38,262 - AbletonBridge - INFO - Browser cache: starting scan...
+2026-09-14 20:11:54,538 - AbletonBridge - INFO - Browser cache: 'Instruments' — 1500 items
+2026-09-14 20:11:57,845 - AbletonBridge - INFO - Browser cache: 'Drums' — 1500 items
+2026-09-14 20:12:03,820 - AbletonBridge - ERROR - Ableton error: uri is required for preview action
+2026-09-14 20:12:03,820 - AbletonBridge - ERROR - Command 'preview_browser_item' attempt 1 failed: uri is required for preview action
+2026-09-14 20:12:03,920 - AbletonBridge - INFO - Connected to Ableton at localhost:9877
+2026-09-14 20:12:03,920 - AbletonBridge - INFO - Reconnected, retrying command...
+2026-09-14 20:12:04,160 - AbletonBridge - ERROR - Ableton error: uri is required for preview action
+2026-09-14 20:12:04,160 - AbletonBridge - ERROR - Command 'preview_browser_item' attempt 2 failed: uri is required for preview action
+2026-09-14 20:12:04,161 - AbletonBridge - ERROR - Error previewing browser item: Command 'preview_browser_item' failed after 2 attempts: uri is required for preview action
+2026-09-14 20:12:04,161 - AbletonBridge - ERROR - Error getting device presets: register_tools.<locals>.get_device_presets() missing 2 required positional arguments: 'track_index' and 'device_index'
+2026-09-14 20:12:04,161 - AbletonBridge - ERROR - Error loading device preset: register_tools.<locals>.load_device_preset() missing 3 required positional arguments: 'track_index', 'device_index', and 'preset_uri'
+2026-09-14 20:12:04,162 - AbletonBridge - WARNING - Existing connection is no longer valid: Socket is None
+2026-09-14 20:12:04,162 - AbletonBridge - INFO - Connecting to Ableton (attempt 1/3)...
+2026-09-14 20:12:04,172 - AbletonBridge - INFO - Connected to Ableton at localhost:9877
+2026-09-14 20:12:04,172 - AbletonBridge - INFO - Created new persistent connection to Ableton
+2026-09-14 20:12:04,366 - AbletonBridge - INFO - Connection validated successfully
+2026-09-14 20:12:04,584 - AbletonBridge - ERROR - Error creating clip automation: register_tools.<locals>.create_clip_automation() missing 4 required positional arguments: 'track_index', 'clip_index', 'parameter_name', and 'automation_points'
+2026-09-14 20:12:04,584 - AbletonBridge - ERROR - Error getting clip automation: register_tools.<locals>.get_clip_automation() missing 3 required positional arguments: 'track_index', 'clip_index', and 'parameter_name'
+2026-09-14 20:12:04,584 - AbletonBridge - ERROR - Error listing automated parameters: register_tools.<locals>.list_clip_automated_parameters() missing 2 required positional arguments: 'track_index' and 'clip_index'
+2026-09-14 20:12:04,585 - AbletonBridge - ERROR - Error creating track automation: register_tools.<locals>.create_track_automation() missing 3 required positional arguments: 'track_index', 'parameter_name', and 'automation_points'
+2026-09-14 20:12:04,585 - AbletonBridge - ERROR - Error creating automation curve: register_tools.<locals>.create_automation_curve() missing 3 required positional arguments: 'track_index', 'clip_index', and 'parameter_name'
+2026-09-14 20:12:04,585 - AbletonBridge - ERROR - Error clearing clip envelope: register_tools.<locals>.clear_clip_envelope() missing 3 required positional arguments: 'track_index', 'clip_index', and 'parameter_name'
+2026-09-14 20:12:04,586 - AbletonBridge - ERROR - Error clearing all clip envelopes: register_tools.<locals>.clear_all_clip_envelopes() missing 2 required positional arguments: 'track_index' and 'clip_index'
+2026-09-14 20:12:04,586 - AbletonBridge - ERROR - Error getting automation value at time: register_tools.<locals>.get_clip_automation_value() missing 4 required positional arguments: 'track_index', 'clip_index', 'parameter_name', and 'time'
+2026-09-14 20:12:04,586 - AbletonBridge - ERROR - Error getting hi-res automation: register_tools.<locals>.get_clip_automation_hires() missing 3 required positional arguments: 'track_index', 'clip_index', and 'parameter_name'
+2026-09-14 20:12:04,586 - AbletonBridge - ERROR - Error creating step automation: register_tools.<locals>.create_step_automation() missing 4 required positional arguments: 'track_index', 'clip_index', 'parameter_name', and 'steps'
+2026-09-14 20:12:04,806 - AbletonBridge - ERROR - Error creating arrangement MIDI clip: register_tools.<locals>.create_arrangement_midi_clip() missing 3 required positional arguments: 'track_index', 'time', and 'length'
+2026-09-14 20:12:04,806 - AbletonBridge - ERROR - Error creating arrangement audio clip: register_tools.<locals>.create_arrangement_audio_clip() missing 3 required positional arguments: 'track_index', 'time', and 'length'
+2026-09-14 20:12:04,806 - AbletonBridge - ERROR - Error moving arrangement clip: register_tools.<locals>.move_arrangement_clip() missing 3 required positional arguments: 'track_index', 'clip_index_in_arrangement', and 'new_start_time'
+2026-09-14 20:12:04,806 - AbletonBridge - ERROR - Error deleting arrangement clip: register_tools.<locals>.delete_arrangement_clip() missing 2 required positional arguments: 'track_index' and 'clip_index_in_arrangement'
+2026-09-14 20:12:04,808 - AbletonBridge - ERROR - Error setting arrangement clip properties: register_tools.<locals>.set_arrangement_clip_properties() missing 2 required positional arguments: 'track_index' and 'clip_index_in_arrangement'
+2026-09-14 20:12:04,808 - AbletonBridge - ERROR - Error getting arrangement clip info: register_tools.<locals>.get_arrangement_clip_info() missing 2 required positional arguments: 'track_index' and 'clip_index_in_arrangement'
+2026-09-14 20:12:04,808 - AbletonBridge - ERROR - Error setting detail clip: register_tools.<locals>.set_detail_clip() missing 2 required positional arguments: 'track_index' and 'clip_index'
+2026-09-14 20:12:04,809 - AbletonBridge - ERROR - Error selecting scene: register_tools.<locals>.select_scene() missing 1 required positional argument: 'scene_index'
+2026-09-14 20:12:06,362 - AbletonBridge - INFO - M4L UDP sockets ready (send->:9878, recv<-:9879)
+2026-09-14 20:12:11,363 - AbletonBridge - WARNING - M4L response timeout (attempt 1)
+2026-09-14 20:12:11,565 - AbletonBridge - INFO - M4L UDP sockets ready (send->:9878, recv<-:9879)
+2026-09-14 20:12:13,998 - AbletonBridge - INFO - Browser cache: 'Audio Effects' — 1075 items
+2026-09-14 20:12:16,565 - AbletonBridge - WARNING - M4L response timeout (attempt 2)
+2026-09-14 20:12:16,565 - AbletonBridge - WARNING - M4L UDP sockets ready but bridge device is not responding.
+2026-09-14 20:12:17,274 - AbletonBridge - INFO - Browser cache: 'MIDI Effects' — 153 items
+2026-09-14 20:12:18,386 - AbletonBridge - INFO - Browser cache: 'Max for Live' — 43 items
+2026-09-14 20:12:18,594 - AbletonBridge - INFO - Browser cache: 'Plug-ins' — 0 items
+2026-09-14 20:12:24,334 - AbletonBridge - WARNING - M4L response timeout (attempt 1)
+2026-09-14 20:12:24,535 - AbletonBridge - INFO - M4L UDP sockets ready (send->:9878, recv<-:9879)
+2026-09-14 20:12:29,536 - AbletonBridge - WARNING - M4L response timeout (attempt 2)
+2026-09-14 20:12:29,536 - AbletonBridge - WARNING - M4L bridge ping failed on existing connection, reconnecting...
+2026-09-14 20:12:29,538 - AbletonBridge - INFO - M4L UDP sockets ready (send->:9878, recv<-:9879)
+2026-09-14 20:12:34,538 - AbletonBridge - WARNING - M4L response timeout (attempt 1)
+2026-09-14 20:12:34,739 - AbletonBridge - INFO - M4L UDP sockets ready (send->:9878, recv<-:9879)
+2026-09-14 20:12:39,740 - AbletonBridge - WARNING - M4L response timeout (attempt 2)
+2026-09-14 20:12:39,740 - AbletonBridge - WARNING - M4L UDP sockets ready but bridge device is not responding.
+2026-09-14 20:12:40,798 - AbletonBridge - ERROR - Error comparing arrangement sections: register_tools.<locals>.compare_arrangement_sections() missing 4 required positional arguments: 'section_a_start', 'section_a_end', 'section_b_start', and 'section_b_end'
+2026-09-14 20:12:40,799 - AbletonBridge - ERROR - Error generating euclidean rhythm: register_tools.<locals>.generate_euclidean_rhythm() missing 4 required positional arguments: 'track_index', 'clip_index', 'steps', and 'pulses'
+2026-09-14 20:12:40,801 - AbletonBridge - ERROR - Error humanizing notes: register_tools.<locals>.humanize_notes() missing 2 required positional arguments: 'track_index' and 'clip_index'
+2026-09-14 20:12:40,802 - AbletonBridge - ERROR - Error generating scale-constrained notes: register_tools.<locals>.scale_constrained_generate() missing 2 required positional arguments: 'track_index' and 'clip_index'
+2026-09-14 20:12:40,803 - AbletonBridge - ERROR - Error transforming notes: register_tools.<locals>.transform_notes() missing 3 required positional arguments: 'track_index', 'clip_index', and 'operation'
+2026-09-14 20:12:40,804 - AbletonBridge - ERROR - Error copying notes between clips: register_tools.<locals>.copy_notes_between_clips() missing 4 required positional arguments: 'src_track', 'src_clip', 'dest_track', and 'dest_clip'
+2026-09-14 20:12:40,805 - AbletonBridge - ERROR - Error batch setting follow actions: register_tools.<locals>.batch_set_follow_actions() missing 2 required positional arguments: 'track_index' and 'clip_indices'
+2026-09-14 20:12:40,806 - AbletonBridge - ERROR - Error randomizing clip notes: register_tools.<locals>.randomize_clip_notes() missing 2 required positional arguments: 'track_index' and 'clip_index'
+2026-09-14 20:12:40,808 - AbletonBridge - ERROR - Error creating polyrhythm: register_tools.<locals>.create_polyrhythm() missing 3 required positional arguments: 'track_index', 'clip_index', and 'rhythms'
+2026-09-14 20:12:40,808 - AbletonBridge - ERROR - Error creating stutter effect: register_tools.<locals>.stutter_effect() missing 2 required positional arguments: 'track_index' and 'clip_index'
+2026-09-14 20:12:40,809 - AbletonBridge - ERROR - Error duplicating with variation: register_tools.<locals>.duplicate_with_variation() missing 4 required positional arguments: 'src_track', 'src_clip', 'dest_track', and 'dest_clip'
+2026-09-14 20:12:40,810 - AbletonBridge - ERROR - Error generating chord progression: register_tools.<locals>.generate_chord_progression() missing 2 required positional arguments: 'track_index' and 'clip_index'
+2026-09-14 20:12:40,811 - AbletonBridge - ERROR - Error generating arpeggio: register_tools.<locals>.generate_arpeggio() missing 2 required positional arguments: 'track_index' and 'clip_index'
+2026-09-14 20:12:40,811 - AbletonBridge - ERROR - Error generating drum pattern: register_tools.<locals>.generate_drum_pattern() missing 2 required positional arguments: 'track_index' and 'clip_index'
+2026-09-14 20:12:40,812 - AbletonBridge - ERROR - Error generating euclidean rhythm: register_tools.<locals>.euclidean_rhythm() missing 2 required positional arguments: 'track_index' and 'clip_index'
+2026-09-14 20:12:40,812 - AbletonBridge - ERROR - Error generating bass line: register_tools.<locals>.generate_bass_line() missing 2 required positional arguments: 'track_index' and 'clip_index'
+2026-09-14 20:12:40,814 - AbletonBridge - ERROR - Error harmonizing melody: register_tools.<locals>.harmonize_melody() missing 2 required positional arguments: 'track_index' and 'clip_index'
+2026-09-14 20:12:40,814 - AbletonBridge - ERROR - Error quantizing notes to scale: register_tools.<locals>.quantize_to_scale() missing 2 required positional arguments: 'track_index' and 'clip_index'
+2026-09-14 20:12:40,815 - AbletonBridge - ERROR - Error converting clip to grid: register_tools.<locals>.clip_to_grid() missing 2 required positional arguments: 'track_index' and 'clip_index'
+2026-09-14 20:12:40,815 - AbletonBridge - ERROR - Error writing grid to clip: register_tools.<locals>.grid_to_clip() missing 3 required positional arguments: 'track_index', 'clip_index', and 'grid'
+2026-09-14 20:12:45,817 - AbletonBridge - WARNING - M4L response timeout (attempt 1)
+2026-09-14 20:12:46,017 - AbletonBridge - INFO - M4L UDP sockets ready (send->:9878, recv<-:9879)
+2026-09-14 20:12:47,914 - AbletonBridge - INFO - Browser cache: 'User Library' — 231 items
+2026-09-14 20:12:47,916 - AbletonBridge - INFO - Browser cache: 4502 items, 7 categories, 3905 device names mapped
+2026-09-14 20:12:48,103 - AbletonBridge - INFO - Browser cache saved to disk (4502 items, gzip)
+2026-09-14 20:12:51,017 - AbletonBridge - WARNING - M4L response timeout (attempt 2)
+2026-09-14 20:12:51,017 - AbletonBridge - WARNING - M4L bridge ping failed on existing connection, reconnecting...
+2026-09-14 20:12:51,017 - AbletonBridge - INFO - M4L UDP sockets ready (send->:9878, recv<-:9879)
+2026-09-14 20:12:56,019 - AbletonBridge - WARNING - M4L response timeout (attempt 1)
+2026-09-14 20:12:56,219 - AbletonBridge - INFO - M4L UDP sockets ready (send->:9878, recv<-:9879)
+2026-09-14 20:13:01,219 - AbletonBridge - WARNING - M4L response timeout (attempt 2)
+2026-09-14 20:13:01,219 - AbletonBridge - WARNING - M4L UDP sockets ready but bridge device is not responding.
+2026-09-14 20:13:01,219 - AbletonBridge - ERROR - Error discovering device parameters: register_tools.<locals>.discover_device_params() missing 2 required positional arguments: 'track_index' and 'device_index'
+2026-09-14 20:13:01,219 - AbletonBridge - ERROR - Error getting hidden device parameters: register_tools.<locals>.get_device_hidden_parameters() missing 2 required positional arguments: 'track_index' and 'device_index'
+2026-09-14 20:13:01,221 - AbletonBridge - ERROR - Error setting hidden device parameter: register_tools.<locals>.set_device_hidden_parameter() missing 4 required positional arguments: 'track_index', 'device_index', 'parameter_index', and 'value'
+2026-09-14 20:13:01,221 - AbletonBridge - ERROR - Error batch setting parameters: register_tools.<locals>.batch_set_hidden_parameters() missing 3 required positional arguments: 'track_index', 'device_index', and 'parameters'
+2026-09-14 20:13:01,221 - AbletonBridge - ERROR - Error getting automation states: register_tools.<locals>.get_automation_states() missing 2 required positional arguments: 'track_index' and 'device_index'
+2026-09-14 20:13:01,222 - AbletonBridge - ERROR - Error discovering device chains via M4L: register_tools.<locals>.discover_chains_m4l() missing 2 required positional arguments: 'track_index' and 'device_index'
+2026-09-14 20:13:01,222 - AbletonBridge - ERROR - Error getting chain device parameters via M4L: register_tools.<locals>.get_chain_device_params_m4l() missing 4 required positional arguments: 'track_index', 'device_index', 'chain_index', and 'chain_device_index'
+2026-09-14 20:13:01,222 - AbletonBridge - ERROR - Error setting chain device parameter via M4L: register_tools.<locals>.set_chain_device_param_m4l() missing 6 required positional arguments: 'track_index', 'device_index', 'chain_index', 'chain_device_index', 'parameter_index', and 'value'
+2026-09-14 20:13:01,223 - AbletonBridge - ERROR - Error getting clip notes with IDs: register_tools.<locals>.get_clip_notes_with_ids() missing 2 required positional arguments: 'track_index' and 'clip_index'
+2026-09-14 20:13:01,223 - AbletonBridge - ERROR - Error modifying clip notes by ID: register_tools.<locals>.modify_clip_notes() missing 3 required positional arguments: 'track_index', 'clip_index', and 'modifications'
+2026-09-14 20:13:01,224 - AbletonBridge - ERROR - Error removing clip notes by ID: register_tools.<locals>.remove_clip_notes_by_id() missing 3 required positional arguments: 'track_index', 'clip_index', and 'note_ids'
+2026-09-14 20:13:01,224 - AbletonBridge - ERROR - Error getting chain mixing state: register_tools.<locals>.get_chain_mixing() missing 3 required positional arguments: 'track_index', 'device_index', and 'chain_index'
+2026-09-14 20:13:01,224 - AbletonBridge - ERROR - Error setting chain mixing state: register_tools.<locals>.set_chain_mixing() missing 4 required positional arguments: 'track_index', 'device_index', 'chain_index', and 'properties'
+2026-09-14 20:13:01,225 - AbletonBridge - ERROR - Error comparing device AB presets: register_tools.<locals>.device_ab_compare() missing 3 required positional arguments: 'track_index', 'device_index', and 'action'
+2026-09-14 20:13:01,225 - AbletonBridge - ERROR - Error scrubbing clip: register_tools.<locals>.clip_scrub() missing 3 required positional arguments: 'track_index', 'clip_index', and 'action'
+2026-09-14 20:13:01,225 - AbletonBridge - ERROR - Error getting split stereo panning: register_tools.<locals>.get_split_stereo() missing 1 required positional argument: 'track_index'
+2026-09-14 20:13:01,226 - AbletonBridge - ERROR - Error setting split stereo panning: register_tools.<locals>.set_split_stereo() missing 3 required positional arguments: 'track_index', 'left', and 'right'
+2026-09-14 20:13:01,226 - AbletonBridge - ERROR - Error starting observation: register_tools.<locals>.observe_property() missing 2 required positional arguments: 'lom_path' and 'property_name'
+2026-09-14 20:13:01,226 - AbletonBridge - ERROR - Error stopping observation: register_tools.<locals>.stop_observing() missing 2 required positional arguments: 'lom_path' and 'property_name'
+2026-09-14 20:13:06,226 - AbletonBridge - WARNING - M4L response timeout (attempt 1)
+2026-09-14 20:13:06,427 - AbletonBridge - INFO - M4L UDP sockets ready (send->:9878, recv<-:9879)
+2026-09-14 20:13:11,428 - AbletonBridge - WARNING - M4L response timeout (attempt 2)
+2026-09-14 20:13:11,428 - AbletonBridge - WARNING - M4L bridge ping failed on existing connection, reconnecting...
+2026-09-14 20:13:11,428 - AbletonBridge - INFO - M4L UDP sockets ready (send->:9878, recv<-:9879)
+2026-09-14 20:13:16,429 - AbletonBridge - WARNING - M4L response timeout (attempt 1)
+2026-09-14 20:13:16,629 - AbletonBridge - INFO - M4L UDP sockets ready (send->:9878, recv<-:9879)
+2026-09-14 20:13:21,630 - AbletonBridge - WARNING - M4L response timeout (attempt 2)
+2026-09-14 20:13:21,630 - AbletonBridge - WARNING - M4L UDP sockets ready but bridge device is not responding.
+2026-09-14 20:13:21,632 - AbletonBridge - ERROR - Error setting parameter cleanly: register_tools.<locals>.set_parameter_clean() missing 4 required positional arguments: 'track_index', 'device_index', 'parameter_index', and 'value'
+2026-09-14 20:13:26,633 - AbletonBridge - WARNING - M4L response timeout (attempt 1)
+2026-09-14 20:13:26,835 - AbletonBridge - INFO - M4L UDP sockets ready (send->:9878, recv<-:9879)
+2026-09-14 20:13:31,835 - AbletonBridge - WARNING - M4L response timeout (attempt 2)
+2026-09-14 20:13:31,835 - AbletonBridge - WARNING - M4L bridge ping failed on existing connection, reconnecting...
+2026-09-14 20:13:31,835 - AbletonBridge - INFO - M4L UDP sockets ready (send->:9878, recv<-:9879)
+2026-09-14 20:13:36,835 - AbletonBridge - WARNING - M4L response timeout (attempt 1)
+2026-09-14 20:13:37,036 - AbletonBridge - INFO - M4L UDP sockets ready (send->:9878, recv<-:9879)
+2026-09-14 20:13:42,036 - AbletonBridge - WARNING - M4L response timeout (attempt 2)
+2026-09-14 20:13:42,036 - AbletonBridge - WARNING - M4L UDP sockets ready but bridge device is not responding.
+2026-09-14 20:13:47,037 - AbletonBridge - WARNING - M4L response timeout (attempt 1)
+2026-09-14 20:13:47,238 - AbletonBridge - INFO - M4L UDP sockets ready (send->:9878, recv<-:9879)
+2026-09-14 20:13:52,238 - AbletonBridge - WARNING - M4L response timeout (attempt 2)
+2026-09-14 20:13:52,238 - AbletonBridge - WARNING - M4L bridge ping failed on existing connection, reconnecting...
+2026-09-14 20:13:52,238 - AbletonBridge - INFO - M4L UDP sockets ready (send->:9878, recv<-:9879)
+2026-09-14 20:13:57,238 - AbletonBridge - WARNING - M4L response timeout (attempt 1)
+2026-09-14 20:13:57,439 - AbletonBridge - INFO - M4L UDP sockets ready (send->:9878, recv<-:9879)
+2026-09-14 20:14:02,439 - AbletonBridge - WARNING - M4L response timeout (attempt 2)
+2026-09-14 20:14:02,439 - AbletonBridge - WARNING - M4L UDP sockets ready but bridge device is not responding.
+2026-09-14 20:14:02,439 - AbletonBridge - ERROR - Error in cross-track audio analysis: register_tools.<locals>.analyze_cross_track_audio() missing 1 required positional argument: 'track_index'
+2026-09-14 20:14:07,440 - AbletonBridge - WARNING - M4L response timeout (attempt 1)
+2026-09-14 20:14:07,641 - AbletonBridge - INFO - M4L UDP sockets ready (send->:9878, recv<-:9879)
+2026-09-14 20:14:12,641 - AbletonBridge - WARNING - M4L response timeout (attempt 2)
+2026-09-14 20:14:12,641 - AbletonBridge - WARNING - M4L bridge ping failed on existing connection, reconnecting...
+2026-09-14 20:14:12,642 - AbletonBridge - INFO - M4L UDP sockets ready (send->:9878, recv<-:9879)
+2026-09-14 20:14:17,644 - AbletonBridge - WARNING - M4L response timeout (attempt 1)
+2026-09-14 20:14:17,844 - AbletonBridge - INFO - M4L UDP sockets ready (send->:9878, recv<-:9879)
+2026-09-14 20:14:22,845 - AbletonBridge - WARNING - M4L response timeout (attempt 2)
+2026-09-14 20:14:22,845 - AbletonBridge - WARNING - M4L UDP sockets ready but bridge device is not responding.
+2026-09-14 20:14:22,845 - AbletonBridge - ERROR - Error inserting rack chain via M4L: register_tools.<locals>.rack_insert_chain_m4l() missing 2 required positional arguments: 'track_index' and 'device_index'
+2026-09-14 20:14:22,846 - AbletonBridge - ERROR - Error inserting device into chain via M4L: register_tools.<locals>.chain_insert_device_m4l() missing 4 required positional arguments: 'track_index', 'device_index', 'chain_index', and 'device_uri'
+2026-09-14 20:14:22,846 - AbletonBridge - ERROR - Error setting drum chain note: register_tools.<locals>.set_drum_chain_note() missing 4 required positional arguments: 'track_index', 'device_index', 'chain_index', and 'note'
+2026-09-14 20:14:22,847 - AbletonBridge - ERROR - Error getting take lanes via M4L: register_tools.<locals>.get_take_lanes_m4l() missing 1 required positional argument: 'track_index'
+2026-09-14 20:14:22,847 - AbletonBridge - ERROR - Error getting take lanes: register_tools.<locals>.get_take_lanes() missing 1 required positional argument: 'track_index'
+2026-09-14 20:14:22,847 - AbletonBridge - ERROR - Error creating take lane: register_tools.<locals>.create_take_lane() missing 1 required positional argument: 'track_index'
+2026-09-14 20:14:22,848 - AbletonBridge - ERROR - Error storing rack variation: register_tools.<locals>.rack_store_variation() missing 2 required positional arguments: 'track_index' and 'device_index'
+2026-09-14 20:14:22,848 - AbletonBridge - ERROR - Error recalling rack variation: register_tools.<locals>.rack_recall_variation() missing 3 required positional arguments: 'track_index', 'device_index', and 'variation_index'
+2026-09-14 20:14:22,848 - AbletonBridge - ERROR - Error creating arrangement MIDI clip via M4L: register_tools.<locals>.create_arrangement_midi_clip_m4l() missing 3 required positional arguments: 'track_index', 'time', and 'length'
+2026-09-14 20:14:22,850 - AbletonBridge - ERROR - Error creating arrangement audio clip via M4L: register_tools.<locals>.create_arrangement_audio_clip_m4l() missing 3 required positional arguments: 'track_index', 'time', and 'length'
+2026-09-14 20:14:27,850 - AbletonBridge - WARNING - M4L response timeout (attempt 1)
+2026-09-14 20:14:28,051 - AbletonBridge - INFO - M4L UDP sockets ready (send->:9878, recv<-:9879)
+2026-09-14 20:14:33,051 - AbletonBridge - WARNING - M4L response timeout (attempt 2)
+2026-09-14 20:14:33,051 - AbletonBridge - WARNING - M4L bridge ping failed on existing connection, reconnecting...
+2026-09-14 20:14:33,051 - AbletonBridge - INFO - M4L UDP sockets ready (send->:9878, recv<-:9879)
+2026-09-14 20:14:38,051 - AbletonBridge - WARNING - M4L response timeout (attempt 1)
+2026-09-14 20:14:38,251 - AbletonBridge - INFO - M4L UDP sockets ready (send->:9878, recv<-:9879)
+2026-09-14 20:14:43,252 - AbletonBridge - WARNING - M4L response timeout (attempt 2)
+2026-09-14 20:14:43,252 - AbletonBridge - WARNING - M4L UDP sockets ready but bridge device is not responding.
+2026-09-14 20:14:43,252 - AbletonBridge - ERROR - Error jumping to cue point: register_tools.<locals>.jump_to_cue_point() missing 1 required positional argument: 'cue_point_index'
+2026-09-14 20:14:48,253 - AbletonBridge - WARNING - M4L response timeout (attempt 1)
+2026-09-14 20:14:48,454 - AbletonBridge - INFO - M4L UDP sockets ready (send->:9878, recv<-:9879)
+2026-09-14 20:14:53,454 - AbletonBridge - WARNING - M4L response timeout (attempt 2)
+2026-09-14 20:14:53,454 - AbletonBridge - WARNING - M4L bridge ping failed on existing connection, reconnecting...
+2026-09-14 20:14:53,454 - AbletonBridge - INFO - M4L UDP sockets ready (send->:9878, recv<-:9879)
+2026-09-14 20:14:58,454 - AbletonBridge - WARNING - M4L response timeout (attempt 1)
+2026-09-14 20:14:58,655 - AbletonBridge - INFO - M4L UDP sockets ready (send->:9878, recv<-:9879)
+2026-09-14 20:15:03,656 - AbletonBridge - WARNING - M4L response timeout (attempt 2)
+2026-09-14 20:15:03,656 - AbletonBridge - WARNING - M4L UDP sockets ready but bridge device is not responding.
+2026-09-14 20:15:03,656 - AbletonBridge - ERROR - Error setting groove properties: register_tools.<locals>.set_groove_properties() missing 1 required positional argument: 'groove_index'
+2026-09-14 20:15:03,656 - AbletonBridge - ERROR - Error getting CC map for plugin: register_tools.<locals>.get_cc_map() got an unexpected keyword argument 'plugin_name'
+2026-09-14 20:15:03,656 - AbletonBridge - WARNING - midi_cc/ directory not found at C:\Users\o0o\ablebridge-dev\MCP_Server\midi_cc
+2026-09-14 20:15:03,657 - AbletonBridge - ERROR - Error setting scene name: register_tools.<locals>.set_scene_name() missing 2 required positional arguments: 'scene_index' and 'name'
+2026-09-14 20:15:03,657 - AbletonBridge - ERROR - Error setting scene color: register_tools.<locals>.set_scene_color() missing 2 required positional arguments: 'scene_index' and 'color_index'
+2026-09-14 20:15:03,658 - AbletonBridge - ERROR - Error setting scene tempo: register_tools.<locals>.set_scene_tempo() missing 2 required positional arguments: 'scene_index' and 'tempo'
+2026-09-14 20:15:03,658 - AbletonBridge - ERROR - Error getting scene follow actions: register_tools.<locals>.get_scene_follow_actions() missing 1 required positional argument: 'scene_index'
+2026-09-14 20:15:03,658 - AbletonBridge - ERROR - Error setting scene follow actions: register_tools.<locals>.set_scene_follow_actions() missing 1 required positional argument: 'scene_index'
+2026-09-14 20:15:08,660 - AbletonBridge - WARNING - M4L response timeout (attempt 1)
+2026-09-14 20:15:08,860 - AbletonBridge - INFO - M4L UDP sockets ready (send->:9878, recv<-:9879)
+2026-09-14 20:15:13,860 - AbletonBridge - WARNING - M4L response timeout (attempt 2)
+2026-09-14 20:15:14,736 - AbletonBridge - ERROR - Error setting tempo: register_tools.<locals>.set_tempo() missing 1 required positional argument: 'tempo'
+2026-09-14 20:15:15,584 - AbletonBridge - ERROR - Error setting metronome: register_tools.<locals>.set_metronome() missing 1 required positional argument: 'enabled'
+2026-09-14 20:15:15,584 - AbletonBridge - ERROR - Error setting arrangement overdub: register_tools.<locals>.set_arrangement_overdub() missing 1 required positional argument: 'enabled'
+2026-09-14 20:15:16,028 - AbletonBridge - ERROR - Error jumping to cue: register_tools.<locals>.jump_to_cue() missing 1 required positional argument: 'direction'
+2026-09-14 20:15:16,445 - AbletonBridge - ERROR - Error setting session record: register_tools.<locals>.set_session_record() missing 1 required positional argument: 'enabled'
+2026-09-14 20:15:16,445 - AbletonBridge - ERROR - Error navigating playback: register_tools.<locals>.navigate_playback() missing 1 required positional argument: 'action'
+2026-09-14 20:15:17,764 - AbletonBridge - ERROR - Error setting view: register_tools.<locals>.set_view() missing 1 required positional argument: 'action'
+2026-09-14 20:15:17,764 - AbletonBridge - ERROR - Error zooming/scrolling view: register_tools.<locals>.zoom_scroll_view() missing 3 required positional arguments: 'action', 'direction', and 'view_name'
+2026-09-14 20:15:17,765 - AbletonBridge - ERROR - Error getting song data: register_tools.<locals>.get_song_data() missing 1 required positional argument: 'key'
+2026-09-14 20:15:17,765 - AbletonBridge - ERROR - Error setting song data: register_tools.<locals>.set_song_data() missing 2 required positional arguments: 'key' and 'value'
+2026-09-14 20:15:19,257 - AbletonBridge - ERROR - Error setting draw mode: register_tools.<locals>.set_draw_mode() missing 1 required positional argument: 'enabled'
+2026-09-14 20:15:19,257 - AbletonBridge - ERROR - Error setting follow song: register_tools.<locals>.set_follow_song() missing 1 required positional argument: 'enabled'
+2026-09-14 20:15:19,465 - AbletonBridge - ERROR - Error capturing device snapshot: register_tools.<locals>.snapshot_device_state() missing 2 required positional arguments: 'track_index' and 'device_index'
+2026-09-14 20:15:19,466 - AbletonBridge - ERROR - Error restoring device snapshot: register_tools.<locals>.restore_device_snapshot() missing 1 required positional argument: 'snapshot_id'
+2026-09-14 20:15:19,467 - AbletonBridge - ERROR - Error comparing snapshots: register_tools.<locals>.compare_snapshots() missing 2 required positional arguments: 'snapshot_a_id' and 'snapshot_b_id'
+2026-09-14 20:15:19,467 - AbletonBridge - ERROR - Error creating macro controller: register_tools.<locals>.create_macro_controller() missing 2 required positional arguments: 'name' and 'mappings'
+2026-09-14 20:15:19,467 - AbletonBridge - ERROR - Error setting macro value: register_tools.<locals>.set_macro_value() missing 2 required positional arguments: 'macro_id' and 'value'
+2026-09-14 20:15:19,467 - AbletonBridge - ERROR - Error creating parameter map: register_tools.<locals>.create_parameter_map() missing 3 required positional arguments: 'track_index', 'device_index', and 'friendly_names'
+2026-09-14 20:15:19,468 - AbletonBridge - ERROR - Error getting parameter map: register_tools.<locals>.get_parameter_map() missing 1 required positional argument: 'map_id'
+2026-09-14 20:15:19,468 - AbletonBridge - ERROR - Error deleting parameter map: register_tools.<locals>.delete_parameter_map() missing 1 required positional argument: 'map_id'
+2026-09-14 20:15:19,469 - AbletonBridge - ERROR - Error creating instrument track: register_tools.<locals>.create_instrument_track() missing 1 required positional argument: 'instrument_name'
+2026-09-14 20:15:19,469 - AbletonBridge - ERROR - Error creating clip with notes: register_tools.<locals>.create_clip_with_notes() missing 4 required positional arguments: 'track_index', 'clip_index', 'length', and 'notes'
+2026-09-14 20:15:19,469 - AbletonBridge - ERROR - Error setting up send/return: register_tools.<locals>.setup_send_return() missing 1 required positional argument: 'effect_name'
+2026-09-14 20:15:20,355 - AbletonBridge - ERROR - Error batch setting mixer: register_tools.<locals>.batch_set_mixer() missing 1 required positional argument: 'settings'
+2026-09-14 20:15:20,356 - AbletonBridge - ERROR - Error creating drum track: _validate_index_allow_negative() got an unexpected keyword argument 'min_value'
+2026-09-14 20:15:20,358 - MCP_Server - ERROR - Error executing tool get_plugin_presets: get_plugin_presets() missing 2 required positional arguments: 'track_index' and 'device_index'
+2026-09-14 20:15:20,378 - MCP_Server - ERROR - Error executing tool get_memory_usage: No module named 'psutil'
+2026-09-14 20:15:20,420 - MCP_Server - ERROR - Error executing tool get_peak_levels: get_peak_levels() got an unexpected keyword argument 'track_index'
+2026-09-14 20:15:20,456 - MCP_Server - ERROR - Error executing tool analyze_mix_quality: analyze_mix_quality() missing 1 required positional argument: 'mix_data'
+2026-09-14 20:15:20,456 - MCP_Server - ERROR - Error executing tool get_arrangement_suggestions: get_arrangement_suggestions() missing 1 required positional argument: 'song_structure'
+2026-09-14 20:15:20,457 - MCP_Server - ERROR - Error executing tool get_genre_suggestions: get_genre_suggestions() missing 1 required positional argument: 'track_type'
+2026-09-14 20:15:20,457 - MCP_Server - ERROR - Error executing tool get_sound_design_help: get_sound_design_help() got an unexpected keyword argument 'query'
+Testing 417 tools against Ableton Live...
+quick=False write=False
+  ... 25/417 done (ok=7 err=9 exc=0 timeout=0)
+  ... 75/417 done (ok=8 err=45 exc=0 timeout=0)
+  ... 100/417 done (ok=12 err=66 exc=0 timeout=0)
+  ... 150/417 done (ok=21 err=99 exc=0 timeout=1)
+  ... 175/417 done (ok=21 err=124 exc=0 timeout=1)
+  ... 200/417 done (ok=21 err=148 exc=0 timeout=1)
+  ... 225/417 done (ok=31 err=154 exc=0 timeout=1)
+  ... 250/417 done (ok=45 err=160 exc=0 timeout=1)
+  ... 275/417 done (ok=55 err=169 exc=0 timeout=1)
+  ... 300/417 done (ok=66 err=178 exc=0 timeout=1)
+  ... 325/417 done (ok=87 err=178 exc=2 timeout=1)
+  ... 350/417 done (ok=111 err=178 exc=2 timeout=1)
+  ... 375/417 done (ok=128 err=178 exc=2 timeout=1)
+  ... 400/417 done (ok=150 err=180 exc=3 timeout=1)
+=== TOOL TEST REPORT (417 tools) ===
+quick=False write=False
+OK: 154  ERROR(handled): 182  EXCEPTION: 7  TIMEOUT: 1  SKIPPED(destructive): 73
+
+--- EXCEPTIONS (likely bugs) ---
+[0.0s] get_plugin_presets {} -> 
+[0.0s] get_memory_usage {} -> 
+[0.0s] get_peak_levels {"track_index": 0} -> 
+[0.0s] analyze_mix_quality {} -> 
+[0.0s] get_arrangement_suggestions {} -> 
+[0.0s] get_genre_suggestions {"genre": "rock"} -> 
+[0.0s] get_sound_design_help {"query": "bass"} -> 
+
+--- TIMEOUTS ---
+refresh_browser_cache_tool {}
+
+--- HANDLED ERRORS (check if expected) ---
+set_track_name {} -> {"status": "error", "message": "Error setting track name: register_tools.<locals>.set_track_name() missing 2 required positional arguments: 'track_index' and 'name'"}
+set_track_color {} -> {"status": "error", "message": "Error setting track color: register_tools.<locals>.set_track_color() missing 2 required positional arguments: 'track_index' and 'color_index'"}
+arm_track {} -> {"status": "error", "message": "Error arming track: register_tools.<locals>.arm_track() missing 1 required positional argument: 'track_index'"}
+disarm_track {} -> {"status": "error", "message": "Error disarming track: register_tools.<locals>.disarm_track() missing 1 required positional argument: 'track_index'"}
+get_return_track_info {} -> {"status": "error", "message": "Error getting return track info: register_tools.<locals>.get_return_track_info() missing 1 required positional argument: 'return_track_index'"}
+set_track_fold {} -> {"status": "error", "message": "Error setting track fold: register_tools.<locals>.set_track_fold() missing 2 required positional arguments: 'track_index' and 'fold_state'"}
+set_track_collapse {} -> {"status": "error", "message": "Error setting track collapse: register_tools.<locals>.set_track_collapse() missing 2 required positional arguments: 'track_index' and 'collapsed'"}
+set_track_routing {} -> {"status": "error", "message": "Error setting track routing: register_tools.<locals>.set_track_routing() missing 1 required positional argument: 'track_index'"}
+set_track_monitoring {} -> {"status": "error", "message": "Error setting track monitoring: register_tools.<locals>.set_track_monitoring() missing 2 required positional arguments: 'track_index' and 'state'"}
+get_track_data {} -> {"status": "error", "message": "Error getting track data: register_tools.<locals>.get_track_data() missing 2 required positional arguments: 'track_index' and 'key'"}
+set_track_data {} -> {"status": "error", "message": "Error setting track data: register_tools.<locals>.set_track_data() missing 3 required positional arguments: 'track_index', 'key', and 'value'"}
+select_track {} -> {"status": "error", "message": "Error selecting track: register_tools.<locals>.select_track() missing 1 required positional argument: 'track_index'"}
+set_implicit_arm {} -> {"status": "error", "message": "Error setting implicit arm: register_tools.<locals>.set_implicit_arm() missing 2 required positional arguments: 'track_index' and 'enabled'"}
+get_clip_info {"track_index": 0, "clip_index": 0} -> {"status": "error", "message": "Error getting clip info: Command 'get_clip_info' failed after 2 attempts: No clip in slot (track=0, clip=0)"}
+add_notes_to_clip {} -> {"status": "error", "message": "Error adding notes to clip: register_tools.<locals>.add_notes_to_clip() missing 3 required positional arguments: 'track_index', 'clip_index', and 'notes'"}
+add_notes_extended {} -> {"status": "error", "message": "Error adding extended notes: register_tools.<locals>.add_notes_extended() missing 3 required positional arguments: 'track_index', 'clip_index', and 'notes'"}
+get_clip_notes {} -> {"status": "error", "message": "Error getting clip notes: register_tools.<locals>.get_clip_notes() missing 2 required positional arguments: 'track_index' and 'clip_index'"}
+get_notes_extended {} -> {"status": "error", "message": "Error getting extended notes: register_tools.<locals>.get_notes_extended() missing 2 required positional arguments: 'track_index' and 'clip_index'"}
+set_clip_name {} -> {"status": "error", "message": "Error setting clip name: register_tools.<locals>.set_clip_name() missing 3 required positional arguments: 'track_index', 'clip_index', and 'name'"}
+set_clip_color {} -> {"status": "error", "message": "Error setting clip color: register_tools.<locals>.set_clip_color() missing 3 required positional arguments: 'track_index', 'clip_index', and 'color_index'"}
+set_clip_looping {} -> {"status": "error", "message": "Error setting clip looping: register_tools.<locals>.set_clip_looping() missing 3 required positional arguments: 'track_index', 'clip_index', and 'looping'"}
+set_clip_loop_points {} -> {"status": "error", "message": "Error setting clip loop points: register_tools.<locals>.set_clip_loop_points() missing 4 required positional arguments: 'track_index', 'clip_index', 'loop_start', and 'loop_end'"}
+set_clip_start_end {} -> {"status": "error", "message": "Error setting clip start/end markers: register_tools.<locals>.set_clip_start_end() missing 2 required positional arguments: 'track_index' and 'clip_index'"}
+set_clip_start_time {} -> {"status": "error", "message": "Error setting clip start time: register_tools.<locals>.set_clip_start_time() missing 3 required positional arguments: 'track_index', 'clip_index', and 'time'"}
+quantize_clip_notes {} -> {"status": "error", "message": "Error quantizing clip notes: register_tools.<locals>.quantize_clip_notes() missing 2 required positional arguments: 'track_index' and 'clip_index'"}
+transpose_clip_notes {} -> {"status": "error", "message": "Error transposing clip notes: register_tools.<locals>.transpose_clip_notes() missing 3 required positional arguments: 'track_index', 'clip_index', and 'semitones'"}
+set_clip_pitch {} -> {"status": "error", "message": "Error setting clip pitch: register_tools.<locals>.set_clip_pitch() missing 2 required positional arguments: 'track_index' and 'clip_index'"}
+set_clip_launch_mode {} -> {"status": "error", "message": "Error setting clip launch mode: register_tools.<locals>.set_clip_launch_mode() missing 3 required positional arguments: 'track_index', 'clip_index', and 'launch_mode'"}
+set_clip_launch_quantization {} -> {"status": "error", "message": "Error setting clip launch quantization: register_tools.<locals>.set_clip_launch_quantization() missing 3 required positional arguments: 'track_index', 'clip_index', and 'quantization'"}
+set_clip_legato {} -> {"status": "error", "message": "Error setting clip legato: register_tools.<locals>.set_clip_legato() missing 3 required positional arguments: 'track_index', 'clip_index', and 'legato'"}
+set_clip_warp {} -> {"status": "error", "message": "Error setting clip warp: register_tools.<locals>.set_clip_warp() missing 3 required positional arguments: 'track_index', 'clip_index', and 'warping_enabled'"}
+set_warp_mode {} -> {"status": "error", "message": "Error setting warp mode: register_tools.<locals>.set_warp_mode() missing 3 required positional arguments: 'track_index', 'clip_index', and 'warp_mode'"}
+duplicate_clip_to_arrangement {} -> {"status": "error", "message": "Error duplicating clip to arrangement: register_tools.<locals>.duplicate_clip_to_arrangement() missing 3 required positional arguments: 'track_index', 'clip_index', and 'time'"}
+set_clip_grid {} -> {"status": "error", "message": "Error setting clip grid: register_tools.<locals>.set_clip_grid() missing 2 required positional arguments: 'track_index' and 'clip_index'"}
+get_clip_follow_actions {} -> {"status": "error", "message": "Error getting clip follow actions: register_tools.<locals>.get_clip_follow_actions() missing 2 required positional arguments: 'track_index' and 'clip_index'"}
+set_clip_follow_actions {} -> {"status": "error", "message": "Error setting clip follow actions: register_tools.<locals>.set_clip_follow_actions() missing 2 required positional arguments: 'track_index' and 'clip_index'"}
+get_clip_properties {} -> {"status": "error", "message": "Error getting clip properties: register_tools.<locals>.get_clip_properties() missing 2 required positional arguments: 'track_index' and 'clip_index'"}
+set_clip_properties {} -> {"status": "error", "message": "Error setting clip properties: register_tools.<locals>.set_clip_properties() missing 2 required positional arguments: 'track_index' and 'clip_index'"}
+select_all_notes {} -> {"status": "error", "message": "Error selecting all notes: register_tools.<locals>.select_all_notes() missing 2 required positional arguments: 'track_index' and 'clip_index'"}
+deselect_all_notes {} -> {"status": "error", "message": "Error deselecting all notes: register_tools.<locals>.deselect_all_notes() missing 2 required positional arguments: 'track_index' and 'clip_index'"}
+get_selected_notes {} -> {"status": "error", "message": "Error getting selected notes: register_tools.<locals>.get_selected_notes() missing 2 required positional arguments: 'track_index' and 'clip_index'"}
+stop_track_clips {} -> {"status": "error", "message": "Error stopping track clips: register_tools.<locals>.stop_track_clips() missing 1 required positional argument: 'track_index'"}
+get_warp_markers {} -> {"status": "error", "message": "Error getting warp markers: register_tools.<locals>.get_warp_markers() missing 2 required positional arguments: 'track_index' and 'clip_index'"}
+add_warp_marker {} -> {"status": "error", "message": "Error adding warp marker: register_tools.<locals>.add_warp_marker() missing 3 required positional arguments: 'track_index', 'clip_index', and 'beat_time'"}
+move_warp_marker {} -> {"status": "error", "message": "Error moving warp marker: register_tools.<locals>.move_warp_marker() missing 4 required positional arguments: 'track_index', 'clip_index', 'beat_time', and 'beat_time_distance'"}
+remove_warp_marker {} -> {"status": "error", "message": "Error removing warp marker: register_tools.<locals>.remove_warp_marker() missing 3 required positional arguments: 'track_index', 'clip_index', and 'beat_time'"}
+set_fire_button_state {} -> {"status": "error", "message": "Error setting fire button state: register_tools.<locals>.set_fire_button_state() missing 2 required positional arguments: 'track_index' and 'clip_index'"}
+clip_scrub_native {} -> {"status": "error", "message": "Error scrubbing clip: register_tools.<locals>.clip_scrub_native() missing 3 required positional arguments: 'track_index', 'clip_index', and 'position'"}
+clip_stop_scrub {} -> {"status": "error", "message": "Error stopping clip scrub: register_tools.<locals>.clip_stop_scrub() missing 2 required positional arguments: 'track_index' and 'clip_index'"}
+clip_beat_to_sample_time {} -> {"status": "error", "message": "Error converting beat to sample time: register_tools.<locals>.clip_beat_to_sample_time() missing 3 required positional arguments: 'track_index', 'clip_index', and 'beat_time'"}
+clip_sample_to_beat_time {} -> {"status": "error", "message": "Error converting sample to beat time: register_tools.<locals>.clip_sample_to_beat_time() missing 3 required positional arguments: 'track_index', 'clip_index', and 'sample_time'"}
+duplicate_clip_slot {} -> {"status": "error", "message": "Error duplicating clip slot: register_tools.<locals>.duplicate_clip_slot() missing 2 required positional arguments: 'track_index' and 'clip_index'"}
+get_clip_slot_properties {} -> {"status": "error", "message": "Error getting clip slot properties: register_tools.<locals>.get_clip_slot_properties() missing 2 required positional arguments: 'track_index' and 'clip_index'"}
+set_clip_slot_properties {} -> {"status": "error", "message": "Error setting clip slot properties: register_tools.<locals>.set_clip_slot_properties() missing 2 required positional arguments: 'track_index' and 'clip_index'"}
+jump_in_running_session_clip {} -> {"status": "error", "message": "Error jumping in running session clip: register_tools.<locals>.jump_in_running_session_clip() missing 2 required positional arguments: 'track_index' and 'amount'"}
+set_track_arm {} -> {"status": "error", "message": "Error setting track arm: register_tools.<locals>.set_track_arm() missing 2 required positional arguments: 'track_index' and 'arm'"}
+set_track_send {} -> {"status": "error", "message": "Error setting track send: register_tools.<locals>.set_track_send() missing 3 required positional arguments: 'track_index', 'send_index', and 'value'"}
+set_crossfader {} -> {"status": "error", "message": "Error setting crossfader: register_tools.<locals>.set_crossfader() missing 1 required positional argument: 'value'"}
+set_cue_volume {} -> {"status": "error", "message": "Error setting cue volume: register_tools.<locals>.set_cue_volume() missing 1 required positional argument: 'value'"}
+set_track_delay {} -> {"status": "error", "message": "Error setting track delay: register_tools.<locals>.set_track_delay() missing 2 required positional arguments: 'track_index' and 'delay'"}
+get_track_delay {} -> {"status": "error", "message": "Error getting track delay: register_tools.<locals>.get_track_delay() missing 1 required positional argument: 'track_index'"}
+set_panning_mode {} -> {"status": "error", "message": "Error setting panning mode: register_tools.<locals>.set_panning_mode() missing 2 required positional arguments: 'track_index' and 'mode'"}
+set_split_stereo_pan {} -> {"status": "error", "message": "Error setting split stereo pan: register_tools.<locals>.set_split_stereo_pan() missing 1 required positional argument: 'track_index'"}
+set_crossfade_assign {} -> {"status": "error", "message": "Error setting crossfade assign: register_tools.<locals>.set_crossfade_assign() missing 2 required positional arguments: 'track_index' and 'assign'"}
+apply_groove {} -> {"status": "error", "message": "Error applying groove: register_tools.<locals>.apply_groove() missing 3 required positional arguments: 'track_index', 'clip_index', and 'groove_amount'"}
+set_mixer {} -> {"status": "error", "message": "Error setting mixer parameters: register_tools.<locals>.set_mixer() missing 1 required positional argument: 'track_index'"}
+preview_browser_item {} -> {"status": "error", "message": "Error previewing browser item: Command 'preview_browser_item' failed after 2 attempts: uri is required for preview action"}
+get_device_presets {} -> {"status": "error", "message": "Error getting device presets: register_tools.<locals>.get_device_presets() missing 2 required positional arguments: 'track_index' and 'device_index'"}
+load_device_preset {} -> {"status": "error", "message": "Error loading device preset: register_tools.<locals>.load_device_preset() missing 3 required positional arguments: 'track_index', 'device_index', and 'preset_uri'"}
+create_clip_automation {} -> {"status": "error", "message": "Error creating clip automation: register_tools.<locals>.create_clip_automation() missing 4 required positional arguments: 'track_index', 'clip_index', 'parameter_name', and 'automation_points'"}
+get_clip_automation {} -> {"status": "error", "message": "Error getting clip automation: register_tools.<locals>.get_clip_automation() missing 3 required positional arguments: 'track_index', 'clip_index', and 'parameter_name'"}
+list_clip_automated_parameters {} -> {"status": "error", "message": "Error listing automated parameters: register_tools.<locals>.list_clip_automated_parameters() missing 2 required positional arguments: 'track_index' and 'clip_index'"}
+create_track_automation {} -> {"status": "error", "message": "Error creating track automation: register_tools.<locals>.create_track_automation() missing 3 required positional arguments: 'track_index', 'parameter_name', and 'automation_points'"}
+create_automation_curve {} -> {"status": "error", "message": "Error creating automation curve: register_tools.<locals>.create_automation_curve() missing 3 required positional arguments: 'track_index', 'clip_index', and 'parameter_name'"}
+clear_clip_envelope {} -> {"status": "error", "message": "Error clearing clip envelope: register_tools.<locals>.clear_clip_envelope() missing 3 required positional arguments: 'track_index', 'clip_index', and 'parameter_name'"}
+clear_all_clip_envelopes {} -> {"status": "error", "message": "Error clearing all clip envelopes: register_tools.<locals>.clear_all_clip_envelopes() missing 2 required positional arguments: 'track_index' and 'clip_index'"}
+get_clip_automation_value {} -> {"status": "error", "message": "Error getting automation value at time: register_tools.<locals>.get_clip_automation_value() missing 4 required positional arguments: 'track_index', 'clip_index', 'parameter_name', and 'time'"}
+get_clip_automation_hires {} -> {"status": "error", "message": "Error getting hi-res automation: register_tools.<locals>.get_clip_automation_hires() missing 3 required positional arguments: 'track_index', 'clip_index', and 'parameter_name'"}
+create_step_automation {} -> {"status": "error", "message": "Error creating step automation: register_tools.<locals>.create_step_automation() missing 4 required positional arguments: 'track_index', 'clip_index', 'parameter_name', and 'steps'"}
+create_arrangement_midi_clip {} -> {"status": "error", "message": "Error creating arrangement MIDI clip: register_tools.<locals>.create_arrangement_midi_clip() missing 3 required positional arguments: 'track_index', 'time', and 'length'"}
+create_arrangement_audio_clip {} -> {"status": "error", "message": "Error creating arrangement audio clip: register_tools.<locals>.create_arrangement_audio_clip() missing 3 required positional arguments: 'track_index', 'time', and 'length'"}
+move_arrangement_clip {} -> {"status": "error", "message": "Error moving arrangement clip: register_tools.<locals>.move_arrangement_clip() missing 3 required positional arguments: 'track_index', 'clip_index_in_arrangement', and 'new_start_time'"}
+delete_arrangement_clip {} -> {"status": "error", "message": "Error deleting arrangement clip: register_tools.<locals>.delete_arrangement_clip() missing 2 required positional arguments: 'track_index' and 'clip_index_in_arrangement'"}
+set_arrangement_clip_properties {} -> {"status": "error", "message": "Error setting arrangement clip properties: register_tools.<locals>.set_arrangement_clip_properties() missing 2 required positional arguments: 'track_index' and 'clip_index_in_arrangement'"}
+get_arrangement_clip_info {} -> {"status": "error", "message": "Error getting arrangement clip info: register_tools.<locals>.get_arrangement_clip_info() missing 2 required positional arguments: 'track_index' and 'clip_index_in_arrangement'"}
+set_detail_clip {} -> {"status": "error", "message": "Error setting detail clip: register_tools.<locals>.set_detail_clip() missing 2 required positional arguments: 'track_index' and 'clip_index'"}
+select_scene {} -> {"status": "error", "message": "Error selecting scene: register_tools.<locals>.select_scene() missing 1 required positional argument: 'scene_index'"}
+compare_arrangement_sections {} -> {"status": "error", "message": "Error comparing arrangement sections: register_tools.<locals>.compare_arrangement_sections() missing 4 required positional arguments: 'section_a_start', 'section_a_end', 'section_b_start', and 'section_b_end'"}
+generate_euclidean_rhythm {} -> {"status": "error", "message": "Error generating euclidean rhythm: register_tools.<locals>.generate_euclidean_rhythm() missing 4 required positional arguments: 'track_index', 'clip_index', 'steps', and 'pulses'"}
+humanize_notes {} -> {"status": "error", "message": "Error humanizing notes: register_tools.<locals>.humanize_notes() missing 2 required positional arguments: 'track_index' and 'clip_index'"}
+scale_constrained_generate {} -> {"status": "error", "message": "Error generating scale-constrained notes: register_tools.<locals>.scale_constrained_generate() missing 2 required positional arguments: 'track_index' and 'clip_index'"}
+transform_notes {} -> {"status": "error", "message": "Error transforming notes: register_tools.<locals>.transform_notes() missing 3 required positional arguments: 'track_index', 'clip_index', and 'operation'"}
+copy_notes_between_clips {} -> {"status": "error", "message": "Error copying notes between clips: register_tools.<locals>.copy_notes_between_clips() missing 4 required positional arguments: 'src_track', 'src_clip', 'dest_track', and 'dest_clip'"}
+batch_set_follow_actions {} -> {"status": "error", "message": "Error batch setting follow actions: register_tools.<locals>.batch_set_follow_actions() missing 2 required positional arguments: 'track_index' and 'clip_indices'"}
+randomize_clip_notes {} -> {"status": "error", "message": "Error randomizing clip notes: register_tools.<locals>.randomize_clip_notes() missing 2 required positional arguments: 'track_index' and 'clip_index'"}
+create_polyrhythm {} -> {"status": "error", "message": "Error creating polyrhythm: register_tools.<locals>.create_polyrhythm() missing 3 required positional arguments: 'track_index', 'clip_index', and 'rhythms'"}
+stutter_effect {} -> {"status": "error", "message": "Error creating stutter effect: register_tools.<locals>.stutter_effect() missing 2 required positional arguments: 'track_index' and 'clip_index'"}
+duplicate_with_variation {} -> {"status": "error", "message": "Error duplicating with variation: register_tools.<locals>.duplicate_with_variation() missing 4 required positional arguments: 'src_track', 'src_clip', 'dest_track', and 'dest_clip'"}
+generate_chord_progression {} -> {"status": "error", "message": "Error generating chord progression: register_tools.<locals>.generate_chord_progression() missing 2 required positional arguments: 'track_index' and 'clip_index'"}
+generate_arpeggio {} -> {"status": "error", "message": "Error generating arpeggio: register_tools.<locals>.generate_arpeggio() missing 2 required positional arguments: 'track_index' and 'clip_index'"}
+generate_drum_pattern {} -> {"status": "error", "message": "Error generating drum pattern: register_tools.<locals>.generate_drum_pattern() missing 2 required positional arguments: 'track_index' and 'clip_index'"}
+euclidean_rhythm {} -> {"status": "error", "message": "Error generating euclidean rhythm: register_tools.<locals>.euclidean_rhythm() missing 2 required positional arguments: 'track_index' and 'clip_index'"}
+generate_bass_line {} -> {"status": "error", "message": "Error generating bass line: register_tools.<locals>.generate_bass_line() missing 2 required positional arguments: 'track_index' and 'clip_index'"}
+harmonize_melody {} -> {"status": "error", "message": "Error harmonizing melody: register_tools.<locals>.harmonize_melody() missing 2 required positional arguments: 'track_index' and 'clip_index'"}
+quantize_to_scale {} -> {"status": "error", "message": "Error quantizing notes to scale: register_tools.<locals>.quantize_to_scale() missing 2 required positional arguments: 'track_index' and 'clip_index'"}
+clip_to_grid {} -> {"status": "error", "message": "Error converting clip to grid: register_tools.<locals>.clip_to_grid() missing 2 required positional arguments: 'track_index' and 'clip_index'"}
+grid_to_clip {} -> {"status": "error", "message": "Error writing grid to clip: register_tools.<locals>.grid_to_clip() missing 3 required positional arguments: 'track_index', 'clip_index', and 'grid'"}
+m4l_status {} -> {"status": "error", "message": "M4L bridge not available: M4L bridge device is not responding. Make sure the AbletonBridge M4L device is loaded on a track in Ableton."}
+discover_device_params {} -> {"status": "error", "message": "Error discovering device parameters: register_tools.<locals>.discover_device_params() missing 2 required positional arguments: 'track_index' and 'device_index'"}
+get_device_hidden_parameters {} -> {"status": "error", "message": "Error getting hidden device parameters: register_tools.<locals>.get_device_hidden_parameters() missing 2 required positional arguments: 'track_index' and 'device_index'"}
+set_device_hidden_parameter {} -> {"status": "error", "message": "Error setting hidden device parameter: register_tools.<locals>.set_device_hidden_parameter() missing 4 required positional arguments: 'track_index', 'device_index', 'parameter_index', and 'value'"}
+batch_set_hidden_parameters {} -> {"status": "error", "message": "Error batch setting parameters: register_tools.<locals>.batch_set_hidden_parameters() missing 3 required positional arguments: 'track_index', 'device_index', and 'parameters'"}
+get_automation_states {} -> {"status": "error", "message": "Error getting automation states: register_tools.<locals>.get_automation_states() missing 2 required positional arguments: 'track_index' and 'device_index'"}
+discover_chains_m4l {} -> {"status": "error", "message": "Error discovering device chains via M4L: register_tools.<locals>.discover_chains_m4l() missing 2 required positional arguments: 'track_index' and 'device_index'"}
+get_chain_device_params_m4l {} -> {"status": "error", "message": "Error getting chain device parameters via M4L: register_tools.<locals>.get_chain_device_params_m4l() missing 4 required positional arguments: 'track_index', 'device_index', 'chain_index', and 'chain_device_index'"}
+set_chain_device_param_m4l {} -> {"status": "error", "message": "Error setting chain device parameter via M4L: register_tools.<locals>.set_chain_device_param_m4l() missing 6 required positional arguments: 'track_index', 'device_index', 'chain_index', 'chain_device_index', 'parameter_index', and 'value'"}
+get_clip_notes_with_ids {} -> {"status": "error", "message": "Error getting clip notes with IDs: register_tools.<locals>.get_clip_notes_with_ids() missing 2 required positional arguments: 'track_index' and 'clip_index'"}
+modify_clip_notes {} -> {"status": "error", "message": "Error modifying clip notes by ID: register_tools.<locals>.modify_clip_notes() missing 3 required positional arguments: 'track_index', 'clip_index', and 'modifications'"}
+remove_clip_notes_by_id {} -> {"status": "error", "message": "Error removing clip notes by ID: register_tools.<locals>.remove_clip_notes_by_id() missing 3 required positional arguments: 'track_index', 'clip_index', and 'note_ids'"}
+get_chain_mixing {} -> {"status": "error", "message": "Error getting chain mixing state: register_tools.<locals>.get_chain_mixing() missing 3 required positional arguments: 'track_index', 'device_index', and 'chain_index'"}
+set_chain_mixing {} -> {"status": "error", "message": "Error setting chain mixing state: register_tools.<locals>.set_chain_mixing() missing 4 required positional arguments: 'track_index', 'device_index', 'chain_index', and 'properties'"}
+device_ab_compare {} -> {"status": "error", "message": "Error comparing device AB presets: register_tools.<locals>.device_ab_compare() missing 3 required positional arguments: 'track_index', 'device_index', and 'action'"}
+clip_scrub {} -> {"status": "error", "message": "Error scrubbing clip: register_tools.<locals>.clip_scrub() missing 3 required positional arguments: 'track_index', 'clip_index', and 'action'"}
+get_split_stereo {} -> {"status": "error", "message": "Error getting split stereo panning: register_tools.<locals>.get_split_stereo() missing 1 required positional argument: 'track_index'"}
+set_split_stereo {} -> {"status": "error", "message": "Error setting split stereo panning: register_tools.<locals>.set_split_stereo() missing 3 required positional arguments: 'track_index', 'left', and 'right'"}
+observe_property {} -> {"status": "error", "message": "Error starting observation: register_tools.<locals>.observe_property() missing 2 required positional arguments: 'lom_path' and 'property_name'"}
+stop_observing {} -> {"status": "error", "message": "Error stopping observation: register_tools.<locals>.stop_observing() missing 2 required positional arguments: 'lom_path' and 'property_name'"}
+get_property_changes {} -> {"status": "error", "message": "M4L bridge not available: M4L bridge device is not responding. Make sure the AbletonBridge M4L device is loaded on a track in Ableton."}
+set_parameter_clean {} -> {"status": "error", "message": "Error setting parameter cleanly: register_tools.<locals>.set_parameter_clean() missing 4 required positional arguments: 'track_index', 'device_index', 'parameter_index', and 'value'"}
+analyze_track_audio {} -> {"status": "error", "message": "M4L bridge not available: M4L bridge device is not responding. Make sure the AbletonBridge M4L device is loaded on a track in Ableton."}
+analyze_track_spectrum {} -> {"status": "error", "message": "M4L bridge not available: M4L bridge device is not responding. Make sure the AbletonBridge M4L device is loaded on a track in Ableton."}
+analyze_cross_track_audio {} -> {"status": "error", "message": "Error in cross-track audio analysis: register_tools.<locals>.analyze_cross_track_audio() missing 1 required positional argument: 'track_index'"}
+get_ableton_version {} -> {"status": "error", "message": "M4L bridge not available: M4L bridge device is not responding. Make sure the AbletonBridge M4L device is loaded on a track in Ableton."}
+rack_insert_chain_m4l {} -> {"status": "error", "message": "Error inserting rack chain via M4L: register_tools.<locals>.rack_insert_chain_m4l() missing 2 required positional arguments: 'track_index' and 'device_index'"}
+chain_insert_device_m4l {} -> {"status": "error", "message": "Error inserting device into chain via M4L: register_tools.<locals>.chain_insert_device_m4l() missing 4 required positional arguments: 'track_index', 'device_index', 'chain_index', and 'device_uri'"}
+set_drum_chain_note {} -> {"status": "error", "message": "Error setting drum chain note: register_tools.<locals>.set_drum_chain_note() missing 4 required positional arguments: 'track_index', 'device_index', 'chain_index', and 'note'"}
+get_take_lanes_m4l {} -> {"status": "error", "message": "Error getting take lanes via M4L: register_tools.<locals>.get_take_lanes_m4l() missing 1 required positional argument: 'track_index'"}
+get_take_lanes {} -> {"status": "error", "message": "Error getting take lanes: register_tools.<locals>.get_take_lanes() missing 1 required positional argument: 'track_index'"}
+create_take_lane {} -> {"status": "error", "message": "Error creating take lane: register_tools.<locals>.create_take_lane() missing 1 required positional argument: 'track_index'"}
+rack_store_variation {} -> {"status": "error", "message": "Error storing rack variation: register_tools.<locals>.rack_store_variation() missing 2 required positional arguments: 'track_index' and 'device_index'"}
+rack_recall_variation {} -> {"status": "error", "message": "Error recalling rack variation: register_tools.<locals>.rack_recall_variation() missing 3 required positional arguments: 'track_index', 'device_index', and 'variation_index'"}
+create_arrangement_midi_clip_m4l {} -> {"status": "error", "message": "Error creating arrangement MIDI clip via M4L: register_tools.<locals>.create_arrangement_midi_clip_m4l() missing 3 required positional arguments: 'track_index', 'time', and 'length'"}
+create_arrangement_audio_clip_m4l {} -> {"status": "error", "message": "Error creating arrangement audio clip via M4L: register_tools.<locals>.create_arrangement_audio_clip_m4l() missing 3 required positional arguments: 'track_index', 'time', and 'length'"}
+get_cue_points {} -> {"status": "error", "message": "M4L bridge not available: M4L bridge device is not responding. Make sure the AbletonBridge M4L device is loaded on a track in Ableton."}
+jump_to_cue_point {} -> {"status": "error", "message": "Error jumping to cue point: register_tools.<locals>.jump_to_cue_point() missing 1 required positional argument: 'cue_point_index'"}
+get_groove_pool {} -> {"status": "error", "message": "M4L bridge not available: M4L bridge device is not responding. Make sure the AbletonBridge M4L device is loaded on a track in Ableton."}
+set_groove_properties {} -> {"status": "error", "message": "Error setting groove properties: register_tools.<locals>.set_groove_properties() missing 1 required positional argument: 'groove_index'"}
+get_cc_map {"plugin_name": "arturia_analog_lab", "parameter_name": "cutoff"} -> {"status": "error", "message": "Error getting CC map for plugin: register_tools.<locals>.get_cc_map() got an unexpected keyword argument 'plugin_name'"}
+set_scene_name {} -> {"status": "error", "message": "Error setting scene name: register_tools.<locals>.set_scene_name() missing 2 required positional arguments: 'scene_index' and 'name'"}
+set_scene_color {} -> {"status": "error", "message": "Error setting scene color: register_tools.<locals>.set_scene_color() missing 2 required positional arguments: 'scene_index' and 'color_index'"}
+set_scene_tempo {} -> {"status": "error", "message": "Error setting scene tempo: register_tools.<locals>.set_scene_tempo() missing 2 required positional arguments: 'scene_index' and 'tempo'"}
+get_scene_follow_actions {} -> {"status": "error", "message": "Error getting scene follow actions: register_tools.<locals>.get_scene_follow_actions() missing 1 required positional argument: 'scene_index'"}
+set_scene_follow_actions {} -> {"status": "error", "message": "Error setting scene follow actions: register_tools.<locals>.set_scene_follow_actions() missing 1 required positional argument: 'scene_index'"}
+set_tempo {} -> {"status": "error", "message": "Error setting tempo: register_tools.<locals>.set_tempo() missing 1 required positional argument: 'tempo'"}
+set_metronome {} -> {"status": "error", "message": "Error setting metronome: register_tools.<locals>.set_metronome() missing 1 required positional argument: 'enabled'"}
+set_arrangement_overdub {} -> {"status": "error", "message": "Error setting arrangement overdub: register_tools.<locals>.set_arrangement_overdub() missing 1 required positional argument: 'enabled'"}
+jump_to_cue {} -> {"status": "error", "message": "Error jumping to cue: register_tools.<locals>.jump_to_cue() missing 1 required positional argument: 'direction'"}
+set_session_record {} -> {"status": "error", "message": "Error setting session record: register_tools.<locals>.set_session_record() missing 1 required positional argument: 'enabled'"}
+navigate_playback {} -> {"status": "error", "message": "Error navigating playback: register_tools.<locals>.navigate_playback() missing 1 required positional argument: 'action'"}
+set_view {} -> {"status": "error", "message": "Error setting view: register_tools.<locals>.set_view() missing 1 required positional argument: 'action'"}
+zoom_scroll_view {} -> {"status": "error", "message": "Error zooming/scrolling view: register_tools.<locals>.zoom_scroll_view() missing 3 required positional arguments: 'action', 'direction', and 'view_name'"}
+get_song_data {} -> {"status": "error", "message": "Error getting song data: register_tools.<locals>.get_song_data() missing 1 required positional argument: 'key'"}
+set_song_data {} -> {"status": "error", "message": "Error setting song data: register_tools.<locals>.set_song_data() missing 2 required positional arguments: 'key' and 'value'"}
+set_draw_mode {} -> {"status": "error", "message": "Error setting draw mode: register_tools.<locals>.set_draw_mode() missing 1 required positional argument: 'enabled'"}
+set_follow_song {} -> {"status": "error", "message": "Error setting follow song: register_tools.<locals>.set_follow_song() missing 1 required positional argument: 'enabled'"}
+snapshot_device_state {} -> {"status": "error", "message": "Error capturing device snapshot: register_tools.<locals>.snapshot_device_state() missing 2 required positional arguments: 'track_index' and 'device_index'"}
+restore_device_snapshot {} -> {"status": "error", "message": "Error restoring device snapshot: register_tools.<locals>.restore_device_snapshot() missing 1 required positional argument: 'snapshot_id'"}
+compare_snapshots {} -> {"status": "error", "message": "Error comparing snapshots: register_tools.<locals>.compare_snapshots() missing 2 required positional arguments: 'snapshot_a_id' and 'snapshot_b_id'"}
+create_macro_controller {} -> {"status": "error", "message": "Error creating macro controller: register_tools.<locals>.create_macro_controller() missing 2 required positional arguments: 'name' and 'mappings'"}
+set_macro_value {} -> {"status": "error", "message": "Error setting macro value: register_tools.<locals>.set_macro_value() missing 2 required positional arguments: 'macro_id' and 'value'"}
+create_parameter_map {} -> {"status": "error", "message": "Error creating parameter map: register_tools.<locals>.create_parameter_map() missing 3 required positional arguments: 'track_index', 'device_index', and 'friendly_names'"}
+get_parameter_map {} -> {"status": "error", "message": "Error getting parameter map: register_tools.<locals>.get_parameter_map() missing 1 required positional argument: 'map_id'"}
+delete_parameter_map {} -> {"status": "error", "message": "Error deleting parameter map: register_tools.<locals>.delete_parameter_map() missing 1 required positional argument: 'map_id'"}
+create_instrument_track {} -> {"status": "error", "message": "Error creating instrument track: register_tools.<locals>.create_instrument_track() missing 1 required positional argument: 'instrument_name'"}
+create_clip_with_notes {} -> {"status": "error", "message": "Error creating clip with notes: register_tools.<locals>.create_clip_with_notes() missing 4 required positional arguments: 'track_index', 'clip_index', 'length', and 'notes'"}
+setup_send_return {} -> {"status": "error", "message": "Error setting up send/return: register_tools.<locals>.setup_send_return() missing 1 required positional argument: 'effect_name'"}
+batch_set_mixer {} -> {"status": "error", "message": "Error batch setting mixer: register_tools.<locals>.batch_set_mixer() missing 1 required positional argument: 'settings'"}
+create_drum_track {} -> {"status": "error", "message": "Error creating drum track: _validate_index_allow_negative() got an unexpected keyword argument 'min_value'"}
+load_lighting_scene {"name": ""} -> {
+  "status": "error",
+  "message": "Lighting scene '' not found"
+}
+load_video_preset {"name": ""} -> {
+  "status": "error",
+  "message": "Video preset '' not found"
+}
+fire_scene_macro {"name": ""} -> {
+  "status": "error",
+  "message": "Macro '' not found"
+}
+activate_backup_preset {"name": ""} -> {
+  "status": "error",
+  "message": "Backup preset '' not found"
+}
+
+--- OK (sample of 30) ---
+get_track_info -> {"index": 0, "name": "1-MIDI", "is_group_track": false, "is_audio_track": false, "is_midi_track": true, "mute": false, "solo": false, "arm": false, "v
+get_all_tracks_info -> {"tracks": [{"index": 0, "name": "1-MIDI", "is_audio": false, "is_midi": true, "mute": false, "solo": false, "volume": 0.8500000238418579, "panning": 
+get_return_tracks_info -> {"return_tracks": [{"index": 0, "name": "A-Reverb", "volume": 0.8500000238418579, "panning": 0.0, "color_index": 14, "devices": [{"name": "Reverb", "c
+get_return_tracks -> {"return_tracks": [{"index": 0, "name": "A-Reverb", "volume": 0.8500000238418579, "panning": 0.0, "mute": false, "solo": false, "devices": [{"index": 
+get_master_track_info -> {"name": "Master", "volume": 0.8500000238418579, "panning": 0.0, "devices": []}
+get_track_routing -> {"track_index": 0, "track_name": "1-MIDI", "input_routing_type": "All Ins", "input_routing_channel": "All Channels", "output_routing_type": "No Output
+get_track_meters -> {"index": 0, "name": "1-MIDI", "output_meter_level": 0.0, "playing_slot_index": -2, "fired_slot_index": -1}
+get_playing_clips -> {"playing_clips": [], "count": 0}
+get_crossfader -> {"crossfader": 0.0, "min": -1.0, "max": 1.0}
+set_groove_settings -> {"status": "ok", "message": "No parameters specified. Provide groove_amount or groove_index with params."}
+get_browser_tree -> {"status": "ok", "message": "Browser tree for 'all' (showing 0 folders):\n\n\u2022 Instruments\n\n\u2022 Sounds\n\n\u2022 Drums\n\n\u2022 Audio Effect
+get_browser_items_at_path -> {"path": "instruments", "name": "Instruments", "uri": "query:Synths", "is_folder": true, "truncated": false, "is_device": false, "is_loadable": false,
+search_browser -> {"status": "ok", "message": "Browser cache is empty. Make sure Ableton is running and try again."}
+get_user_library -> {"items": [{"name": "Clips", "is_folder": true, "uri": "query:UserLibrary#Clips"}, {"name": "Defaults", "is_folder": true, "uri": "query:UserLibrary#D
+get_user_folders -> {"folders": [], "count": 0}
+list_instrument_rack_presets -> {"status": "ok", "message": "No loadable presets found in the user library.\n\nTo create a VST/AU wrapper preset:\n  1. Load your VST/AU plugin manual
+get_arrangement_clips -> {"track_index": 0, "track_name": "1-MIDI", "clip_count": 0, "clips": []}
+get_arrangement_overview -> {"tempo": 120.0, "time_signature": "4/4", "song_length_beats": 456.13, "song_length_bars": 114.0, "track_count": 4, "tracks": [{"index": 0, "name": "1
+analyze_arrangement_density -> {"region_size_beats": 16.0, "total_regions": 31, "track_count": 4, "regions": [{"start": 0.0, "end": 16.0, "active_tracks": 0, "clip_count": 0, "densi
+analyze_arrangement_sections -> {"sections": [{"name": "Start", "start_beat": 0.0, "end_beat": 488.13, "bars": 122.0, "active_tracks": [], "clip_count": 0, "density": 0.0, "character
+analyze_note_content -> {"error": "No MIDI notes found in arrangement clips", "tracks_checked": 4}
+list_cc_maps -> {"status": "ok", "message": "No CC maps found in C:\\Users\\o0o\\ablebridge-dev\\MCP_Server\\midi_cc"}
+get_server_capabilities -> {"server_version": "0.1.0", "ableton_connected": true, "m4l_connected": false, "m4l_sockets_ready": true, "browser_cache_ready": true, "browser_cache_
+get_session_info -> {"tempo": 120.0, "signature_numerator": 4, "signature_denominator": 4, "track_count": 4, "return_track_count": 2, "master_track": {"name": "Master", "
+get_song_transport -> {"current_time": 813.8073922902495, "is_playing": true, "tempo": 120.0, "signature_numerator": 4, "signature_denominator": 4, "loop_enabled": false, "
+get_loop_info -> {"loop_start": 8.0, "loop_end": 24.0, "loop_length": 16.0, "loop": false, "current_song_time": 814.2673922902494}
+get_recording_status -> {"record_mode": false, "arrangement_overdub": false, "session_record": false, "is_playing": true, "armed_tracks": [], "armed_track_count": 0}
+tap_tempo -> {"status": "ok", "message": "Tap tempo registered. Current tempo: 120.0 BPM"}
+start_playback -> {"status": "ok", "message": "Started playback"}
+continue_playing -> {"status": "ok", "message": "Playback continued from beat 0.8235520436005078"}
+... and 124 more OK
+
+Report written to C:\Users\o0o\AppData\Local\Temp\tool_test_report.txt

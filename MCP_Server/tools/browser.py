@@ -1,5 +1,6 @@
 """Browser/search tool handlers for AbletonBridge."""
 import json
+import time
 from mcp.server.fastmcp import Context
 from MCP_Server.tools._base import _tool_handler, _m4l_result
 from MCP_Server.connections.ableton import get_ableton_connection
@@ -176,19 +177,40 @@ def register_tools(mcp):
 
         Use this after installing new packs, instruments, or effects so that
         search_browser can find them. The cache is also auto-refreshed every
-        5 minutes.
+        5 minutes. The scan runs in the background; check the returned
+        status, then use get_browser_cache_status to see when it finishes.
         """
-        success = populate_browser_cache(force=True)
-        if success:
-            with state.browser_cache_lock:
-                count = len(state.browser_cache_flat)
-                cats = len(state.browser_cache_by_category)
-                devices = len(state.device_uri_map)
-            return f"Browser cache refreshed: {count} items across {cats} categories, {devices} device names mapped (saved to disk)"
-        return "Failed to refresh browser cache. Make sure Ableton is running."
+        import threading
+
+        with state.browser_cache_lock:
+            if state.browser_cache_populating:
+                return "Browser cache scan already in progress — use get_browser_cache_status to check."
+
+        threading.Thread(target=populate_browser_cache, kwargs={'force': True}, daemon=True).start()
+        return "Browser cache refresh started in background. Use get_browser_cache_status to check progress; search_browser uses the previous cache until the scan completes."
 
     # Register under the original tool name
     refresh_browser_cache_tool.__name__ = "refresh_browser_cache"
+
+    @mcp.tool()
+    @_tool_handler("checking browser cache status")
+    def get_browser_cache_status(ctx: Context) -> str:
+        """
+        Check the state of the browser cache: how many items are cached,
+        when it was last refreshed, and whether a background scan is running.
+        """
+        with state.browser_cache_lock:
+            count = len(state.browser_cache_flat)
+            cats = len(state.browser_cache_by_category)
+            devices = len(state.device_uri_map)
+            ts = state.browser_cache_timestamp
+            populating = state.browser_cache_populating
+        age = f"{time.time() - ts:.0f}s ago" if ts > 0 else "never"
+        status = "scan in progress" if populating else "idle"
+        return (
+            f"Browser cache status: {status} | {count} items across {cats} categories, "
+            f"{devices} device names mapped | last refresh: {age}"
+        )
 
     @mcp.tool()
     @_tool_handler("loading sample")
