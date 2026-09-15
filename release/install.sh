@@ -4,7 +4,7 @@ echo "========================================"
 echo "AbleBridgePlus Installer v0.3.0"
 echo "========================================"
 echo ""
-echo "MCP bridge for Ableton Live - 417 tools"
+echo "MCP bridge for Ableton Live - 448 tools"
 echo "https://github.com/mhzsajan/AbleBridgePlus"
 echo ""
 
@@ -87,9 +87,9 @@ if [ ! -d "$ABLETON_DIR" ]; then
     echo "Please manually copy AbleBridgePlus to your Remote Scripts folder."
     echo ""
 else
-    if [ ! -d "$ABLETON_DIR/AbleBridgePlus" ]; then
-        mkdir -p "$ABLETON_DIR/AbleBridgePlus"
-    fi
+    # Clean replace: remove the old folder first so upgrades never leave stale files
+    rm -rf "$ABLETON_DIR/AbleBridgePlus"
+    mkdir -p "$ABLETON_DIR/AbleBridgePlus"
     cp -r "$INSTALL_DIR/AbleBridgePlus"/* "$ABLETON_DIR/AbleBridgePlus/"
     echo "Remote Script installed to: $ABLETON_DIR/AbleBridgePlus"
 fi

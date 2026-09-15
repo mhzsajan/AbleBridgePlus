@@ -86,9 +86,9 @@ if not exist "%ABLETON_DIR%" (
     echo Please manually copy AbleBridgePlus to your Remote Scripts folder.
     echo.
 ) else (
-    if not exist "%ABLETON_DIR%\AbleBridgePlus" (
-        mkdir "%ABLETON_DIR%\AbleBridgePlus"
-    )
+REM Clean replace: remove the old folder first so upgrades never leave stale files
+    if exist "%ABLETON_DIR%\AbleBridgePlus" rmdir /S /Q "%ABLETON_DIR%\AbleBridgePlus"
+    mkdir "%ABLETON_DIR%\AbleBridgePlus"
     xcopy /E /I /Y "%INSTALL_DIR%\AbleBridgePlus" "%ABLETON_DIR%\AbleBridgePlus" >nul
     echo Remote Script installed to: %ABLETON_DIR%\AbleBridgePlus
 )
