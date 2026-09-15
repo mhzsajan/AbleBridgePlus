@@ -5,6 +5,20 @@ All notable changes to AbleBridge++ will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.4] - 2026-09-15
+
+### Fixed (critical for MCP clients)
+- **JSON-RPC envelope bug**: responses were missing the required `"result"` wrapper, so OpenCode and other strict MCP clients timed out on connect. Both stdio and TCP transports now emit spec-compliant envelopes
+- **Instant handshake**: stdio no longer pre-connects to Ableton/M4L before serving — the MCP handshake answers in <1s and Ableton connects lazily on first tool use
+- `create_midi_track(-1)` (append at end) crashed on a validation signature mismatch — fixed
+
+### Added
+- `mcp_stdio_launcher.py` — absolute-path entry point recommended for MCP client configs (see docs/OPENCODE.md); supports `ABLEBRIDGE_TRACE=1` file tracing for spawn debugging
+
+### Verified end-to-end
+- `opencode mcp list` -> `ablebridge connected`
+- Chat-driven control of a live Ableton 12 session: session info reads and a MIDI track created from a chat prompt
+
 ## [0.3.2] - 2026-09-15
 
 ### Renamed
