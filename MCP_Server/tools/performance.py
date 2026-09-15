@@ -12,7 +12,7 @@ from MCP_Server.tools import tool
 
 
 # Performance history file
-PERFORMANCE_HISTORY_FILE = os.path.join(os.path.expanduser("~"), ".enhanced-abletonbridge", "performance_history.json")
+PERFORMANCE_HISTORY_FILE = os.path.join(os.path.expanduser("~"), ".ablebridge", "performance_history.json")
 
 
 def _load_performance_history() -> List[Dict]:
@@ -165,7 +165,7 @@ async def set_performance_alerts(
     Returns:
         Dictionary with result
     """
-    config_file = os.path.join(os.path.expanduser("~"), ".enhanced-abletonbridge", "performance_config.json")
+    config_file = os.path.join(os.path.expanduser("~"), ".ablebridge", "performance_config.json")
     
     config = {}
     if os.path.exists(config_file):

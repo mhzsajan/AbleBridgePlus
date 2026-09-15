@@ -84,14 +84,14 @@ fi
 
 if [ ! -d "$ABLETON_DIR" ]; then
     echo "Ableton User Library not found at: $ABLETON_DIR"
-    echo "Please manually copy AbletonBridge_Remote_Script to your Remote Scripts folder."
+    echo "Please manually copy AbleBridgePlus to your Remote Scripts folder."
     echo ""
 else
-    if [ ! -d "$ABLETON_DIR/EnhancedAbletonBridge" ]; then
-        mkdir -p "$ABLETON_DIR/EnhancedAbletonBridge"
+    if [ ! -d "$ABLETON_DIR/AbleBridgePlus" ]; then
+        mkdir -p "$ABLETON_DIR/AbleBridgePlus"
     fi
-    cp -r "$INSTALL_DIR/AbletonBridge_Remote_Script"/* "$ABLETON_DIR/EnhancedAbletonBridge/"
-    echo "Remote Script installed to: $ABLETON_DIR/EnhancedAbletonBridge"
+    cp -r "$INSTALL_DIR/AbleBridgePlus"/* "$ABLETON_DIR/AbleBridgePlus/"
+    echo "Remote Script installed to: $ABLETON_DIR/AbleBridgePlus"
 fi
 
 echo ""
@@ -103,8 +103,8 @@ echo "Next steps:"
 echo ""
 echo "1. Open Ableton Live"
 echo "2. Go to Preferences -> Link, Tempo & MIDI"
-echo "3. Under 'Control Surface', select 'EnhancedAbletonBridge'"
-echo "4. Set Input and Output to 'EnhancedAbletonBridge'"
+echo "3. Under 'Control Surface', select 'AbleBridgePlus'"
+echo "4. Set Input and Output to 'AbleBridgePlus'"
 echo ""
 echo "To start the MCP Server:"
 echo "   cd $INSTALL_DIR"

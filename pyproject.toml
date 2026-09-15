@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "enhanced-abletonbridge"
+name = "ablebridge-plus"
 version = "0.3.1"
 description = "AI-integrated live show engineering system for Ableton Live"
 readme = "README.md"
@@ -34,15 +34,15 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/mhzsajan/enhanced-abletonbridge"
-Repository = "https://github.com/mhzsajan/enhanced-abletonbridge"
-Issues = "https://github.com/mhzsajan/enhanced-abletonbridge/issues"
+Homepage = "https://github.com/mhzsajan/ablebridge-plus"
+Repository = "https://github.com/mhzsajan/ablebridge-plus"
+Issues = "https://github.com/mhzsajan/ablebridge-plus/issues"
 
 [project.scripts]
-enhanced-abletonbridge = "MCP_Server.server:main"
+ablebridge-plus = "MCP_Server.server:main"
 
 [tool.hatch.build.targets.wheel]
-packages = ["MCP_Server", "AbletonBridge_Remote_Script"]
+packages = ["MCP_Server", "AbleBridgePlus"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

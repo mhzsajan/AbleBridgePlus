@@ -11,7 +11,7 @@ from MCP_Server.tools import tool
 
 
 # Plugin cache file
-PLUGIN_CACHE_FILE = os.path.join(os.path.expanduser("~"), ".enhanced-abletonbridge", "cache", "plugins.json")
+PLUGIN_CACHE_FILE = os.path.join(os.path.expanduser("~"), ".ablebridge", "cache", "plugins.json")
 
 
 def _load_plugin_cache() -> Dict[str, Any]:

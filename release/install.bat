@@ -83,14 +83,14 @@ echo Setting up Ableton Remote Script...
 set ABLETON_DIR=%USERPROFILE%\Documents\Ableton\User Library\Remote Scripts
 if not exist "%ABLETON_DIR%" (
     echo Ableton User Library not found at: %ABLETON_DIR%
-    echo Please manually copy AbletonBridge_Remote_Script to your Remote Scripts folder.
+    echo Please manually copy AbleBridgePlus to your Remote Scripts folder.
     echo.
 ) else (
-    if not exist "%ABLETON_DIR%\EnhancedAbletonBridge" (
-        mkdir "%ABLETON_DIR%\EnhancedAbletonBridge"
+    if not exist "%ABLETON_DIR%\AbleBridgePlus" (
+        mkdir "%ABLETON_DIR%\AbleBridgePlus"
     )
-    xcopy /E /I /Y "%INSTALL_DIR%\AbletonBridge_Remote_Script" "%ABLETON_DIR%\EnhancedAbletonBridge" >nul
-    echo Remote Script installed to: %ABLETON_DIR%\EnhancedAbletonBridge
+    xcopy /E /I /Y "%INSTALL_DIR%\AbleBridgePlus" "%ABLETON_DIR%\AbleBridgePlus" >nul
+    echo Remote Script installed to: %ABLETON_DIR%\AbleBridgePlus
 )
 
 echo.
@@ -102,8 +102,8 @@ echo Next steps:
 echo.
 echo 1. Open Ableton Live
 echo 2. Go to Preferences - Link, Tempo ^& MIDI
-echo 3. Under "Control Surface", select "EnhancedAbletonBridge"
-echo 4. Set Input and Output to "EnhancedAbletonBridge"
+echo 3. Under "Control Surface", select "AbleBridgePlus"
+echo 4. Set Input and Output to "AbleBridgePlus"
 echo.
 echo To start the MCP Server:
 echo    cd %INSTALL_DIR%

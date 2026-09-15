@@ -12,7 +12,7 @@ from MCP_Server.tools import tool
 
 
 # Templates directory
-TEMPLATES_DIR = os.path.join(os.path.expanduser("~"), ".enhanced-abletonbridge", "templates")
+TEMPLATES_DIR = os.path.join(os.path.expanduser("~"), ".ablebridge", "templates")
 
 
 def _ensure_templates_dir():

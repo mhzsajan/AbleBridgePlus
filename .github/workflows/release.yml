@@ -33,7 +33,7 @@ jobs:
 
           # Copy necessary files
           cp -r MCP_Server release-package/
-          cp -r AbletonBridge_Remote_Script release-package/
+          cp -r AbleBridgePlus release-package/
           cp -r M4L_Device release-package/
           cp -r midi_cc release-package/
           cp -r docs release-package/

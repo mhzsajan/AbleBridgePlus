@@ -12,7 +12,7 @@ from MCP_Server.tools import tool
 
 
 # Session snapshots directory
-SESSION_SNAPSHOTS_DIR = os.path.join(os.path.expanduser("~"), ".enhanced-abletonbridge", "session_snapshots")
+SESSION_SNAPSHOTS_DIR = os.path.join(os.path.expanduser("~"), ".ablebridge", "session_snapshots")
 
 
 def _ensure_snapshots_dir():

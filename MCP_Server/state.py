@@ -116,7 +116,7 @@ class GlobalState:
         self.performance = PerformanceState()
         
         # Cache directory
-        self.cache_dir = os.path.join(os.path.expanduser("~"), ".enhanced-abletonbridge", "cache")
+        self.cache_dir = os.path.join(os.path.expanduser("~"), ".ablebridge", "cache")
         os.makedirs(self.cache_dir, exist_ok=True)
         
         # Load cached state if available

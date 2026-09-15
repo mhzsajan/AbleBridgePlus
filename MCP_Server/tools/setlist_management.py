@@ -11,7 +11,7 @@ from MCP_Server.tools import tool
 
 
 # Setlist configuration file
-SETLIST_CONFIG_FILE = os.path.join(os.path.expanduser("~"), ".enhanced-abletonbridge", "setlist.json")
+SETLIST_CONFIG_FILE = os.path.join(os.path.expanduser("~"), ".ablebridge", "setlist.json")
 
 
 def _load_setlist() -> Dict[str, Any]:

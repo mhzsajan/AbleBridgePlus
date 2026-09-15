@@ -12,7 +12,7 @@ from MCP_Server.tools import tool
 
 
 # Presets directory
-PRESETS_DIR = os.path.join(os.path.expanduser("~"), ".enhanced-abletonbridge", "presets")
+PRESETS_DIR = os.path.join(os.path.expanduser("~"), ".ablebridge", "presets")
 
 
 def _ensure_presets_dir():

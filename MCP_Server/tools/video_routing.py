@@ -11,7 +11,7 @@ from MCP_Server.tools import tool
 
 
 # Video configuration file
-VIDEO_CONFIG_FILE = os.path.join(os.path.expanduser("~"), ".enhanced-abletonbridge", "video_config.json")
+VIDEO_CONFIG_FILE = os.path.join(os.path.expanduser("~"), ".ablebridge", "video_config.json")
 
 
 def _load_video_config() -> Dict[str, Any]:

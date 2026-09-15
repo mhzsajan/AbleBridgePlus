@@ -108,7 +108,7 @@ The Remote Script runs inside Ableton as a Control Surface. It handles:
 - UDP real-time parameter updates
 - Live Object Model (LOM) access
 
-**Location:** `AbletonBridge_Remote_Script/`
+**Location:** `AbleBridgePlus/`
 
 **Key Files:**
 - `__init__.py` — Main Remote Script entry point
@@ -281,7 +281,7 @@ The MCP Server maintains global state for:
 4. Add to tool documentation
 
 ### Adding New Handlers
-1. Create a new file in `AbletonBridge_Remote_Script/handlers/`
+1. Create a new file in `AbleBridgePlus/handlers/`
 2. Define handler functions
 3. Register handlers in `__init__.py`
 4. Add to handler documentation

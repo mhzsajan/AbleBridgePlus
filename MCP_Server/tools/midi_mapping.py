@@ -13,7 +13,7 @@ from MCP_Server.validation import validate_track_index, validate_cc, validate_va
 
 
 # MIDI mapping storage file
-MIDI_MAPPINGS_FILE = os.path.join(os.path.expanduser("~"), ".enhanced-abletonbridge", "midi_mappings.json")
+MIDI_MAPPINGS_FILE = os.path.join(os.path.expanduser("~"), ".ablebridge", "midi_mappings.json")
 
 
 def _load_midi_mappings() -> Dict[str, Any]:
@@ -283,7 +283,7 @@ async def save_midi_mapping(preset_name: str) -> Dict[str, Any]:
     mappings = _load_midi_mappings()
     
     # Save as preset
-    preset_dir = os.path.join(os.path.expanduser("~"), ".enhanced-abletonbridge", "presets", "midi")
+    preset_dir = os.path.join(os.path.expanduser("~"), ".ablebridge", "presets", "midi")
     os.makedirs(preset_dir, exist_ok=True)
     
     preset_file = os.path.join(preset_dir, f"{preset_name}.json")
@@ -321,7 +321,7 @@ async def load_midi_mapping(preset_name: str) -> Dict[str, Any]:
     Returns:
         Dictionary with result
     """
-    preset_file = os.path.join(os.path.expanduser("~"), ".enhanced-abletonbridge", "presets", "midi", f"{preset_name}.json")
+    preset_file = os.path.join(os.path.expanduser("~"), ".ablebridge", "presets", "midi", f"{preset_name}.json")
     
     if not os.path.exists(preset_file):
         return {'error': f'Preset not found: {preset_name}'}

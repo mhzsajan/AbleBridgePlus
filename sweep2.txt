@@ -1,0 +1,203 @@
+=== TOOL TEST REPORT (418 tools) ===
+quick=False write=False
+OK: 196  ERROR(handled): 142  EXCEPTION: 7  TIMEOUT: 0  SKIPPED(destructive): 73
+
+--- EXCEPTIONS (likely bugs) ---
+[0.0s] get_plugin_presets {} -> 
+[0.0s] get_memory_usage {} -> 
+[0.0s] get_peak_levels {"track_index": 0} -> 
+[0.0s] analyze_mix_quality {} -> 
+[0.0s] get_arrangement_suggestions {} -> 
+[0.0s] get_genre_suggestions {"genre": "rock"} -> 
+[0.0s] get_sound_design_help {"query": "bass"} -> 
+
+--- TIMEOUTS ---
+
+--- HANDLED ERRORS (check if expected) ---
+get_return_track_info {"return_track_index": 0} -> {"status": "error", "message": "Error getting return track info: Command 'get_return_track_info' failed after 2 attempts: Return track index out of range"}
+set_track_fold {"track_index": 0, "fold_state": false} -> {"status": "error", "message": "Error setting track fold: Command 'set_track_fold' failed after 2 attempts: Invalid parameter type"}
+set_track_routing {"track_index": 0, "input_type": "", "input_channel": "", "output_type": "", "output_channel": ""} -> {"status": "error", "message": "Error setting track routing: Command 'set_track_routing' failed after 2 attempts: Input type '' not found"}
+get_clip_info {"track_index": 0, "clip_index": 0} -> {"status": "error", "message": "Error getting clip info: Command 'get_clip_info' failed after 2 attempts: No clip in slot (track=0, clip=0)"}
+add_notes_to_clip {"track_index": 0, "clip_index": 0, "notes": []} -> {"status": "error", "message": "Error adding notes to clip: Command 'add_notes_to_clip' failed after 1 attempts: No clip in slot (track=0, clip=0)"}
+get_clip_notes {"track_index": 0, "clip_index": 0, "start_time": 0.0, "time_span": 0.0, "start_pitch": 0, "pitch_span": 0} -> {"status": "error", "message": "Error getting clip notes: pitch_span must be between 1 and 128, got 0"}
+get_notes_extended {"track_index": 0, "clip_index": 0, "start_time": 0.0, "time_span": 0.0} -> {"status": "error", "message": "Error getting extended notes: Command 'get_notes_extended' failed after 2 attempts: No clip in slot (track=0, clip=0)"}
+set_clip_name {"track_index": 0, "clip_index": 0, "name": ""} -> {"status": "error", "message": "Error setting clip name: Command 'set_clip_name' failed after 2 attempts: No clip in slot (track=0, clip=0)"}
+set_clip_color {"track_index": 0, "clip_index": 0, "color_index": 0} -> {"status": "error", "message": "Error setting clip color: Command 'set_clip_color' failed after 2 attempts: No clip in slot (track=0, clip=0)"}
+set_clip_looping {"track_index": 0, "clip_index": 0, "looping": false} -> {"status": "error", "message": "Error setting clip looping: Command 'set_clip_looping' failed after 2 attempts: No clip in slot (track=0, clip=0)"}
+set_clip_loop_points {"track_index": 0, "clip_index": 0, "loop_start": 0.0, "loop_end": 0.0} -> {"status": "error", "message": "Invalid input: loop_end (0.0) must be greater than loop_start (0.0)."}
+set_clip_start_end {"track_index": 0, "clip_index": 0, "start_marker": 0.0, "end_marker": 0.0} -> {"status": "error", "message": "Error setting clip start/end markers: Command 'set_clip_start_end' failed after 2 attempts: No clip in slot (track=0, clip=0)"}
+set_clip_start_time {"track_index": 0, "clip_index": 0, "time": 0.0} -> {"status": "error", "message": "Error setting clip start time: Command 'set_clip_start_time' failed after 2 attempts: No clip in slot (track=0, clip=0)"}
+quantize_clip_notes {"track_index": 0, "clip_index": 0, "grid_size": 0.0} -> {"status": "error", "message": "Invalid input: grid_size must be a positive number, got 0.0."}
+transpose_clip_notes {"track_index": 0, "clip_index": 0, "semitones": 0} -> {"status": "error", "message": "Error transposing clip notes: Command 'transpose_clip_notes' failed after 2 attempts: No clip in slot (track=0, clip=0)"}
+set_clip_pitch {"track_index": 0, "clip_index": 0, "pitch_coarse": 0, "pitch_fine": 0.0} -> {"status": "error", "message": "Error setting clip pitch: Command 'set_clip_pitch' failed after 2 attempts: No clip in slot (track=0, clip=0)"}
+set_clip_launch_mode {"track_index": 0, "clip_index": 0, "launch_mode": 0} -> {"status": "error", "message": "Error setting clip launch mode: Command 'set_clip_launch_mode' failed after 2 attempts: No clip in slot (track=0, clip=0)"}
+set_clip_launch_quantization {"track_index": 0, "clip_index": 0, "quantization": 0} -> {"status": "error", "message": "Error setting clip launch quantization: Command 'set_clip_launch_quantization' failed after 2 attempts: No clip in slot (track=0, clip=0)"}
+set_clip_legato {"track_index": 0, "clip_index": 0, "legato": false} -> {"status": "error", "message": "Error setting clip legato: Command 'set_clip_legato' failed after 2 attempts: No clip in slot (track=0, clip=0)"}
+set_clip_warp {"track_index": 0, "clip_index": 0, "warping_enabled": false} -> {"status": "error", "message": "Error setting clip warp: Command 'set_clip_warp' failed after 2 attempts: No clip in slot (track=0, clip=0)"}
+set_warp_mode {"track_index": 0, "clip_index": 0, "warp_mode": ""} -> {"status": "error", "message": "Error setting warp mode: Command 'set_warp_mode' failed after 2 attempts: No clip in slot (track=0, clip=0)"}
+duplicate_clip_to_arrangement {"track_index": 0, "clip_index": 0, "time": 0.0} -> {"status": "error", "message": "Error duplicating clip to arrangement: Command 'duplicate_clip_to_arrangement' failed after 2 attempts: No clip in slot (track=0, clip=0)"}
+set_clip_grid {"track_index": 0, "clip_index": 0, "grid_quantization": 0, "grid_is_triplet": false} -> {"status": "error", "message": "Error setting clip grid: Command 'set_clip_grid' failed after 2 attempts: No clip in slot (track=0, clip=0)"}
+get_clip_follow_actions {"track_index": 0, "clip_index": 0} -> {"status": "error", "message": "Error getting clip follow actions: Command 'get_clip_follow_actions' failed after 2 attempts: No clip in slot (track=0, clip=0)"}
+set_clip_follow_actions {"track_index": 0, "clip_index": 0, "follow_action_0": 0, "follow_action_1": 0, "follow_action_probability": 0.0, "follow_action_time": 0.0, "follow_action_enabled": false, "follow_action_linked": false, "follow_action_return_to_zero": false} -> {"status": "error", "message": "Error setting clip follow actions: Command 'set_clip_follow_actions' failed after 2 attempts: No clip in slot (track=0, clip=0)"}
+get_clip_properties {"track_index": 0, "clip_index": 0} -> {"status": "error", "message": "Error getting clip properties: Command 'get_clip_properties' failed after 2 attempts: No clip in slot (track=0, clip=0)"}
+set_clip_properties {"track_index": 0, "clip_index": 0, "muted": false, "velocity_amount": 0.0, "groove": "", "signature_numerator": 0, "signature_denominator": 0, "ram_mode": false, "warping": false, "gain": 0.0} -> {"status": "error", "message": "Error setting clip properties: Command 'set_clip_properties' failed after 2 attempts: No clip in slot (track=0, clip=0)"}
+select_all_notes {"track_index": 0, "clip_index": 0} -> {"status": "error", "message": "Error selecting all notes: Command 'select_all_notes' failed after 2 attempts: No clip in slot (track=0, clip=0)"}
+deselect_all_notes {"track_index": 0, "clip_index": 0} -> {"status": "error", "message": "Error deselecting all notes: Command 'deselect_all_notes' failed after 2 attempts: No clip in slot (track=0, clip=0)"}
+get_selected_notes {"track_index": 0, "clip_index": 0} -> {"status": "error", "message": "Error getting selected notes: Command 'get_selected_notes' failed after 2 attempts: No clip in slot (track=0, clip=0)"}
+get_warp_markers {"track_index": 0, "clip_index": 0} -> {"status": "error", "message": "Error getting warp markers: Command 'get_warp_markers' failed after 2 attempts: No clip in slot (track=0, clip=0)"}
+add_warp_marker {"track_index": 0, "clip_index": 0, "beat_time": 0.0, "sample_time": 0.0} -> {"status": "error", "message": "Error adding warp marker: Command 'add_warp_marker' failed after 2 attempts: No clip in slot (track=0, clip=0)"}
+move_warp_marker {"track_index": 0, "clip_index": 0, "beat_time": 0.0, "beat_time_distance": 0.0} -> {"status": "error", "message": "Error moving warp marker: Command 'move_warp_marker' failed after 2 attempts: No clip in slot (track=0, clip=0)"}
+remove_warp_marker {"track_index": 0, "clip_index": 0, "beat_time": 0.0} -> {"status": "error", "message": "Error removing warp marker: Command 'remove_warp_marker' failed after 2 attempts: No clip in slot (track=0, clip=0)"}
+set_fire_button_state {"track_index": 0, "clip_index": 0, "state": false} -> {"status": "error", "message": "Error setting fire button state: Command 'set_fire_button_state' failed after 2 attempts: No clip in slot (track=0, clip=0)"}
+clip_scrub_native {"track_index": 0, "clip_index": 0, "position": 0.0} -> {"status": "error", "message": "Error scrubbing clip: Command 'clip_scrub_native' failed after 2 attempts: No clip in slot (track=0, clip=0)"}
+clip_stop_scrub {"track_index": 0, "clip_index": 0} -> {"status": "error", "message": "Error stopping clip scrub: Command 'clip_stop_scrub' failed after 2 attempts: No clip in slot (track=0, clip=0)"}
+clip_beat_to_sample_time {"track_index": 0, "clip_index": 0, "beat_time": 0.0} -> {"status": "error", "message": "Error converting beat to sample time: Command 'clip_beat_to_sample_time' failed after 2 attempts: No clip in slot (track=0, clip=0)"}
+clip_sample_to_beat_time {"track_index": 0, "clip_index": 0, "sample_time": 0.0} -> {"status": "error", "message": "Error converting sample to beat time: Command 'clip_sample_to_beat_time' failed after 2 attempts: No clip in slot (track=0, clip=0)"}
+set_clip_slot_properties {"track_index": 0, "clip_index": 0, "has_stop_button": false, "color_index": 0} -> {"status": "error", "message": "Error setting clip slot properties: Command 'set_clip_slot_properties' failed after 2 attempts: Internal error - check Ableton log for details"}
+set_track_arm {"track_index": 0, "arm": false} -> {"status": "error", "message": "M4L bridge not available: Failed to reconnect to Ableton"}
+set_track_send {"track_index": 0, "send_index": 0, "value": 0.0} -> {"status": "error", "message": "Error setting track send: Could not connect to Ableton. Make sure the Remote Script is running."}
+set_crossfader {"value": 0.0} -> {"status": "error", "message": "Error setting crossfader: Could not connect to Ableton. Make sure the Remote Script is running."}
+get_crossfader {} -> {"status": "error", "message": "Error getting crossfader: Could not connect to Ableton. Make sure the Remote Script is running."}
+set_cue_volume {"value": 0.0} -> {"status": "error", "message": "Error setting cue volume: Could not connect to Ableton. Make sure the Remote Script is running."}
+set_track_delay {"track_index": 0, "delay": 0.0} -> {"status": "error", "message": "Error setting track delay: Could not connect to Ableton. Make sure the Remote Script is running."}
+get_track_delay {"track_index": 0} -> {"status": "error", "message": "Error getting track delay: Could not connect to Ableton. Make sure the Remote Script is running."}
+set_panning_mode {"track_index": 0, "mode": 0} -> {"status": "error", "message": "Error setting panning mode: Could not connect to Ableton. Make sure the Remote Script is running."}
+apply_groove {"track_index": 0, "clip_index": 0, "groove_amount": 0.0} -> {"status": "error", "message": "Error applying groove: Command 'apply_groove' failed after 2 attempts: No clip in slot (track=0, clip=0)"}
+set_mixer {"track_index": 0, "track_type": "", "volume": 0.0, "pan": 0.0, "mute": false, "solo": false} -> {"status": "error", "message": "Invalid input: track_type must be 'track', 'return', or 'master'"}
+get_device_presets {} -> {"status": "error", "message": "Error getting device presets: register_tools.<locals>.get_device_presets() missing 2 required positional arguments: 'track_index' and 'device_index'"}
+load_device_preset {"track_index": 0, "device_index": 0, "preset_uri": "", "track_type": ""} -> {"status": "error", "message": "Invalid input: preset_uri is required"}
+create_clip_automation {"track_index": 0, "clip_index": 0, "parameter_name": "", "automation_points": []} -> {"status": "error", "message": "Error creating clip automation: Command 'create_clip_automation' failed after 2 attempts: No clip in slot (track=0, clip=0)"}
+get_clip_automation {"track_index": 0, "clip_index": 0, "parameter_name": ""} -> {"status": "error", "message": "Error getting clip automation: Command 'get_clip_automation' failed after 2 attempts: No clip in slot (track=0, clip=0)"}
+list_clip_automated_parameters {"track_index": 0, "clip_index": 0} -> {"status": "error", "message": "Error listing automated parameters: Command 'list_clip_automated_params' failed after 2 attempts: No clip in slot (track=0, clip=0)"}
+create_track_automation {"track_index": 0, "parameter_name": "", "automation_points": []} -> {"status": "error", "message": "Error creating track automation: Command 'create_track_automation' failed after 2 attempts: Parameter '' not found"}
+create_automation_curve {"track_index": 0, "clip_index": 0, "parameter_name": "", "curve_type": "", "start_value": 0.0, "end_value": 0.0, "cycles": 0.0, "points": 0} -> {"status": "error", "message": "Error creating automation curve: Command 'get_clip_info' failed after 2 attempts: No clip in slot (track=0, clip=0)"}
+clear_clip_envelope {"track_index": 0, "clip_index": 0, "parameter_name": ""} -> {"status": "error", "message": "Error clearing clip envelope: Command 'clear_clip_envelope' failed after 2 attempts: No clip in slot (track=0, clip=0)"}
+clear_all_clip_envelopes {"track_index": 0, "clip_index": 0} -> {"status": "error", "message": "Error clearing all clip envelopes: Command 'clear_all_clip_envelopes' failed after 2 attempts: No clip in slot (track=0, clip=0)"}
+get_clip_automation_value {"track_index": 0, "clip_index": 0, "parameter_name": "", "time": 0.0} -> {"status": "error", "message": "Error getting automation value at time: Command 'get_clip_automation_value' failed after 2 attempts: No clip in slot (track=0, clip=0)"}
+get_clip_automation_hires {"track_index": 0, "clip_index": 0, "parameter_name": "", "sample_count": 0} -> {"status": "error", "message": "Error getting hi-res automation: Command 'get_clip_automation_hires' failed after 2 attempts: No clip in slot (track=0, clip=0)"}
+create_step_automation {"track_index": 0, "clip_index": 0, "parameter_name": "", "steps": []} -> {"status": "error", "message": "Error creating step automation: Command 'create_step_automation' failed after 2 attempts: No clip in slot (track=0, clip=0)"}
+create_arrangement_midi_clip {"track_index": 0, "time": 0.0, "length": 0.0} -> {"status": "error", "message": "Invalid input: length must be a positive number"}
+create_arrangement_audio_clip {"track_index": 0, "time": 0.0, "length": 0.0} -> {"status": "error", "message": "Invalid input: length must be a positive number"}
+move_arrangement_clip {"track_index": 0, "clip_index_in_arrangement": 0, "new_start_time": 0.0} -> {"status": "error", "message": "Error moving arrangement clip: Command 'move_arrangement_clip' failed after 2 attempts: Internal error - check Ableton log for details"}
+set_arrangement_clip_properties {"track_index": 0, "clip_index_in_arrangement": 0, "muted": false, "gain": 0.0, "name": "", "color_index": 0, "loop_start": 0.0, "loop_end": 0.0, "looping": false, "start_marker": 0.0, "end_marker": 0.0, "pitch_coarse": 0, "pitch_fine": 0} -> {"status": "error", "message": "Error setting arrangement clip properties: Command 'set_arrangement_clip_properties' failed after 2 attempts: Internal error - check Ableton log for details"}
+set_detail_clip {"track_index": 0, "clip_index": 0} -> {"status": "error", "message": "Error setting detail clip: Command 'set_detail_clip' failed after 2 attempts: No clip in slot (track=0, clip=0)"}
+analyze_arrangement_density {"region_size_beats": 0.0} -> {"status": "error", "message": "Invalid input: region_size_beats must be positive"}
+compare_arrangement_sections {"section_a_start": 0.0, "section_a_end": 0.0, "section_b_start": 0.0, "section_b_end": 0.0} -> {"status": "error", "message": "Invalid input: section_a_end must be greater than section_a_start"}
+generate_euclidean_rhythm {"track_index": 0, "clip_index": 0, "steps": 0, "pulses": 0, "pitch": 0, "velocity": 0, "rotation": 0, "note_length": 0.0, "clip_length": 0.0} -> {"status": "error", "message": "Invalid input: steps must be a positive integer"}
+humanize_notes {"track_index": 0, "clip_index": 0, "timing_amount": 0.0, "velocity_amount": 0.0, "pitch_range": 0} -> {"status": "error", "message": "Error humanizing notes: Command 'get_clip_notes' failed after 2 attempts: No clip in slot (track=0, clip=0)"}
+scale_constrained_generate {"track_index": 0, "clip_index": 0, "scale_name": "", "root": 0, "note_count": 0, "octave_range": 0, "note_length": 0.0, "velocity_min": 0, "velocity_max": 0, "algorithm": ""} -> {"status": "error", "message": "Invalid input: Unknown scale ''. Available: major, minor, dorian, mixolydian, pentatonic, blues, harmonic_minor, melodic_minor, chromatic, whole_tone"}
+transform_notes {"track_index": 0, "clip_index": 0, "operation": "", "amount": 0} -> {"status": "error", "message": "Invalid input: operation must be one of: transpose, reverse, invert, double_speed, half_speed, legato"}
+copy_notes_between_clips {"src_track": 0, "src_clip": 0, "dest_track": 0, "dest_clip": 0, "transpose": 0, "time_offset": 0.0} -> {"status": "error", "message": "Error copying notes between clips: Command 'get_clip_notes' failed after 2 attempts: No clip in slot (track=0, clip=0)"}
+batch_set_follow_actions {"track_index": 0, "clip_indices": "", "follow_action_0": 0, "follow_action_1": 0, "follow_action_probability": 0.0, "follow_action_time": 0.0, "follow_action_enabled": false, "follow_action_linked": false} -> {"status": "error", "message": "Invalid input: No valid clip indices provided"}
+create_polyrhythm {"track_index": 0, "clip_index": 0, "rhythms": "", "pitches": "", "clip_length": 0.0, "velocity": 0} -> {"status": "error", "message": "Error creating polyrhythm: velocity must be between 1 and 127, got 0"}
+stutter_effect {"track_index": 0, "clip_index": 0, "stutter_rate": 0.0, "stutter_count": 0, "pitch": 0, "velocity": 0, "velocity_decay": 0.0} -> {"status": "error", "message": "Error creating stutter effect: velocity must be between 1 and 127, got 0"}
+duplicate_with_variation {"src_track": 0, "src_clip": 0, "dest_track": 0, "dest_clip": 0, "timing_variation": 0.0, "velocity_variation": 0.0, "pitch_variation": 0, "transpose": 0} -> {"status": "error", "message": "Error duplicating with variation: Command 'get_clip_notes' failed after 2 attempts: No clip in slot (track=0, clip=0)"}
+generate_chord_progression {"track_index": 0, "clip_index": 0, "root": 0, "scale_name": "", "progression": "", "note_length": 0.0, "velocity": 0, "voicing": ""} -> {"status": "error", "message": "Error generating chord progression: velocity must be between 1 and 127, got 0"}
+generate_arpeggio {"track_index": 0, "clip_index": 0, "root": 0, "chord_type": "", "pattern": "", "octaves": 0, "note_length": 0.0, "clip_length": 0.0, "velocity": 0, "gate": 0.0} -> {"status": "error", "message": "Error generating arpeggio: velocity must be between 1 and 127, got 0"}
+generate_drum_pattern {"track_index": 0, "clip_index": 0, "style": "", "clip_length": 0.0, "velocity": 0, "swing": 0.0} -> {"status": "error", "message": "Error generating drum pattern: velocity must be between 1 and 127, got 0"}
+euclidean_rhythm {"track_index": 0, "clip_index": 0, "hits": 0, "steps": 0, "pitch": 0, "rotation": 0, "note_length": 0.0, "velocity": 0} -> {"status": "error", "message": "Error generating euclidean rhythm: velocity must be between 1 and 127, got 0"}
+generate_bass_line {"track_index": 0, "clip_index": 0, "root": 0, "scale_name": "", "pattern_type": "", "note_length": 0.0, "clip_length": 0.0, "velocity": 0, "octave_range": 0} -> {"status": "error", "message": "Error generating bass line: velocity must be between 1 and 127, got 0"}
+harmonize_melody {"track_index": 0, "clip_index": 0, "interval": "", "scale_name": "", "root": 0, "direction": ""} -> {"status": "error", "message": "Invalid input: Unknown interval ''. Available: 3rd, 5th, 6th, octave"}
+quantize_to_scale {"track_index": 0, "clip_index": 0, "root": 0, "scale_name": ""} -> {"status": "error", "message": "Invalid input: Unknown scale ''. Available: major, minor, dorian, mixolydian, pentatonic, blues, harmonic_minor, chromatic"}
+clip_to_grid {"track_index": 0, "clip_index": 0} -> {"status": "error", "message": "Error converting clip to grid: No module named 'MCP_Server.grid_notation'"}
+grid_to_clip {"track_index": 0, "clip_index": 0, "grid": "", "length": 0.0, "clear_existing": false} -> {"status": "error", "message": "Error writing grid to clip: No module named 'MCP_Server.grid_notation'"}
+m4l_status {} -> {"status": "error", "message": "M4L bridge not available: Could not initialise M4L bridge UDP sockets. Check that port 9879 is not already in use."}
+discover_device_params {"track_index": 0, "device_index": 0} -> {"status": "error", "message": "M4L bridge not available: Could not initialise M4L bridge UDP sockets. Check that port 9879 is not already in use."}
+get_device_hidden_parameters {"track_index": 0, "device_index": 0} -> {"status": "error", "message": "M4L bridge not available: Could not initialise M4L bridge UDP sockets. Check that port 9879 is not already in use."}
+set_device_hidden_parameter {"track_index": 0, "device_index": 0, "parameter_index": 0, "value": 0.0} -> {"status": "error", "message": "M4L bridge not available: Could not initialise M4L bridge UDP sockets. Check that port 9879 is not already in use."}
+batch_set_hidden_parameters {"track_index": 0, "device_index": 0, "parameters": []} -> {"status": "error", "message": "Invalid input: parameters must be a non-empty list."}
+get_automation_states {"track_index": 0, "device_index": 0} -> {"status": "error", "message": "M4L bridge not available: Could not initialise M4L bridge UDP sockets. Check that port 9879 is not already in use."}
+discover_chains_m4l {"track_index": 0, "device_index": 0, "extra_path": ""} -> {"status": "error", "message": "M4L bridge not available: Could not initialise M4L bridge UDP sockets. Check that port 9879 is not already in use."}
+get_chain_device_params_m4l {"track_index": 0, "device_index": 0, "chain_index": 0, "chain_device_index": 0} -> {"status": "error", "message": "M4L bridge not available: Could not initialise M4L bridge UDP sockets. Check that port 9879 is not already in use."}
+set_chain_device_param_m4l {"track_index": 0, "device_index": 0, "chain_index": 0, "chain_device_index": 0, "parameter_index": 0, "value": 0.0} -> {"status": "error", "message": "M4L bridge not available: Could not initialise M4L bridge UDP sockets. Check that port 9879 is not already in use."}
+get_clip_notes_with_ids {"track_index": 0, "clip_index": 0} -> {"status": "error", "message": "M4L bridge not available: Could not initialise M4L bridge UDP sockets. Check that port 9879 is not already in use."}
+modify_clip_notes {"track_index": 0, "clip_index": 0, "modifications": ""} -> {"status": "error", "message": "Invalid input: Expecting value: line 1 column 1 (char 0)"}
+remove_clip_notes_by_id {"track_index": 0, "clip_index": 0, "note_ids": ""} -> {"status": "error", "message": "Invalid input: Expecting value: line 1 column 1 (char 0)"}
+get_chain_mixing {"track_index": 0, "device_index": 0, "chain_index": 0} -> {"status": "error", "message": "M4L bridge not available: Could not initialise M4L bridge UDP sockets. Check that port 9879 is not already in use."}
+set_chain_mixing {"track_index": 0, "device_index": 0, "chain_index": 0, "properties": ""} -> {"status": "error", "message": "Invalid input: Expecting value: line 1 column 1 (char 0)"}
+get_split_stereo {"track_index": 0} -> {"status": "error", "message": "M4L bridge not available: Could not initialise M4L bridge UDP sockets. Check that port 9879 is not already in use."}
+set_split_stereo {"track_index": 0, "left": 0.0, "right": 0.0} -> {"status": "error", "message": "M4L bridge not available: Could not initialise M4L bridge UDP sockets. Check that port 9879 is not already in use."}
+observe_property {"lom_path": "", "property_name": ""} -> {"status": "error", "message": "M4L bridge not available: Could not initialise M4L bridge UDP sockets. Check that port 9879 is not already in use."}
+stop_observing {"lom_path": "", "property_name": ""} -> {"status": "error", "message": "M4L bridge not available: Could not initialise M4L bridge UDP sockets. Check that port 9879 is not already in use."}
+get_property_changes {} -> {"status": "error", "message": "M4L bridge not available: Could not initialise M4L bridge UDP sockets. Check that port 9879 is not already in use."}
+set_parameter_clean {"track_index": 0, "device_index": 0, "parameter_index": 0, "value": 0.0} -> {"status": "error", "message": "M4L bridge not available: Could not initialise M4L bridge UDP sockets. Check that port 9879 is not already in use."}
+analyze_track_audio {"track_index": 0} -> {"status": "error", "message": "M4L bridge not available: Could not initialise M4L bridge UDP sockets. Check that port 9879 is not already in use."}
+analyze_track_spectrum {} -> {"status": "error", "message": "M4L bridge not available: Could not initialise M4L bridge UDP sockets. Check that port 9879 is not already in use."}
+analyze_cross_track_audio {"track_index": 0, "wait_ms": 0} -> {"status": "error", "message": "M4L bridge not available: Could not initialise M4L bridge UDP sockets. Check that port 9879 is not already in use."}
+get_ableton_version {} -> {"status": "error", "message": "M4L bridge not available: Could not initialise M4L bridge UDP sockets. Check that port 9879 is not already in use."}
+rack_insert_chain_m4l {"track_index": 0, "device_index": 0, "chain_index": 0} -> {"status": "error", "message": "M4L bridge not available: Could not initialise M4L bridge UDP sockets. Check that port 9879 is not already in use."}
+chain_insert_device_m4l {"track_index": 0, "device_index": 0, "chain_index": 0, "device_uri": "", "target_index": 0} -> {"status": "error", "message": "M4L bridge not available: Could not initialise M4L bridge UDP sockets. Check that port 9879 is not already in use."}
+set_drum_chain_note {"track_index": 0, "device_index": 0, "chain_index": 0, "note": 0} -> {"status": "error", "message": "M4L bridge not available: Could not initialise M4L bridge UDP sockets. Check that port 9879 is not already in use."}
+get_take_lanes_m4l {"track_index": 0} -> {"status": "error", "message": "M4L bridge not available: Could not initialise M4L bridge UDP sockets. Check that port 9879 is not already in use."}
+rack_store_variation {"track_index": 0, "device_index": 0} -> {"status": "error", "message": "M4L bridge not available: Could not initialise M4L bridge UDP sockets. Check that port 9879 is not already in use."}
+rack_recall_variation {"track_index": 0, "device_index": 0, "variation_index": 0} -> {"status": "error", "message": "M4L bridge not available: Could not initialise M4L bridge UDP sockets. Check that port 9879 is not already in use."}
+create_arrangement_midi_clip_m4l {"track_index": 0, "time": 0.0, "length": 0.0} -> {"status": "error", "message": "Invalid input: length must be a positive number"}
+create_arrangement_audio_clip_m4l {"track_index": 0, "time": 0.0, "length": 0.0} -> {"status": "error", "message": "Invalid input: length must be a positive number"}
+get_cue_points {} -> {"status": "error", "message": "M4L bridge not available: Could not initialise M4L bridge UDP sockets. Check that port 9879 is not already in use."}
+jump_to_cue_point {"cue_point_index": 0} -> {"status": "error", "message": "M4L bridge not available: Could not initialise M4L bridge UDP sockets. Check that port 9879 is not already in use."}
+get_groove_pool {} -> {"status": "error", "message": "M4L bridge not available: Could not initialise M4L bridge UDP sockets. Check that port 9879 is not already in use."}
+set_groove_properties {"groove_index": 0, "base": 0.0, "timing": 0.0, "velocity": 0.0, "random": 0.0, "quantize_rate": 0} -> {"status": "error", "message": "M4L bridge not available: Could not initialise M4L bridge UDP sockets. Check that port 9879 is not already in use."}
+get_cc_map {"plugin_name": "arturia_analog_lab", "parameter_name": "cutoff"} -> {"status": "error", "message": "Error getting CC map for plugin: register_tools.<locals>.get_cc_map() got an unexpected keyword argument 'plugin_name'"}
+set_scene_tempo {"scene_index": 0, "tempo": 0.0} -> {"status": "error", "message": "Error setting scene tempo: Command 'set_scene_tempo' failed after 2 attempts: Internal error - check Ableton log for details"}
+set_tempo {"tempo": 0.0} -> {"status": "error", "message": "Error setting tempo: tempo must be between 20.0 and 999.0, got 0.0"}
+set_song_loop {"enabled": false, "start": 0.0, "length": 0.0, "end": 0.0} -> {"status": "error", "message": "Invalid input: Provide either 'length' or 'end', not both"}
+set_song_settings {"signature_numerator": 0, "signature_denominator": 0, "swing_amount": 0.0, "clip_trigger_quantization": 0, "midi_recording_quantization": 0, "back_to_arranger": false, "follow_song": false, "draw_mode": false, "session_automation_record": false} -> {"status": "error", "message": "Error setting song settings: Command 'set_song_settings' failed after 2 attempts: signature_numerator must be 1-99, got 0"}
+set_view {"action": "", "view_name": ""} -> {"status": "error", "message": "Error setting view: Command 'set_view' failed after 2 attempts: action must be 'show', 'hide', 'focus', or 'toggle_browse', got ''"}
+zoom_scroll_view {"action": "", "direction": 0, "view_name": "", "modifier_pressed": false} -> {"status": "error", "message": "Error zooming/scrolling view: Command 'zoom_scroll_view' failed after 2 attempts: action must be 'zoom' or 'scroll', got ''"}
+nudge_tempo {"direction": ""} -> {"status": "error", "message": "Error nudging tempo: Command 'nudge_tempo' failed after 2 attempts: direction must be 'up' or 'down'"}
+snapshot_device_state {"track_index": 0, "device_index": 0, "snapshot_name": ""} -> {"status": "error", "message": "M4L bridge not available: Could not initialise M4L bridge UDP sockets. Check that port 9879 is not already in use."}
+create_macro_controller {"name": "", "mappings": []} -> {"status": "error", "message": "Invalid input: mappings must be a non-empty list."}
+create_parameter_map {"track_index": 0, "device_index": 0, "friendly_names": []} -> {"status": "error", "message": "Invalid input: friendly_names must be a non-empty list."}
+create_instrument_track {"instrument_name": "", "track_name": "", "index": 0, "color_index": 0} -> {"status": "error", "message": "Error creating instrument track: _validate_index_allow_negative() got an unexpected keyword argument 'min_value'"}
+create_clip_with_notes {"track_index": 0, "clip_index": 0, "length": 0.0, "notes": [], "clip_name": ""} -> {"status": "error", "message": "Invalid input: length must be a positive number, got 0.0"}
+batch_set_mixer {"settings": []} -> {"status": "error", "message": "Invalid input: settings must be a non-empty list"}
+create_drum_track {"pattern_style": "", "name": "", "clip_length": 0.0, "velocity": 0, "swing": 0.0, "index": 0} -> {"status": "error", "message": "Error creating drum track: _validate_index_allow_negative() got an unexpected keyword argument 'min_value'"}
+load_lighting_scene {"name": ""} -> {
+  "status": "error",
+  "message": "Lighting scene '' not found"
+}
+load_video_preset {"name": ""} -> {
+  "status": "error",
+  "message": "Video preset '' not found"
+}
+fire_scene_macro {"name": ""} -> {
+  "status": "error",
+  "message": "Macro '' not found"
+}
+activate_backup_preset {"name": ""} -> {
+  "status": "error",
+  "message": "Backup preset '' not found"
+}
+
+--- OK (sample of 30) ---
+get_track_info -> {"index": 0, "name": "VIDEO", "is_group_track": false, "is_audio_track": true, "is_midi_track": false, "mute": true, "solo": false, "arm": false, "vol
+get_all_tracks_info -> {"tracks": [{"index": 0, "name": "VIDEO", "is_audio": true, "is_midi": false, "mute": true, "solo": false, "volume": 0.0, "panning": 0.0, "color_index
+get_return_tracks_info -> {"return_tracks": [], "count": 0}
+set_track_name -> {"status": "ok", "message": "Renamed track to: 1-Allare Background"}
+set_track_color -> {"status": "ok", "message": "Track 0 color set to 0"}
+arm_track -> {"status": "ok", "message": "Track 0 armed"}
+disarm_track -> {"status": "ok", "message": "Track 0 disarmed"}
+get_return_tracks -> {"return_tracks": [], "count": 0}
+get_master_track_info -> {"name": "Master", "volume": 0.8500000238418579, "panning": 0.0, "devices": []}
+set_track_collapse -> {"status": "ok", "message": "Track 0 is now expanded"}
+get_track_routing -> {"track_index": 0, "track_name": "1-Allare Background", "input_routing_type": "Ext. In", "input_routing_channel": "", "output_routing_type": "Main", "
+set_track_monitoring -> {"status": "ok", "message": "Track 0 ('1-Allare Background') monitoring set to IN"}
+get_track_meters -> {"index": 0, "name": "1-Allare Background", "output_meter_left": 0.0, "output_meter_right": 0.0, "playing_slot_index": -1, "fired_slot_index": -1}
+get_track_data -> {"track_index": 0, "key": "", "value": ""}
+set_track_data -> {"track_index": 0, "key": "", "value": "", "stored": true}
+select_track -> {"status": "ok", "message": "track_type must be 'track', 'return', or 'master'"}
+set_implicit_arm -> {"status": "ok", "message": "Implicit arm disabled for track 0"}
+add_notes_extended -> {"status": "ok", "message": "No notes provided"}
+stop_track_clips -> {"status": "ok", "message": "Stopped all clips on track 0"}
+get_playing_clips -> {"playing_clips": [], "count": 0}
+duplicate_clip_slot -> {"track_index": 0, "source_clip_index": 0, "destination_clip_index": 1}
+get_clip_slot_properties -> {"track_index": 0, "clip_index": 0, "has_clip": false, "has_stop_button": true, "is_group_slot": false, "color_index": null, "color": null, "is_trigge
+jump_in_running_session_clip -> {"track_index": 0, "track_name": "1-Allare Background", "jumped_by": 0.0}
+set_split_stereo_pan -> {"status": "ok", "message": "Set track 0 split stereo pan: left=0.0, right=0.0"}
+set_crossfade_assign -> {"status": "ok", "message": "Track 'VIDEO' crossfade set to NONE"}
+set_groove_settings -> {"status": "ok", "message": "Global groove amount: 0.0 | Groove 0 ('Swing 16ths 66'): timing=0.0, quantize=0.0, random=0.0, velocity=0.0"}
+get_browser_tree -> {"status": "ok", "message": "Browser tree for 'all' (showing 0 folders):\n\n\u2022 Instruments\n\n\u2022 Sounds\n\n\u2022 Drums\n\n\u2022 Audio Effect
+get_browser_items_at_path -> {"path": "instruments", "name": "Instruments", "uri": "query:Synths", "is_folder": true, "truncated": false, "is_device": false, "is_loadable": false,
+search_browser -> {"status": "ok", "message": "Browser cache is empty. Make sure Ableton is running and try again."}
+refresh_browser_cache_tool -> {"status": "ok", "message": "Browser cache refresh started in background. Use get_browser_cache_status to check progress; search_browser uses the prev
+... and 166 more OK

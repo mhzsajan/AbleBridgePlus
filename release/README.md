@@ -37,16 +37,16 @@ This directory contains the release files for AbleBridge++ — the MCP bridge fo
    uv sync
    ```
 
-3. Copy `AbletonBridge_Remote_Script` to your Ableton Remote Scripts folder as **`EnhancedAbletonBridge`**:
-   - **Windows:** `Documents/Ableton/User Library/Remote Scripts/EnhancedAbletonBridge`
-   - **macOS:** `~/Music/Ableton/User Library/Remote Scripts/EnhancedAbletonBridge`
-   - **Linux:** `~/.ableton/User Library/Remote Scripts/EnhancedAbletonBridge`
+3. Copy `AbleBridgePlus` to your Ableton Remote Scripts folder as **`AbleBridgePlus`**:
+   - **Windows:** `Documents/Ableton/User Library/Remote Scripts/AbleBridgePlus`
+   - **macOS:** `~/Music/Ableton/User Library/Remote Scripts/AbleBridgePlus`
+   - **Linux:** `~/.ableton/User Library/Remote Scripts/AbleBridgePlus`
 
 4. Configure Ableton:
    - Open Ableton Live
    - Go to Preferences → Link, Tempo & MIDI
-   - Under "Control Surface", select **"EnhancedAbletonBridge"**
-   - Set Input and Output to "EnhancedAbletonBridge"
+   - Under "Control Surface", select **"AbleBridgePlus"**
+   - Set Input and Output to "AbleBridgePlus"
 
 5. Start the MCP Server:
    ```bash
@@ -71,9 +71,9 @@ Make sure Python 3.10+ is installed and added to your PATH.
 Install uv with: `pip install uv`
 
 ### Ableton not connecting
-1. Make sure the Remote Script is in the correct folder (`.../Remote Scripts/EnhancedAbletonBridge`)
+1. Make sure the Remote Script is in the correct folder (`.../Remote Scripts/AbleBridgePlus`)
 2. Restart Ableton Live
-3. Check that "EnhancedAbletonBridge" is selected as Control Surface
+3. Check that "AbleBridgePlus" is selected as Control Surface
 
 ### MCP Server won't start
 1. Make sure you're in the correct directory

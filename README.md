@@ -171,11 +171,11 @@ uv sync
 
 ## Setup
 
-1. Copy `AbletonBridge_Remote_Script` to Ableton's Remote Scripts folder:
+1. Copy `AbleBridgePlus` to Ableton's Remote Scripts folder:
    - **Windows:** `Documents/Ableton/User Library/Remote Scripts/`
    - **macOS:** `~/Music/Ableton/User Library/Remote Scripts/`
 
-2. Open Ableton → Preferences → Link, Tempo & MIDI → Select **"EnhancedAbletonBridge"** as Control Surface
+2. Open Ableton → Preferences → Link, Tempo & MIDI → Select **"AbleBridgePlus"** as Control Surface
 
 3. Start the MCP Server:
    ```bash

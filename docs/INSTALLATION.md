@@ -17,8 +17,8 @@ This guide will walk you through installing AbleBridge++ and getting it up and r
 ## Step 1: Clone the Repository
 
 ```bash
-git clone https://github.com/mhzsajan/enhanced-abletonbridge.git
-cd enhanced-abletonbridge
+git clone https://github.com/mhzsajan/ablebridge-plus.git
+cd ablebridge-plus
 ```
 
 ## Step 2: Install Dependencies
@@ -32,13 +32,13 @@ This will install all required Python packages.
 ## Step 3: Copy Remote Script to Ableton
 
 ### Windows
-1. Copy the `AbletonBridge_Remote_Script` folder to:
+1. Copy the `AbleBridgePlus` folder to:
    ```
    Documents/Ableton/User Library/Remote Scripts/
    ```
 
 ### macOS
-1. Copy the `AbletonBridge_Remote_Script` folder to:
+1. Copy the `AbleBridgePlus` folder to:
    ```
    ~/Music/Ableton/User Library/Remote Scripts/
    ```
@@ -75,7 +75,7 @@ Add to your `claude_desktop_config.json`:
     "abletonbridge": {
       "command": "uv",
       "args": ["run", "python", "-m", "MCP_Server.server"],
-      "cwd": "/path/to/enhanced-abletonbridge"
+      "cwd": "/path/to/ablebridge-plus"
     }
   }
 }
@@ -89,7 +89,7 @@ Add to your MCP configuration:
   "abletonbridge": {
     "command": "uv",
     "args": ["run", "python", "-m", "MCP_Server.server"],
-    "cwd": "/path/to/enhanced-abletonbridge"
+    "cwd": "/path/to/ablebridge-plus"
   }
 }
 ```
@@ -102,7 +102,7 @@ Add to your MCP configuration:
   "abletonbridge": {
     "command": "uv",
     "args": ["run", "python", "-m", "MCP_Server.server"],
-    "cwd": "/path/to/enhanced-abletonbridge"
+    "cwd": "/path/to/ablebridge-plus"
   }
 }
 ```

@@ -11,7 +11,7 @@ from MCP_Server.tools import tool
 
 
 # Routing presets file
-ROUTING_PRESETS_FILE = os.path.join(os.path.expanduser("~"), ".enhanced-abletonbridge", "routing_presets.json")
+ROUTING_PRESETS_FILE = os.path.join(os.path.expanduser("~"), ".ablebridge", "routing_presets.json")
 
 
 def _load_routing_presets() -> Dict[str, Any]:
