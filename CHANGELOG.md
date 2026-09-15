@@ -5,6 +5,39 @@ All notable changes to AbleBridge++ will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.0] - 2026-09-15
+
+### Added — AI Music Toolkit
+- `generate_clip_from_prompt` — "4-bar acid bassline in F# minor" becomes a real MIDI clip in one call (style presets: acid bass, chords, arp, melody, pluck)
+- `build_chord_progression` — genre-aware progressions (pop, jazz, edm, blues, epic) with optional sevenths, auto voice-leading
+- `build_bassline_for_progression` — bassline following a chord degree pattern (styles: roots, octave, walking, 808)
+- `generate_advanced_drum_pattern` — house/techno/trap/dnb/rock/pop/lofi templates with fills and humanization
+- `build_song_skeleton` — "intro 4, verse 8, chorus 8" builds named, colored scenes + clips, ready to produce
+
+### Added — Project Context Engine
+- `get_project_context` — the whole session map (tracks, devices, clips, routing, key) in one compact call instead of 20 small ones
+- `get_clip_context` — clip name, length, key scale, and note summary in one call
+- `create_checkpoint` / `list_checkpoints` / `diff_checkpoint` / `restore_checkpoint` — snapshot the session structure before experimenting, diff after, restore if unwanted
+
+### Added — Doctor & Monitoring
+- `doctor` — one-call diagnosis: connection health, control-surface script version drift, port conflicts, browser-cache staleness, with plain-language fixes
+- `session_integrity_report` — empty routings, clips on muted tracks, missing devices and other real-world gotchas
+- `watch_session` — lightweight monitor of tempo, playing position, CPU, and clip levels the AI can poll
+
+### Added — Show Autopilot
+- `start_show_autopilot` / `stop_show_autopilot` / `autopilot_status` — hands-free timed scene sequencing for live sets: fire a scene, auto-advance after N bars (follows live tempo), per-step tempo changes, loop the whole sequence forever or N times
+
+### Fixed
+- Autopilot's invalid-JSON error message crashed itself via a str.format brace collision with the JSON example in the message
+- `build_song_skeleton` missing json import
+- `analyze_arrangement_*` burned ~10s per call probing a silent Max for Live bridge; now probes with a 0.75s timeout (also available to all tools via `m4l.ping(timeout=...)`)
+- Test harness: setup phase creates a real MIDI clip on a dynamically discovered track; generators and destructive tools excluded from sweeps; M4L-only tools (need a running Max device) validated separately
+
+### Verified live
+- 436 tools registered; sweep 211 -> 224 OK, 0 exceptions, 0 timeouts
+- Music generators wrote a real F# minor acid bassline (30 notes) and chord progression into a live Ableton 12 session
+- Doctor correctly flagged version drift, port status, and a stale browser cache; autopilot fired scenes and shut down cleanly against the live set
+
 ## [0.3.4] - 2026-09-15
 
 ### Fixed (critical for MCP clients)

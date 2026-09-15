@@ -20,6 +20,12 @@ sys.path.insert(0, '.')
 
 from MCP_Server.server import MCPServer
 
+# Tools that require a running Max for Live bridge device; skipped in sweeps
+try:
+    from scripts._m4l_skip import M4L_ONLY
+except ImportError:
+    M4L_ONLY = set()
+
 # Tools that are risky in a live session (create/delete/duplicate/etc.)
 DESTRUCTIVE = {
     'delete_track', 'delete_clip', 'delete_scene', 'delete_device',
@@ -259,7 +265,7 @@ SAFE_WRITES = {
 
 def build_args(tool_name: str, tool_def: Dict[str, Any], allow_write: bool) -> Optional[Dict[str, Any]]:
     """Build arguments for a tool call. Returns None if it should be skipped."""
-    if tool_name in DESTRUCTIVE:
+    if tool_name in DESTRUCTIVE or tool_name in M4L_ONLY:
         return None
     if tool_name in SAFE_ARGS:
         return SAFE_ARGS[tool_name]

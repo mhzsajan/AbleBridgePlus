@@ -610,10 +610,14 @@ class M4LConnection:
         logger.info("M4L chunked response reassembled: %d chars from %d chunks", len(full_json), total)
         return json.loads(full_json)
 
-    def ping(self) -> bool:
-        """Check if the M4L bridge device is responding."""
+    def ping(self, timeout: float = None) -> bool:
+        """Check if the M4L bridge device is responding.
+
+        Pass a short timeout (e.g. 0.75s) for cheap liveness probes —
+        a silent bridge otherwise costs the full default timeout.
+        """
         try:
-            result = self.send_command("ping")
+            result = self.send_command("ping", timeout=timeout)
             success = result.get("status") == "success"
             if success:
                 self._check_bridge_version(result)

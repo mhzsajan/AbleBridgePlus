@@ -108,6 +108,9 @@ class MCPServer:
         from MCP_Server.tools import video_lighting, ai_enhancement
         from MCP_Server.tools import scene_macros, backup_presets
         
+        # v0.4.0: context engine, music toolkit, doctor, autopilot
+        from MCP_Server.tools import project_context, music_gen, doctor, show_autopilot
+
         # Register all tool modules
         tool_modules = [
             tracks, clips, devices, mixer, browser,
@@ -124,7 +127,9 @@ class MCPServer:
             show_clock, emergency_control, session_backup,
             performance_analytics, audio_presets,
             video_lighting, ai_enhancement,
-            scene_macros, backup_presets
+            scene_macros, backup_presets,
+            # v0.4.0
+            project_context, music_gen, doctor, show_autopilot
         ]
         
         adapter = _FastMCPAdapter(self.tool_registry)
@@ -182,7 +187,7 @@ class MCPServer:
             },
             'serverInfo': {
                 'name': 'AbleBridge++',
-                'version': '0.3.4'
+                'version': '0.4.0'
             }
         }
     

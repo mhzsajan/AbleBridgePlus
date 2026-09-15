@@ -286,11 +286,21 @@ def register_tools(mcp):
         return all_clips
 
     def _try_get_cue_points():
-        """Try to get cue points via M4L. Returns list or empty if unavailable."""
+        """Try to get cue points via M4L. Returns list or empty if unavailable.
+
+        Skips immediately when no M4L device is confirmed live, otherwise
+        the send blocks for the full UDP response timeout (sweep slowdown).
+        """
         try:
-            from MCP_Server.connections.m4l import get_m4l_connection
+            import MCP_Server.state as _state
+            m4l = _state.m4l_connection
+            if m4l is None:
+                return []
+            # Cheap probe with a short timeout — a silent M4L bridge (no Max
+            # device running) would otherwise stall for ~10s per call.
+            if not m4l.ping(timeout=0.75):
+                return []
             from MCP_Server.tools._base import _m4l_result
-            m4l = get_m4l_connection()
             result = m4l.send_command("get_cue_points")
             data = _m4l_result(result)
             return data.get("cue_points", [])
