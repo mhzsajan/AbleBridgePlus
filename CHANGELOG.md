@@ -5,6 +5,28 @@ All notable changes to AbleBridge++ will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.1] - 2026-09-15
+
+### Added
+- **MCP transports** — AI clients can now actually connect:
+  - `stdio` (default): newline-delimited JSON-RPC on stdin/stdout for OpenCode, Claude Desktop, and any MCP client
+  - `tcp`: per-connection JSON-RPC on `127.0.0.1:9891` for the dashboard and multiple local clients
+  - `python -m MCP_Server.server --transport stdio|tcp --tcp-port N`
+- `get_browser_cache_status` tool to monitor background browser scans
+
+### Fixed
+- **Every tool now advertises its real parameters**: input schemas are derived from function signatures (the source of truth), with hand-written param descriptions merged in — fixes 167 tools that clients could not call correctly
+- **Connection stability**: handler-level errors no longer tear down the shared Ableton socket (introduced `CommandError`), eliminating cascading "Could not connect" failures after any error
+- **Browser cache refresh no longer blocks**: `refresh_browser_cache` runs the scan in a background thread and returns immediately (was a multi-minute synchronous block)
+- **Duplicate tool names**: `start/stop_song_timer` and `get_song_timings` existed twice (show clock vs performance analytics) and silently overwrote each other; analytics variants renamed to `start/stop_performance_timer` and `get_performance_timings`
+- `get_arrangement_suggestions` accepts sections as strings or dicts (crashed on strings)
+- Added missing `psutil` dependency (`get_memory_usage` crashed without it)
+- Remote script: fixed absolute imports that prevented the control surface from loading under its installed folder name (`EnhancedAbletonBridge`)
+
+### Improved
+- Systematic test sweep against live Ableton: **154 → 211 tools passing, 0 exceptions, 0 timeouts** (421 tools registered)
+- Test harness creates a real MIDI clip (on a dynamically discovered MIDI track) so clip tools exercise real content
+
 ## [0.3.0] - 2026-09-14
 
 ### Changed
