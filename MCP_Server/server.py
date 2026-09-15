@@ -289,22 +289,54 @@ class MCPServer:
         logger.info("AbleBridge++ MCP Server stopped")
 
 
-async def main():
-    """Main entry point."""
+def main(argv=None):
+    """Main entry point (synchronous; owns its own event loop).
+
+    --transport stdio|tcp  (default stdio)
+    --tcp-port N           (default 9891, tcp mode only)
+    --no-banner            suppress the startup banner
+    """
+    import argparse
+    parser = argparse.ArgumentParser(description='AbleBridge++ MCP Server')
+    parser.add_argument('--transport', choices=['stdio', 'tcp'], default='stdio')
+    parser.add_argument('--tcp-port', type=int, default=9891)
+    parser.add_argument('--no-banner', action='store_true')
+    args = parser.parse_args(argv)
+
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
     server = MCPServer()
-    
+
     try:
-        await server.start()
-        
-        # Keep the server running
-        while True:
-            await asyncio.sleep(1)
-            
+        loop.run_until_complete(server.start())
+        if not args.no_banner:
+            banner = (
+                "\n"
+                "  ╔══════════════════════════════════════════╗\n"
+                "  ║   AbleBridge++ MCP Server                ║\n"
+                "  ║   Tools: {n:>3}                                     ║\n"
+                "  ║   Transport: {t:<6}                        ║\n"
+                "  ╚══════════════════════════════════════════╝\n"
+            ).format(n=server.tool_registry.tool_count, t=args.transport)
+            stream = sys.stderr
+            print(banner, file=stream)
+
+        if args.transport == 'stdio':
+            # Blocking read loop: stdin/stdout handles are not
+            # asyncio-compatible on Windows (ProactorEventLoop), so stdio
+            # dispatches each request through run_until_complete instead.
+            from MCP_Server.transports import serve_stdio_sync
+            serve_stdio_sync(server, loop)
+        else:
+            from MCP_Server.transports import serve_tcp
+            loop.run_until_complete(serve_tcp(server, port=args.tcp_port))
+
     except KeyboardInterrupt:
         logger.info("Received interrupt signal")
     finally:
-        await server.stop()
+        loop.run_until_complete(server.stop())
+        loop.close()
 
 
 if __name__ == '__main__':
-    asyncio.run(main())
+    main()
