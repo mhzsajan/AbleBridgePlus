@@ -452,10 +452,17 @@ def _validate_index(value: Any, name: str = "index") -> int:
     return value
 
 
-def _validate_index_allow_negative(value: Any, name: str = "index") -> int:
-    """Alias for validate_track_index with allow_negative=True."""
-    if not isinstance(value, int):
+def _validate_index_allow_negative(value: Any, name: str = "index",
+                                   min_value: int = -1) -> int:
+    """Alias for validate_track_index with allow_negative=True.
+
+    ``min_value`` (default -1) mirrors the original AbletonBridge API so
+    tools can pass e.g. min_value=-1 for append-at-end indices.
+    """
+    if not isinstance(value, int) or isinstance(value, bool):
         raise ValidationError(f"{name} must be an integer, got {type(value).__name__}")
+    if value < min_value:
+        raise ValidationError(f"{name} must be >= {min_value}, got {value}")
     return value
 
 

@@ -308,26 +308,25 @@ def main(argv=None):
     server = MCPServer()
 
     try:
-        loop.run_until_complete(server.start())
-        if not args.no_banner:
-            banner = (
-                "\n"
-                "  ╔══════════════════════════════════════════╗\n"
-                "  ║   AbleBridge++ MCP Server                ║\n"
-                "  ║   Tools: {n:>3}                                     ║\n"
-                "  ║   Transport: {t:<6}                        ║\n"
-                "  ╚══════════════════════════════════════════╝\n"
-            ).format(n=server.tool_registry.tool_count, t=args.transport)
-            stream = sys.stderr
-            print(banner, file=stream)
-
         if args.transport == 'stdio':
-            # Blocking read loop: stdin/stdout handles are not
-            # asyncio-compatible on Windows (ProactorEventLoop), so stdio
-            # dispatches each request through run_until_complete instead.
+            # Answer the MCP handshake IMMEDIATELY: MCP clients (OpenCode,
+            # Claude Desktop, ...) time out the initialize round-trip, so we
+            # must not block on Ableton/M4L connections first. Tools connect
+            # to Ableton lazily on first use instead.
             from MCP_Server.transports import serve_stdio_sync
             serve_stdio_sync(server, loop)
         else:
+            loop.run_until_complete(server.start())
+            if not args.no_banner:
+                banner = (
+                    "\n"
+                    "  ╔══════════════════════════════════════════╗\n"
+                    "  ║   AbleBridge++ MCP Server (TCP)          ║\n"
+                    "  ║   Tools: {n:>3}                            ║\n"
+                    "  ║   Listening on 127.0.0.1:{port:<6}         ║\n"
+                    "  ╚══════════════════════════════════════════╝\n"
+                ).format(n=server.tool_registry.tool_count, port=args.tcp_port)
+                print(banner, file=sys.stderr)
             from MCP_Server.transports import serve_tcp
             loop.run_until_complete(serve_tcp(server, port=args.tcp_port))
 

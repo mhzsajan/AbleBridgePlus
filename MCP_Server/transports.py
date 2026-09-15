@@ -25,6 +25,19 @@ import sys
 logger = logging.getLogger("MCP_Server.transport")
 
 
+def _trace(msg):
+    """Optional file tracing (ABLEBRIDGE_TRACE=1) for debugging spawns."""
+    import os, time as _t
+    if os.environ.get('ABLEBRIDGE_TRACE') != '1':
+        return
+    path = os.path.join(os.environ.get('TEMP', '.'), 'ablebridge_mcp_trace.log')
+    try:
+        with open(path, 'a', encoding='utf-8') as f:
+            f.write("{:.3f} [{}] {}\n".format(_t.time(), os.getpid(), msg))
+    except Exception:
+        pass
+
+
 def _force_stderr_logging():
     """Move all log output to stderr (stdout is protocol-only in stdio mode)."""
     root = logging.getLogger()
@@ -39,6 +52,19 @@ def _serialize(obj: dict) -> str:
     return json.dumps(obj, default=str) + "\n"
 
 
+def _jsonrpc_wrap(request: dict, result: dict) -> dict:
+    """Wrap a handler result in a proper JSON-RPC response envelope.
+
+    ``handle_request`` returns either a bare result object or an
+    ``{'error': {...}}`` dict; JSON-RPC requires success payloads nested
+    under ``"result"`` and errors under ``"error"``.
+    """
+    rid = request.get('id')
+    if isinstance(result, dict) and 'error' in result and len(result) == 1:
+        return {'jsonrpc': '2.0', 'id': rid, 'error': result['error']}
+    return {'jsonrpc': '2.0', 'id': rid, 'result': result}
+
+
 def serve_stdio_sync(server, loop: asyncio.AbstractEventLoop) -> None:
     """Serve MCP over newline-delimited JSON on stdin/stdout (blocking).
 
@@ -51,6 +77,7 @@ def serve_stdio_sync(server, loop: asyncio.AbstractEventLoop) -> None:
     logger.info("Serving MCP over stdio (ctrl+c or EOF to stop)")
 
     for raw in sys.stdin:
+        _trace("stdin recv: " + repr(raw[:120]))
         line = raw.strip()
         if not line:
             continue
@@ -67,17 +94,16 @@ def serve_stdio_sync(server, loop: asyncio.AbstractEventLoop) -> None:
         has_id = request.get('id') is not None
 
         try:
-            response = loop.run_until_complete(server.handle_request(request))
+            result = loop.run_until_complete(server.handle_request(request))
         except KeyboardInterrupt:
             raise
         except Exception as e:
             logger.exception("handle_request failed")
-            response = {'jsonrpc': '2.0', 'id': request.get('id'),
-                        'error': {'code': -32603, 'message': str(e)}}
+            result = {'error': {'code': -32603, 'message': str(e)}}
 
         if has_id:
-            response.setdefault('jsonrpc', '2.0')
-            response.setdefault('id', request['id'])
+            response = _jsonrpc_wrap(request, result)
+            _trace("stdout write: " + repr(_serialize(response)[:120]))
             sys.stdout.write(_serialize(response))
             sys.stdout.flush()
 
@@ -105,15 +131,12 @@ async def _handle_tcp_client(server, reader: asyncio.StreamReader,
 
             has_id = request.get('id') is not None
             try:
-                response = await server.handle_request(request)
+                result = await server.handle_request(request)
             except Exception as e:
                 logger.exception("handle_request failed")
-                response = {'jsonrpc': '2.0', 'id': request.get('id'),
-                            'error': {'code': -32603, 'message': str(e)}}
+                result = {'error': {'code': -32603, 'message': str(e)}}
             if has_id:
-                response.setdefault('jsonrpc', '2.0')
-                response.setdefault('id', request['id'])
-                await _send(writer, response)
+                await _send(writer, _jsonrpc_wrap(request, result))
     except (ConnectionResetError, BrokenPipeError):
         pass
     finally:
