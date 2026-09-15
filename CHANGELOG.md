@@ -5,6 +5,18 @@ All notable changes to AbleBridge++ will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.2] - 2026-09-15
+
+### Renamed
+- **Remote script folder is now `AbleBridgePlus`** — this is the name shown in Ableton's Preferences → Link/Tempo/MIDI → Control Surface list (was "EnhancedAbletonBridge")
+- Python package renamed to `ablebridge-plus`; console command `ablebridge-plus`
+- Persistent data directory moved from `~/.enhanced-abletonbridge` to `~/.ablebridge`
+- Installer now removes the legacy `EnhancedAbletonBridge` folder automatically
+- Brand string **AbleBridge++** is kept in display messages and the dashboard title
+
+### Note
+- After upgrading, restart Ableton once and select **AbleBridgePlus** as the control surface (the old entry no longer exists once the old folder is removed)
+
 ## [0.3.1] - 2026-09-15
 
 ### Added
