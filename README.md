@@ -226,7 +226,7 @@ python scripts/check_imports.py
 
 Ask your AI to run **`doctor`** — it diagnoses the usual suspects in plain language: Ableton not reachable, control surface not selected, **script/version drift** (installed script older than the server), port conflicts, stale browser cache — each with a suggested fix. Spent debugging time on this bridge drops to near zero.
 
-Full list of every tool: **[docs/FEATURES.md](docs/FEATURES.md)** · Also [docs/INSTALLATION.md](docs/INSTALLATION.md) and [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+Full list of every tool: **[docs/FEATURES.md](docs/FEATURES.md)** · Also [docs/INSTALLATION.md](docs/INSTALLATION.md), [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) and the [roadmap](docs/ROADMAP.md).
 
 ### Version history & maturity
 
