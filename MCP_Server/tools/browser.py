@@ -237,6 +237,39 @@ def register_tools(mcp):
         return f"Failed to load sample"
 
     @mcp.tool()
+    @_tool_handler("loading instrument or effect")
+    def load_instrument_or_effect(ctx: Context, track_index: int, uri: str, track_type: str = "track") -> str:
+        """
+        Load an instrument, audio effect, MIDI effect, or preset onto a track.
+
+        Accepts a plain device name (resolved via the browser cache), a full
+        browser URI, or a preset name. If the name does not resolve, run
+        refresh_browser_cache_tool first, or use search_browser to find the URI.
+
+        Parameters:
+        - track_index: The index of the track to load onto
+        - uri: Device/preset name (e.g. "Drift", "Operator", "Reverb") or full browser URI
+        - track_type: "track" (default), "return", or "master"
+        """
+        _validate_index(track_index, "track_index")
+        resolved = uri
+        try:
+            resolved = resolve_device_uri(uri)
+        except Exception:
+            resolved = uri
+        ableton = get_ableton_connection()
+        result = ableton.send_command("load_instrument_or_effect", {
+            "track_index": track_index,
+            "uri": resolved,
+            "track_type": track_type,
+        })
+        if result.get("loaded", False):
+            return f"Loaded '{result.get('item_name', uri)}' onto track {track_index}"
+        raise RuntimeError(
+            f"Could not load '{uri}' (resolved: '{resolved}'). Try refresh_browser_cache_tool "
+            f"first, or use search_browser to find the exact URI.")
+
+    @mcp.tool()
     @_tool_handler("loading drum kit")
     def load_drum_kit(ctx: Context, track_index: int, rack_uri: str, kit_path: str) -> str:
         """
