@@ -26,6 +26,28 @@ def register_tools(mcp):
         return json.dumps(result)
 
     @mcp.tool()
+    @_tool_handler("getting track devices")
+    def get_track_devices(ctx: Context, track_index: int) -> str:
+        """
+        List the devices (instruments and effects) loaded on a track.
+
+        Returns each device's index, name, type, and class so agents can
+        verify what is loaded before tweaking parameters or loading more.
+
+        Parameters:
+        - track_index: The index of the track to inspect
+        """
+        _validate_index(track_index, "track_index")
+        ableton = get_ableton_connection()
+        result = ableton.send_command("get_track_info", {"track_index": track_index})
+        devices = result.get("devices", [])
+        name = result.get("name", f"track {track_index}")
+        if not devices:
+            return json.dumps({"track": name, "device_count": 0,
+                               "devices": [], "note": "no devices loaded"})
+        return json.dumps({"track": name, "device_count": len(devices), "devices": devices})
+
+    @mcp.tool()
     @_tool_handler("getting all tracks info")
     def get_all_tracks_info(ctx: Context) -> str:
         """Get information about all tracks in the session at once (bulk query)."""
