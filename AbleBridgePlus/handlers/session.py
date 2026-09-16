@@ -20,6 +20,7 @@ def get_session_info(song, ctrl=None):
             "signature_denominator": song.signature_denominator,
             "track_count": len(song.tracks),
             "return_track_count": len(song.return_tracks),
+            "scene_count": len(song.scenes),
             "master_track": {
                 "name": "Master",
                 "volume": song.master_track.mixer_device.volume.value,
