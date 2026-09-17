@@ -33,10 +33,24 @@ read-only. Every fix was verified live against a running set.
 
 ## [0.7.0] - 2026-09-17
 
-v0.7 "Ears v2" begins: the AI can now describe HOW things sound, not just
-what key they're in. 457 → 462 tools.
+v0.7 "Ears v2": the AI can now describe HOW things sound, not just what
+key they're in — and put loudness numbers on it. 457 → 462 tools.
 
 ### Added
+- **Pure-Python FFT spectral engine** (`MCP_Server/spectral.py`) — iterative
+  radix-2 Cooley–Tukey FFT (verified against a naive DFT), Hann windowing,
+  frame-averaged features, no numpy dependency: spectral centroid (brightness),
+  roll-off (85% energy point), flatness (0 = pure tone, 1 = white noise),
+  zero-crossing rate, 6-band balance (relative dB), peak frequency and a
+  loudness snapshot.
+- **`analyze_clip_timbre`** — full timbre fingerprint of an audio clip in the
+  set, with warp metadata for context ("dark sub-heavy bass", "bright airy
+  hat" — numbers instead of adjectives).
+- **`analyze_sample_timbre`** — the same fingerprint for any wav/aiff on disk
+  (candidate samples, stems, renders).
+- **`compare_timbre`** — sample vs clip: cosine similarity over the band shape
+  (scale-invariant), centroid/flatness deltas, largest band gap, and
+  plain-language verdict hints for the layering/blending question.
 - **LUFS loudness engine** (`MCP_Server/loudness.py`) — mono ITU-R BS.1770-4
   approximation in pure Python: K-weighting biquads designed per sample rate
   (pyloudnorm-style), 400 ms gated blocks with 100 ms hop, absolute + relative
@@ -55,22 +69,6 @@ what key they're in. 457 → 462 tools.
   guided stem export; Extensions SDK revisit queued for v0.8.
   New read-only `get_export_capabilities` probe handler.
 
-### Added
-- **Pure-Python FFT spectral engine** (`MCP_Server/spectral.py`) — iterative
-  radix-2 Cooley–Tukey FFT (verified against a naive DFT), Hann windowing,
-  frame-averaged features, no numpy dependency: spectral centroid (brightness),
-  roll-off (85% energy point), flatness (0 = pure tone, 1 = white noise),
-  zero-crossing rate, 6-band balance (relative dB), peak frequency and a
-  loudness snapshot.
-- **`analyze_clip_timbre`** — full timbre fingerprint of an audio clip in the
-  set, with warp metadata for context ("dark sub-heavy bass", "bright airy
-  hat" — numbers instead of adjectives).
-- **`analyze_sample_timbre`** — the same fingerprint for any wav/aiff on disk
-  (candidate samples, stems, renders).
-- **`compare_timbre`** — sample vs clip: cosine similarity over the band shape
-  (scale-invariant), centroid/flatness deltas, largest band gap, and
-  plain-language verdict hints for the layering/blending question.
-
 ### Fixed
 - **`get_clip_file_path` returned None on Live 12.4.2** — the handler read
   `clip.sample.file_path`, but this Live version has no `Clip.sample`
@@ -81,6 +79,13 @@ what key they're in. 457 → 462 tools.
   a browser-loaded sample analyzes at its exact 100 Hz tone (flatness 0.0) and
   self-compares at similarity 1.0 through the full
   browser → clip → path → DSP stack.
+- **Sample reader couldn't decode WAVE_FORMAT_EXTENSIBLE wav files** —
+  stdlib `wave` refuses format tag 0xFFFE, which modern sample packs use
+  widely; found when the spectral engine failed on 86 of 3,015 real Core
+  Library samples during a layering study. Added a minimal RIFF chunk parser
+  for the extensible container (16/24/32-bit PCM subformat) plus IEEE float32
+  decoding with proper stereo-to-mono mixing. All DSP tools (timbre, key/BPM,
+  LUFS) benefit automatically.
 
 ### Changed
 - `SCRIPT_VERSION` / `EXPECTED_SCRIPT_VERSION` bumped together to 0.7.0
