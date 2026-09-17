@@ -81,10 +81,6 @@ jobs:
             ablebridge-linux.tar.gz
           body_path: release_section.md
           append_body: true
-          header: |
-            ## AbleBridgePlus v${{ github.ref_name }}
-
-            MCP bridge connecting AI/LLM tools to Ableton Live — AI-assisted music production and real-time show control.
 
       - name: Append install + docs links to the release
         run: |
@@ -132,7 +128,12 @@ jobs:
           ### Credits
           Based on [AbletonBridge](https://github.com/hidingwill/AbletonBridge) by [hidingwill](https://github.com/hidingwill).
           """
-          body = (release.get("body") or "") + trailer
+          # Re-add the release title/one-liner (the deprecated 'header' input
+          # of the release action was dropped, so do it here instead).
+          title = ("# AbleBridgePlus " + tag + "\n\n"
+                   "MCP bridge connecting AI/LLM tools to Ableton Live — "
+                   "AI-assisted music production and real-time show control.\n\n")
+          body = title + (release.get("body") or "") + trailer
           # Update by release ID: PATCH /releases/tags/{tag} is not a valid
           # endpoint (404s forever) — updates must go to /releases/{id}.
           patch_url = "https://api.github.com/repos/{0}/releases/{1}".format(repo, release["id"])
