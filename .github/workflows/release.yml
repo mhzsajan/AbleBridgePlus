@@ -137,6 +137,14 @@ jobs:
               "Accept": "application/vnd.github+json",
               "Content-Type": "application/json",
           })
-          urllib.request.urlopen(req)
+          for attempt in range(12):
+              try:
+                  urllib.request.urlopen(req)
+                  break
+              except urllib.error.HTTPError as e:
+                  if e.code == 404 and attempt < 11:
+                      time.sleep(5)  # same propagation race as the GET above
+                  else:
+                      raise
           print("release body updated:", len(body), "chars")
           PYEOF
