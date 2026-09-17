@@ -148,3 +148,90 @@ jobs:
                       raise
           print("release body updated:", len(body), "chars")
           PYEOF
+
+      - name: Publish to Codeberg (mirror release)
+        env:
+          CODEBERG_TOKEN: ${{ secrets.CODEBERG_TOKEN }}
+        run: |
+          git config --global user.email "actions@users.noreply.github.com"
+          git config --global user.name "Release Bot"
+
+          TAG="${{ github.ref_name }}"
+          SHA="${{ github.sha }}"
+
+          # Clone the Codeberg mirror and pin the exact commit the GitHub
+          # tag points at — fails loudly if the mirror is out of sync.
+          git clone "https://mhzsajan:${CODEBERG_TOKEN}@codeberg.org/mhzsajan/AbleBridgePlus.git" codeberg-repo
+          cd codeberg-repo
+          git checkout "$SHA"
+          git tag "$TAG"
+          git push origin "$TAG"
+
+          # Create the release with the changelog section extracted earlier
+          python3 - <<'PYEOF'
+          import json, os, time, urllib.request, urllib.error
+
+          tag = os.environ["TAG"]
+          token = os.environ["CODEBERG_TOKEN"]
+          api = "https://codeberg.org/api/v1/repos/mhzsajan/AbleBridgePlus/releases"
+
+          section = open("../release_section.md", encoding="utf-8").read().strip()
+          trailer = """
+
+          ### Quick Install
+
+          **Windows:**
+          1. Download `ablebridge-windows.zip`
+          2. Extract and run `install.bat`
+
+          **macOS/Linux:**
+          1. Download `ablebridge-linux.tar.gz`
+          2. Extract and run `./install.sh`
+
+          ### Documentation
+          - [Installation Guide](https://codeberg.org/mhzsajan/AbleBridgePlus/src/branch/master/docs/INSTALLATION.md)
+          - [Features](https://codeberg.org/mhzsajan/AbleBridgePlus/src/branch/master/docs/FEATURES.md)
+          - [Full Changelog](https://codeberg.org/mhzsajan/AbleBridgePlus/src/branch/master/CHANGELOG.md)
+
+          ### Credits
+          Based on [AbletonBridge](https://github.com/hidingwill/AbletonBridge) by hidingwill.
+          Built and maintained by Sajan Maharjan.
+          """
+          payload = json.dumps({
+              "tag_name": tag,
+              "name": tag,
+              "body": "# AbleBridgePlus " + tag + "\n\n" + section + trailer,
+              "draft": False,
+              "prerelease": False,
+          }).encode()
+
+          def api_call(req):
+              for attempt in range(12):
+                  try:
+                      return urllib.request.urlopen(req).read()
+                  except urllib.error.HTTPError as e:
+                      if e.code == 404 and attempt < 11:
+                          time.sleep(5)  # tag propagation delay
+                      else:
+                          raise
+              raise SystemExit("Codeberg API unreachable after retries")
+
+          req = urllib.request.Request(api, data=payload, method="POST", headers={
+              "Authorization": "token " + token,
+              "Content-Type": "application/json",
+          })
+          release = json.loads(api_call(req))
+          rid = release["id"]
+          print("codeberg release created, id", rid)
+
+          for asset, name in (("../ablebridge-windows.zip", "ablebridge-windows.zip"),
+                              ("../ablebridge-linux.tar.gz", "ablebridge-linux.tar.gz")):
+              data = open(asset, "rb").read()
+              req = urllib.request.Request(
+                  api + "/{}".format(rid) + "/assets?name=" + name,
+                  data=data, method="POST",
+                  headers={"Authorization": "token " + token,
+                           "Content-Type": "application/octet-stream"})
+              result = json.loads(api_call(req))
+              print("uploaded:", result.get("name"), result.get("size"))
+          PYEOF
