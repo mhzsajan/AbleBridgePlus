@@ -136,6 +136,8 @@ class MCPServer:
         from MCP_Server.tools import undo_safety
         # v0.6.x: MCP resources & prompts, whole-mix reference matching
         from MCP_Server.tools import resources_prompts, mix_matching
+        # v0.7: spectral engine (Ears v2) — per-clip timbre analysis
+        from MCP_Server.tools import spectral_analysis
 
         # Register all tool modules
         tool_modules = [
@@ -162,7 +164,9 @@ class MCPServer:
             undo_safety,
             # v0.6.x: resources/prompts handlers live in server dispatch,
             # mix_matching registers tools
-            mix_matching
+            mix_matching,
+            # v0.7
+            spectral_analysis
         ]
         
         adapter = _FastMCPAdapter(self.tool_registry)
@@ -225,7 +229,7 @@ class MCPServer:
             },
             'serverInfo': {
                 'name': 'AbleBridgePlus',
-                'version': '0.6.1'
+                'version': '0.7.0'
             }
         }
     

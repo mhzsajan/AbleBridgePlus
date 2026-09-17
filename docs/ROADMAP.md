@@ -75,8 +75,14 @@ The server now serves all three MCP surfaces. MCP supports *resources*
 
 ## v0.7 — "Ears v2"
 
-- **Spectral analysis** — real FFT in pure Python (Cooley–Tukey); spectral centroid,
-  roll-off, band energies per clip. Key/BPM already works; this adds timbre awareness.
+- **Spectral analysis** — ✅ SHIPPED (unreleased): real FFT in pure Python
+  (iterative Cooley–Tukey, no numpy) in `MCP_Server/spectral.py`; spectral centroid,
+  roll-off, flatness, ZCR, 6-band energies, peak frequency per clip. Tools:
+  `analyze_clip_timbre`, `analyze_sample_timbre`, `compare_timbre` (cosine
+  similarity over band shape + plain-language hints). Also fixed a silent v0.5
+  regression: `get_clip_file_path` returned None on Live 12.4.2 (Clip.file_path
+  is the path; `clip.sample` doesn't exist), which had quietly disabled the
+  file-DSP half of key/BPM detection.
 - **Per-clip loudness (LUFS approximation)** — gated loudness on decoded clip audio;
   flag clips that will jump out of the mix.
 - **Stem export mapping** — drive Live's export dialog programmatically (solo + export

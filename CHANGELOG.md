@@ -31,6 +31,42 @@ read-only. Every fix was verified live against a running set.
   mirror push pushes the tag first and tolerates a master fast-forward miss
   (patch releases carved from master with unreleased feature work).
 
+## [0.7.0] - 2026-09-17
+
+v0.7 "Ears v2" begins: the AI can now describe HOW things sound, not just
+what key they're in. 457 → 460 tools.
+
+### Added
+- **Pure-Python FFT spectral engine** (`MCP_Server/spectral.py`) — iterative
+  radix-2 Cooley–Tukey FFT (verified against a naive DFT), Hann windowing,
+  frame-averaged features, no numpy dependency: spectral centroid (brightness),
+  roll-off (85% energy point), flatness (0 = pure tone, 1 = white noise),
+  zero-crossing rate, 6-band balance (relative dB), peak frequency and a
+  loudness snapshot.
+- **`analyze_clip_timbre`** — full timbre fingerprint of an audio clip in the
+  set, with warp metadata for context ("dark sub-heavy bass", "bright airy
+  hat" — numbers instead of adjectives).
+- **`analyze_sample_timbre`** — the same fingerprint for any wav/aiff on disk
+  (candidate samples, stems, renders).
+- **`compare_timbre`** — sample vs clip: cosine similarity over the band shape
+  (scale-invariant), centroid/flatness deltas, largest band gap, and
+  plain-language verdict hints for the layering/blending question.
+
+### Fixed
+- **`get_clip_file_path` returned None on Live 12.4.2** — the handler read
+  `clip.sample.file_path`, but this Live version has no `Clip.sample`
+  attribute; the path lives on `Clip.file_path` directly. The handler now tries
+  `clip.file_path` first with the old path as a fallback. This had **silently
+  disabled the file-DSP half of `analyze_audio_key_bpm` since v0.5** (warp
+  metadata still worked, so the regression went unnoticed). Verified live:
+  a browser-loaded sample analyzes at its exact 100 Hz tone (flatness 0.0) and
+  self-compares at similarity 1.0 through the full
+  browser → clip → path → DSP stack.
+
+### Changed
+- `SCRIPT_VERSION` / `EXPECTED_SCRIPT_VERSION` bumped together to 0.7.0
+  (a remote handler changed — doctor catches drift).
+
 ## [0.6.1] - 2026-09-17
 
 Completes the v0.6 "Full Circle" roadmap: the MCP server now serves all

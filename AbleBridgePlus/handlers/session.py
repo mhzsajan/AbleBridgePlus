@@ -9,7 +9,7 @@ from ._helpers import get_track, get_clip
 
 # Version marker of the remote script build. The MCP server's `doctor` tool
 # compares this against its own expected version to detect script drift.
-SCRIPT_VERSION = "0.6.1"
+SCRIPT_VERSION = "0.7.0"
 
 
 def get_session_info(song, ctrl=None):
@@ -1169,8 +1169,12 @@ def get_clip_file_path(song, track_index, clip_index, ctrl=None):
             raise ValueError("No clip in slot {0}".format(clip_index))
         if not getattr(clip, "is_audio_clip", False):
             raise ValueError("Clip is not an audio clip")
-        sample = getattr(clip, "sample", None)
-        raw = getattr(sample, "file_path", None) if sample is not None else None
+        # Live 12.4.2: Clip.file_path exists directly; older builds expose
+        # it via clip.sample.file_path. Try both, prefer the clip itself.
+        raw = getattr(clip, "file_path", None)
+        if not raw:
+            sample = getattr(clip, "sample", None)
+            raw = getattr(sample, "file_path", None) if sample is not None else None
         return {"file_path": str(raw) if raw else None}
     except Exception as e:
         if ctrl:
