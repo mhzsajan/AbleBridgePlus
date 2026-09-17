@@ -14,6 +14,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # full history so the mirror push has full connectivity
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -152,15 +154,12 @@ jobs:
           git config --global user.name "Release Bot"
 
           TAG="${{ github.ref_name }}"
-          SHA="${{ github.sha }}"
 
-          # Clone the Codeberg mirror and pin the exact commit the GitHub
-          # tag points at — fails loudly if the mirror is out of sync.
-          git clone "https://mhzsajan:${CODEBERG_TOKEN}@codeberg.org/mhzsajan/AbleBridgePlus.git" codeberg-repo
-          cd codeberg-repo
-          git checkout "$SHA"
-          git tag "$TAG"
-          git push origin "$TAG"
+          # The checkout above has full history (fetch-depth: 0), so push
+          # master + the release tag straight to the Codeberg mirror.
+          git remote add codeberg "https://mhzsajan:${CODEBERG_TOKEN}@codeberg.org/mhzsajan/AbleBridgePlus.git"
+          git push codeberg "HEAD:refs/heads/master"
+          git push codeberg "refs/tags/$TAG"
 
           # Create the release with the changelog section extracted earlier
           python3 - <<'PYEOF'
