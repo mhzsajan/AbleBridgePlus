@@ -252,13 +252,15 @@ def set_cue_volume(song, value, ctrl=None):
 
 
 def set_track_delay(song, track_index, delay, ctrl=None):
-    """Set the track delay compensation in ms."""
+    """Set the track delay compensation in ms (Live range: -100 to +100)."""
     try:
         track = get_track(song, track_index)
         td = track.mixer_device.track_delay
-        clamped = max(td.min, min(td.max, float(delay)))
+        # Clamp to Live's fixed TrackDelay range; don't read td.min/td.max
+        # (those attributes don't exist on the TrackDelay object).
+        clamped = max(-100.0, min(100.0, float(delay)))
         td.value = clamped
-        return {"track_index": track_index, "track_delay": td.value}
+        return {"track_index": track_index, "track_delay": float(td.value)}
     except Exception as e:
         if ctrl:
             ctrl.log_message("Error setting track delay: " + str(e))
@@ -270,8 +272,9 @@ def get_track_delay(song, track_index, ctrl=None):
     try:
         track = get_track(song, track_index)
         td = track.mixer_device.track_delay
-        return {"track_index": track_index, "track_delay": td.value,
-                "min": td.min, "max": td.max}
+        # Live's TrackDelay object exposes only .value (range is +/-100 ms
+        # in the UI); reading .min/.max raises and surfaced as "Internal error".
+        return {"track_index": track_index, "track_delay": float(td.value)}
     except Exception as e:
         if ctrl:
             ctrl.log_message("Error getting track delay: " + str(e))

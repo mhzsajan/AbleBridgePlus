@@ -21,6 +21,27 @@ DEFAULT_PORT = 9877
 UDP_REALTIME_PORT = 9882
 HOST = "localhost"
 
+
+def _json_fallback(obj):
+    """Convert non-JSON-serializable values (Live objects, enums) to safe JSON.
+
+    Used as json.dumps' default= hook so a single rogue Live object in a
+    handler result can never crash the response path and disconnect clients.
+    """
+    # Live enums / Song.Value objects expose their primitive via .value
+    value = getattr(obj, "value", None)
+    if value is not None and isinstance(value, (int, float, str, bool)):
+        return value
+    if isinstance(obj, bytes):
+        return obj.decode("utf-8", errors="replace")
+    if isinstance(obj, (set, frozenset)):
+        return list(obj)
+    # Any remaining Live object: keep a hint instead of crashing
+    try:
+        return "<{}>".format(type(obj).__name__)
+    except Exception:
+        return "<unserializable>"
+
 # -----------------------------------------------------------------------
 # Command dispatch tables
 # -----------------------------------------------------------------------
@@ -856,7 +877,18 @@ class AbleBridgePlus(ControlSurface):
 
                         response = self._process_command(command)
 
-                        response_str = json.dumps(response) + '\n'
+                        # Live objects (Groove, enums, devices) sometimes leak into
+                        # handler results and break json.dumps, which used to raise a
+                        # TypeError that tore down the client connection. Sanitize
+                        # instead: replace non-serializable values with placeholders
+                        # so the response (or a clear error) always reaches the client.
+                        try:
+                            response_str = json.dumps(response, default=_json_fallback) + '\n'
+                        except Exception:
+                            self.log_message("Response not serializable, sending sanitized error")
+                            response = {"status": "error", "message":
+                                        "Handler returned a non-serializable result (Live object leaked into response)"}
+                            response_str = json.dumps(response) + '\n'
                         try:
                             client.sendall(response_str.encode('utf-8'))
                         except (OSError, socket.error):
@@ -929,6 +961,12 @@ class AbleBridgePlus(ControlSurface):
             return "Invalid parameter type"
         if isinstance(e, queue.Empty):
             return "Operation timed out"
+        # RuntimeError messages are written deliberately by handlers for
+        # version-gates and Live-model limitations — pass them through so
+        # clients see "requires Live 12.2+" instead of a generic 500-style
+        # "Internal error" that hides the actual cause.
+        if isinstance(e, RuntimeError):
+            return str(e)
         return "Internal error - check Ableton log for details"
 
     # ------------------------------------------------------------------

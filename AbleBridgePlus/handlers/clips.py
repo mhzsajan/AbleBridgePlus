@@ -715,14 +715,26 @@ def get_clip_properties(song, track_index, clip_index, ctrl=None):
         for prop in ("start_marker", "end_marker", "loop_start", "loop_end",
                       "looping", "warping", "color_index", "is_triggered",
                       "playing_position", "launch_mode", "velocity_amount",
-                      "legato", "ram_mode", "muted", "groove",
+                      "legato", "ram_mode", "muted",
                       "signature_numerator", "signature_denominator",
                       "start_time", "end_time", "has_envelopes",
                       "pitch_coarse", "pitch_fine", "gain"):
             try:
-                result[prop] = getattr(clip, prop)
+                val = getattr(clip, prop)
+                # Unwrap Live enums/Song.Value objects; the socket layer's
+                # json fallback would otherwise stringify them.
+                if hasattr(val, "value") and not isinstance(val, (str, bytes)):
+                    val = val.value
+                result[prop] = val
             except Exception:
                 pass
+        # groove is a live Groove *object* in the Live Object Model — passing
+        # it through used to break JSON serialization and kill the client
+        # connection. Report its name instead.
+        try:
+            result["groove"] = clip.groove.name if clip.groove else None
+        except Exception:
+            result["groove"] = None
         for prop in ("follow_action_0", "follow_action_1",
                       "follow_action_probability", "follow_action_time",
                       "follow_action_enabled", "follow_action_linked"):
@@ -753,12 +765,31 @@ def set_clip_properties(song, track_index, clip_index,
             clip.velocity_amount = float(velocity_amount)
             changes["velocity_amount"] = clip.velocity_amount
         if groove is not None:
-            clip.groove = groove
-            changes["groove"] = clip.groove
+            # groove must be a Groove from the song's groove_pool (or None).
+            # Accept a groove name and resolve it from the pool; reject anything
+            # else instead of crashing the dispatch with a TypeError.
+            if groove in ("", "none", "None", False):
+                target = None
+            elif hasattr(groove, "name"):
+                target = groove
+            else:
+                pool = list(song.groove_pool)
+                matches = [g for g in pool if getattr(g, "name", "") == str(groove)]
+                if not matches:
+                    names = [g.name for g in pool][:20]
+                    raise ValueError(
+                        "Groove '{0}' not found in groove pool. Available: {1}".format(groove, names))
+                target = matches[0]
+            clip.groove = target
+            changes["groove"] = target.name if target else None
         if signature_numerator is not None:
+            if int(signature_numerator) < 1:
+                raise ValueError("signature_numerator must be >= 1")
             clip.signature_numerator = int(signature_numerator)
             changes["signature_numerator"] = clip.signature_numerator
         if signature_denominator is not None:
+            if int(signature_denominator) not in (1, 2, 4, 8, 16):
+                raise ValueError("signature_denominator must be one of 1, 2, 4, 8, 16")
             clip.signature_denominator = int(signature_denominator)
             changes["signature_denominator"] = clip.signature_denominator
         if ram_mode is not None:
@@ -800,7 +831,12 @@ def set_clip_start_time(song, track_index, clip_index, time, ctrl=None):
     """Set the start_time of a clip (arrangement position, Live 12.2+)."""
     try:
         _, clip = get_clip(song, track_index, clip_index)
-        clip.start_time = float(time)
+        time = max(0.0, float(time))
+        if not hasattr(clip, "start_time"):
+            raise RuntimeError(
+                "clip.start_time requires Live 12.2+ and only applies to "
+                "arrangement clips (session clips have a fixed start_time of 0)")
+        clip.start_time = time
         return {
             "track_index": track_index,
             "clip_index": clip_index,
@@ -1197,7 +1233,10 @@ def set_clip_slot_properties(song, track_index, clip_index, has_stop_button=None
             clip_slot.has_stop_button = bool(has_stop_button)
             changes["has_stop_button"] = clip_slot.has_stop_button
         if color_index is not None:
-            clip_slot.color_index = int(color_index)
+            color_index = int(color_index)
+            if color_index < 0:
+                raise ValueError("color_index must be >= 0 (Live has 70 colors, 0-69)")
+            clip_slot.color_index = color_index
             changes["color_index"] = clip_slot.color_index
         if not changes:
             raise ValueError("No properties specified")
