@@ -449,5 +449,5 @@ def _get_midi_clip(song, track_index, clip_index):
     """Get a MIDI clip with validation."""
     _, clip = get_clip(song, track_index, clip_index)
     if not hasattr(clip, 'get_notes'):
-        raise TypeError("Clip is not a MIDI clip")
+        raise ValueError("Clip is not a MIDI clip")
     return clip

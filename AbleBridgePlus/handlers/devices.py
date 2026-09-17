@@ -367,7 +367,7 @@ def get_macro_values(song, track_index, device_index, track_type="track", ctrl=N
     try:
         _track, device = _resolve_device(song, track_index, device_index, track_type)
         if not hasattr(device, "macros_mapped"):
-            raise TypeError("Device is not a rack (no macros)")
+            raise ValueError("Device is not a rack (no macros)")
 
         macro_count = getattr(device, "visible_macro_count", 8)
         macros = []
@@ -401,7 +401,7 @@ def set_macro_value(song, track_index, device_index, macro_index, value, track_t
     try:
         _track, device = _resolve_device(song, track_index, device_index, track_type)
         if not hasattr(device, "macros_mapped"):
-            raise TypeError("Device is not a rack (no macros)")
+            raise ValueError("Device is not a rack (no macros)")
         macro_count = getattr(device, "visible_macro_count", 8)
         if macro_index < 0 or macro_index >= macro_count:
             raise IndexError("Macro index must be 0-{0}".format(macro_count - 1))
@@ -436,7 +436,7 @@ def _get_drum_rack(song, track_index, device_index, track_type="track"):
         raise IndexError("Device index out of range")
     device = track.devices[device_index]
     if not device.can_have_drum_pads:
-        raise TypeError("Device '{0}' is not a Drum Rack".format(device.name))
+        raise ValueError("Device '{0}' is not a Drum Rack".format(device.name))
     return device
 
 
@@ -537,7 +537,7 @@ def _get_rack_device(song, track_index, device_index, track_type="track"):
         raise IndexError("Device index out of range")
     device = track.devices[device_index]
     if not device.can_have_chains:
-        raise TypeError("Device '{0}' is not a Rack".format(device.name))
+        raise ValueError("Device '{0}' is not a Rack".format(device.name))
     return device
 
 
@@ -634,7 +634,7 @@ def _get_compressor_device(song, track_index, device_index, track_type="track"):
         raise IndexError("Device index out of range")
     device = track.devices[device_index]
     if "compressor" not in device.class_name.lower():
-        raise TypeError("Device '{0}' is not a Compressor (class: {1})".format(
+        raise ValueError("Device '{0}' is not a Compressor (class: {1})".format(
             device.name, device.class_name))
     return device
 
@@ -771,7 +771,7 @@ def _get_eq8_device(song, track_index, device_index, track_type="track"):
         raise IndexError("Device index out of range")
     device = track.devices[device_index]
     if "eq8" not in device.class_name.lower():
-        raise TypeError("Device '{0}' is not an EQ Eight (class: {1})".format(
+        raise ValueError("Device '{0}' is not an EQ Eight (class: {1})".format(
             device.name, device.class_name))
     return device
 
@@ -858,7 +858,7 @@ def _get_hybrid_reverb_device(song, track_index, device_index, track_type="track
         raise IndexError("Device index out of range")
     device = track.devices[device_index]
     if "hybrid" not in device.class_name.lower():
-        raise TypeError("Device '{0}' is not a Hybrid Reverb (class: {1})".format(
+        raise ValueError("Device '{0}' is not a Hybrid Reverb (class: {1})".format(
             device.name, device.class_name))
     return device
 
@@ -958,7 +958,7 @@ def _get_transmute_device(song, track_index, device_index, track_type="track"):
         raise IndexError("Device index out of range")
     device = track.devices[device_index]
     if "transmute" not in device.class_name.lower():
-        raise TypeError("Device '{0}' is not a Transmute (class: {1})".format(
+        raise ValueError("Device '{0}' is not a Transmute (class: {1})".format(
             device.name, device.class_name))
     return device
 
@@ -1053,7 +1053,7 @@ def _get_simpler_device(song, track_index, device_index, track_type="track"):
         raise IndexError("Device index out of range")
     device = track.devices[device_index]
     if "simpler" not in device.class_name.lower():
-        raise TypeError("Device '{0}' is not a Simpler (class: {1})".format(
+        raise ValueError("Device '{0}' is not a Simpler (class: {1})".format(
             device.name, device.class_name))
     return device
 

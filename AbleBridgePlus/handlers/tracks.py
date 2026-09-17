@@ -501,7 +501,7 @@ def set_track_fold(song, track_index, fold_state, ctrl=None):
     try:
         track = get_track(song, track_index)
         if not track.is_foldable:
-            raise TypeError("Track '{0}' is not a group track (not foldable)".format(track.name))
+            raise ValueError("Track '{0}' is not a group track (not foldable)".format(track.name))
         track.fold_state = bool(fold_state)
         return {
             "track_index": track_index,
