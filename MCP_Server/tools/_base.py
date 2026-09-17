@@ -33,6 +33,31 @@ _MUTATION_EXACT = {
 }
 
 
+# Tools that mutate server state (or are restores/undo themselves) rather
+# than the set shape — auto-checkpointing before them adds no safety.
+_NO_AUTO_CHECKPOINT = {
+    "undo", "redo", "rollback", "restore_checkpoint", "safe_experiment",
+    "remember_preference", "forget_preference", "clear_change_journal",
+    "start_show_autopilot", "stop_show_autopilot", "tap_tempo",
+}
+
+
+def _get_live_connection():
+    """Return the shared live Ableton connection if one is established.
+
+    Returns None when no connection exists yet (replay tests, CI, first call
+    not yet made) so auto-checkpointing stays a no-op outside live sessions.
+    """
+    try:
+        import MCP_Server.state as _state
+        conn = getattr(_state, "ableton_connection", None)
+        if conn is not None and getattr(conn, "sock", None) is not None:
+            return conn
+    except Exception:
+        pass
+    return None
+
+
 def _tool_handler(error_prefix: str):
     """Decorator that wraps tool functions with standard error handling.
 
@@ -58,6 +83,26 @@ def _tool_handler(error_prefix: str):
             journal_tool = None
             if func.__name__.startswith(_MUTATION_PREFIXES) or func.__name__ in _MUTATION_EXACT:
                 journal_tool = func.__name__
+            auto_checkpoint_done = False
+            if journal_tool and func.__name__ not in _NO_AUTO_CHECKPOINT:
+                try:
+                    # v0.6 undo-safety: snapshot the set BEFORE the mutation's
+                    # side effects. Only when a live connection already exists
+                    # (never dials Live from a replay/CI run), and best-effort:
+                    # a capture failure must never block the tool itself.
+                    from MCP_Server.tools._base import _get_live_connection
+                    conn = _get_live_connection()
+                    if conn is not None:
+                        from MCP_Server import checkpoints as _ckpt
+                        args_summary = json.dumps(
+                            [a for a in args[1:] if not hasattr(a, "report_progress")],
+                            default=str) if len(args) > 1 else ""
+                        _ckpt.store_auto(_ckpt.capture_snapshot(conn),
+                                         func.__name__, args_summary)
+                        auto_checkpoint_done = True
+                except Exception:
+                    logger.debug("auto-checkpoint capture failed for %s",
+                                 func.__name__, exc_info=True)
             try:
                 async with _ableton_semaphore:
                     result = await asyncio.wait_for(

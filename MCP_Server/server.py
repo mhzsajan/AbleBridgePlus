@@ -94,6 +94,16 @@ class MCPServer:
                 logger.info("Browser cache hydrated from disk at startup")
         except Exception as e:
             logger.warning("Browser cache disk hydration skipped: %s", e)
+
+        # v0.6: hydrate persisted named checkpoints so restore_checkpoint
+        # works across server restarts.
+        try:
+            from MCP_Server import checkpoints as _ckpt
+            _ckpt.load_persisted()
+            logger.info("Named checkpoints hydrated (%d)",
+                        len(_ckpt.list_all()["named"]))
+        except Exception as e:
+            logger.warning("Checkpoint hydration skipped: %s", e)
         
         logger.info("AbleBridgePlus MCP Server initialized")
     
@@ -122,6 +132,8 @@ class MCPServer:
         from MCP_Server.tools import project_context, music_gen, doctor, show_autopilot
         # v0.5.0: audio intelligence, producer pipeline, studio memory
         from MCP_Server.tools import audio_intelligence, producer, studio_memory
+        # v0.6.0: undo-safe experimentation
+        from MCP_Server.tools import undo_safety
 
         # Register all tool modules
         tool_modules = [
@@ -143,7 +155,9 @@ class MCPServer:
             # v0.4.0
             project_context, music_gen, doctor, show_autopilot,
             # v0.5.0
-            audio_intelligence, producer, studio_memory
+            audio_intelligence, producer, studio_memory,
+            # v0.6.0
+            undo_safety
         ]
         
         adapter = _FastMCPAdapter(self.tool_registry)

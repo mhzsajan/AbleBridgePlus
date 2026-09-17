@@ -13,20 +13,26 @@
 
 ---
 
-## v0.6 — "Full Circle" (next release)
+## v0.6 — "Full Circle" (IN PROGRESS)
 
 Theme: **trust and smarter clients**. The AI touches your set; you can undo it; clients get richer context.
 
-### 1. Undo-safe experimentation  `high`
+### 1. Undo-safe experimentation  `high` — ✅ SHIPPED (unreleased)
 Live's native undo is fragile with remote scripts (some operations bypass it). Build a
 real safety net:
 
-- **Auto-checkpoint before every mutation** — hook the mutation path in
-  `_tool_handler` (same choke point as the change journal) and snapshot before side-effects.
-- **`rollback`** — one tool call restores the last checkpoint.
-- **`safe_experiment(name, fn)`** — wrap any sequence of mutations; on failure, auto-rollback
-  and report what was attempted.
-- Combines with the existing checkpoint system (context engine) rather than duplicating it.
+- [x] **Auto-checkpoint before every mutation** — hooked in `_tool_handler`
+  (same choke point as the change journal): live-connection check, dedup,
+  20-entry ring, never fires on tool failure or replay/CI runs.
+- [x] **`rollback(steps_back)`** — one call restores the last (or Nth-last)
+  auto checkpoint; returned report shows what was undone and the trigger.
+- [x] **`safe_experiment(name, steps)`** — wrap a sequence of tool names;
+  auto-rollback on failure with the attempt report. Documented patterns
+  beat a callback API for MCP (no client code to install).
+- [x] **Unified with the context-engine checkpoints** — `create_checkpoint`,
+  `checkpoint_diff` and the new `restore_checkpoint` share one persistent
+  store (`~/.ableton-bridge/checkpoints.json`), deep snapshots include
+  scene names and per-slot clips, plus `list_checkpoints` / `delete_checkpoint`.
 - Effort: ~2–3 days. Unlocks: users let the AI act freely.
 
 ### 2. MCP resources & prompts  `high`

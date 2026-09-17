@@ -5,6 +5,43 @@ All notable changes to AbleBridgePlus will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] — v0.6 "Full Circle" (undo-safe experimentation)
+
+### Added
+- **Undo-safety layer (v0.6 theme 1)** — the AI can now act freely and be fully undone:
+  - **Automatic checkpoints** — every mutating tool call snapshots the set *before*
+    its side effects (hooked in the same choke point as the change journal).
+    Best-effort and deduplicated: never fires without a live connection, never on
+    replay/CI runs, never blocks the tool, never leaves a checkpoint behind on failure.
+  - **`rollback(steps_back=1)`** — one call restores the last (or Nth-last) automatic
+    checkpoint; the report shows tempo/track/clip repairs and the triggering tool.
+  - **`safe_experiment(name, steps)`** — run a sequence of tools under protection:
+    on failure the set auto-rolls-back and the report shows what was attempted.
+  - **`restore_checkpoint(name)`** — revert to a named checkpoint (the previously
+    documented-but-missing tool now really exists); restores tempo, scene names,
+    track names/types/mixer/color, and which clip slots hold clips.
+  - **`list_checkpoints` / `delete_checkpoint`** — inspect and manage both layers
+    (20-entry auto ring, up to 50 persistent named checkpoints).
+- **Persistent named checkpoints** — stored at `~/.ableton-bridge/checkpoints.json`,
+  hydrated at server startup so checkpoints survive MCP server restarts.
+- **Deeper snapshots** — capture now includes scene names and per-slot clip presence
+  (name/length); `checkpoint_diff` reports added/removed/renamed tracks, mixer and
+  clip changes, and scene changes.
+- **Unified checkpoint store** — the context engine's `create_checkpoint` /
+  `checkpoint_diff` now use the same persistent store as the undo-safety tools
+  (previously a separate in-memory dict invisible to `restore_checkpoint`).
+- Tool count: 450 → **455**.
+
+### Changed
+- `create_checkpoint` snapshots are deeper (scenes + clips) and persist across restarts.
+- `checkpoint_diff` reports clip and scene changes in addition to track/mixer changes.
+
+### Tests
+- New offline replay suite `tests/test_checkpoints.py` (8 tests): capture/restore
+  round-trip, diff semantics, auto-ring pruning, persistence round-trip, named-limit
+  pruning, auto-checkpoint hook behavior (fires on mutation, skips reads/failures),
+  and safe-experiment rollback.
+
 ## [0.5.2] - 2026-09-17
 
 Patch release fixing a startup inefficiency found during post-release verification.

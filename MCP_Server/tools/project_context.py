@@ -13,11 +13,9 @@ from mcp.server.fastmcp import Context
 
 from MCP_Server.tools._base import _tool_handler
 from MCP_Server.connections.ableton import get_ableton_connection
+from MCP_Server import checkpoints as store
 
 logger = logging.getLogger("MCP_Server.project_context")
-
-# module-level checkpoint store (in-memory, per server run)
-_checkpoints: Dict[str, Dict[str, Any]] = {}
 
 
 def register_tools(mcp):
@@ -126,30 +124,26 @@ def register_tools(mcp):
     @_tool_handler("creating checkpoint")
     def create_checkpoint(ctx: Context, name: str) -> str:
         """
-        Snapshot the set structure (tracks + clips layout) under a name so
-        you can diff later with checkpoint_diff. Use before risky edits:
+        Snapshot the set structure (tracks + clips layout + scenes) under a
+        name so you can diff later with checkpoint_diff or go back with
+        restore_checkpoint. Use before risky edits:
         create_checkpoint("before-overhaul") -> experiment freely ->
-        checkpoint_diff("before-overhaul") to see exactly what changed.
+        checkpoint_diff("before-overhaul") to see what changed, or
+        restore_checkpoint("before-overhaul") to undo it all.
+
+        v0.6: stored in the shared undo-safety store — persists across
+        server restarts and is visible to list_checkpoints/rollback tools.
         """
         ableton = get_ableton_connection()
-        all_tracks = ableton.send_command("get_all_tracks_info")
-        snapshot = {
-            "created": time.time(),
-            "tracks": [
-                {"index": t.get("index"), "name": t.get("name"),
-                 "is_audio": t.get("is_audio"), "is_midi": t.get("is_midi"),
-                 "mute": t.get("mute"), "solo": t.get("solo"),
-                 "volume": t.get("volume"), "panning": t.get("panning")}
-                for t in all_tracks.get("tracks", [])
-            ],
-        }
-        _checkpoints[name] = snapshot
+        snapshot = store.capture_snapshot(ableton)
+        tracks_captured = store.store_named(name, snapshot)
         import json as _json
         return _json.dumps({
             "status": "checkpoint_created", "name": name,
-            "tracks_captured": len(snapshot["tracks"]),
-            "note": "Use checkpoint_diff to compare, or server undo (undo tool) "
-                    "to revert individual changes.",
+            "tracks_captured": tracks_captured,
+            "scenes_captured": len(snapshot.get("scenes", [])),
+            "note": "Use checkpoint_diff to compare, restore_checkpoint to "
+                    "revert, or the undo tool for single-step Live undo.",
         })
 
     @mcp.tool()
@@ -158,37 +152,23 @@ def register_tools(mcp):
         """
         Compare the current set structure against a named checkpoint made
         with create_checkpoint: added/removed/renamed tracks, mute/solo
-        flips and volume/pan drift. Read-only — nothing is changed.
+        flips, volume/pan drift, clip changes and scene changes.
+        Read-only — nothing is changed.
         """
-        if name not in _checkpoints:
+        entry = store.get_named(name)
+        if entry is None:
+            available = [c["name"] for c in store.list_all()["named"]][:10]
             raise ValueError("No checkpoint named '{0}'. Create one with "
-                             "create_checkpoint first.".format(name))
+                             "create_checkpoint first. Available: {1}"
+                             .format(name, available))
         ableton = get_ableton_connection()
-        all_tracks = ableton.send_command("get_all_tracks_info")
-        current = {t.get("index"): t for t in all_tracks.get("tracks", [])}
-        old = {t["index"]: t for t in _checkpoints[name]["tracks"]}
-
-        diff: Dict[str, Any] = {"added": [], "removed": [], "changed": []}
-        for idx, t in current.items():
-            if idx not in old:
-                diff["added"].append({"index": idx, "name": t.get("name")})
-            else:
-                o = old[idx]
-                changes = {}
-                for field in ("name", "mute", "solo", "volume", "panning"):
-                    if o.get(field) != t.get(field):
-                        changes[field] = [o.get(field), t.get(field)]
-                if changes:
-                    diff["changed"].append({"index": idx, "name": t.get("name"),
-                                            "changes": changes})
-        for idx, t in old.items():
-            if idx not in current:
-                diff["removed"].append({"index": idx, "name": t.get("name")})
+        current = store.capture_snapshot(ableton)
+        diff = store.diff_snapshots(entry["snapshot"], current)
 
         import json as _json
         return _json.dumps({
             "checkpoint": name,
-            "age_seconds": round(time.time() - _checkpoints[name]["created"], 1),
+            "age_seconds": round(time.time() - entry["created"], 1),
             "summary": "{0} added, {1} removed, {2} changed".format(
                 len(diff["added"]), len(diff["removed"]), len(diff["changed"])),
             **diff,
