@@ -24,7 +24,7 @@ ABridge_PORT = 9877
 
 # Bumped with the release; the remote script must report the same version
 # or `doctor` flags an install/repo drift (a failure mode we have hit).
-EXPECTED_SCRIPT_VERSION = "0.5.3"
+EXPECTED_SCRIPT_VERSION = "0.6.0"
 
 
 def register_tools(mcp):

@@ -31,7 +31,7 @@ read-only. Every fix was verified live against a running set.
   mirror push pushes the tag first and tolerates a master fast-forward miss
   (patch releases carved from master with unreleased feature work).
 
-## [Unreleased] — v0.6 "Full Circle" (undo-safe experimentation)
+## [0.6.0] - 2026-09-17
 
 ### Added
 - **Undo-safety layer (v0.6 theme 1)** — the AI can now act freely and be fully undone:

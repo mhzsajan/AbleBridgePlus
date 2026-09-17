@@ -215,7 +215,7 @@ class MCPServer:
             },
             'serverInfo': {
                 'name': 'AbleBridgePlus',
-                'version': '0.5.3'
+                'version': '0.6.0'
             }
         }
     
