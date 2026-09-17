@@ -200,13 +200,13 @@ jobs:
               "prerelease": False,
           }).encode()
 
-          def api_call(req):
+          def api_call(req, transient=(404, 500, 502, 503, 504)):
               for attempt in range(12):
                   try:
                       return urllib.request.urlopen(req).read()
                   except urllib.error.HTTPError as e:
-                      if e.code == 404 and attempt < 11:
-                          time.sleep(5)  # tag propagation delay
+                      if e.code in transient and attempt < 11:
+                          time.sleep(5)  # tag propagation / Codeberg blips
                       else:
                           raise
               raise SystemExit("Codeberg API unreachable after retries")
@@ -215,9 +215,18 @@ jobs:
               "Authorization": "token " + token,
               "Content-Type": "application/json",
           })
-          release = json.loads(api_call(req))
+          try:
+              release = json.loads(api_call(req))
+          except urllib.error.HTTPError as e:
+              if e.code == 409:
+                  # Release already exists (rerun) — fetch it instead
+                  req2 = urllib.request.Request(api + "/tags/" + tag, headers={
+                      "Authorization": "token " + token})
+                  release = json.loads(api_call(req2))
+              else:
+                  raise
           rid = release["id"]
-          print("codeberg release created, id", rid)
+          print("codeberg release ready, id", rid)
 
           for asset, name in (("ablebridge-windows.zip", "ablebridge-windows.zip"),
                               ("ablebridge-linux.tar.gz", "ablebridge-linux.tar.gz")):
