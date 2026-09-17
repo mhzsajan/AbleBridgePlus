@@ -5,6 +5,32 @@ All notable changes to AbleBridgePlus will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.3] - 2026-09-17
+
+Patch release hardening the tool layer against Live-API reality: three
+handlers assumed properties were writable that Live 12.4.2 exposes as
+read-only. Every fix was verified live against a running set.
+
+### Fixed
+- **`set_clip_slot_properties` no longer crashes on slot color** —
+  `ClipSlot.color_index` has no setter in Live 12.4.2; the tool now returns a
+  clear error pointing to `set_clip_color` instead of an internal error.
+  `has_stop_button` handling verified working.
+- **`move_arrangement_clip` actually works now** — it tried to set
+  `Clip.start_time` (read-only). It now snapshots the clip's settable
+  properties, duplicates it at the new position, deletes the original, and
+  restores the snapshot — name, color, and other properties survive the move
+  (verified live: named colored clip moved 32 → 48 beats intact).
+- **`set_clip_start_time` gives an honest answer** — session clips are
+  definitionally at start_time 0 and arrangement clips cannot be moved via a
+  setter, so the tool now explains that and routes to `move_arrangement_clip`.
+  The property snapshot also guards `.gain` on MIDI clips (reads raise).
+
+### Changed
+- Release workflow can now cut releases from a release branch: the Codeberg
+  mirror push pushes the tag first and tolerates a master fast-forward miss
+  (patch releases carved from master with unreleased feature work).
+
 ## [Unreleased] — v0.6 "Full Circle" (undo-safe experimentation)
 
 ### Added

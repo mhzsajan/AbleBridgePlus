@@ -157,11 +157,15 @@ jobs:
 
           TAG="${{ github.ref_name }}"
 
-          # The checkout above has full history (fetch-depth: 0), so push
-          # master + the release tag straight to the Codeberg mirror.
+          # The checkout above has full history (fetch-depth: 0). Push the
+          # release tag first (works for tags on any branch), then update the
+          # master mirror. The master push is allowed to fail when the tag
+          # was cut from a release branch (e.g. patch releases carved out of
+          # master with unreleased feature work) — the tag itself is what
+          # release consumers need.
           git remote add codeberg "https://mhzsajan:${CODEBERG_TOKEN}@codeberg.org/mhzsajan/AbleBridgePlus.git"
-          git push codeberg "HEAD:refs/heads/master"
           git push codeberg "refs/tags/$TAG"
+          git push codeberg "HEAD:refs/heads/master" || echo "master mirror not updated (tag on a release branch) — release still complete"
 
           # Create the release with the changelog section extracted earlier
           python3 - <<'PYEOF'
