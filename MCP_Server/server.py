@@ -85,6 +85,16 @@ class MCPServer:
         # Register all tools
         self._register_tools()
         
+        # Hydrate the browser cache from disk (if present and fresh) so that
+        # search_browser / resolve_device_uri work immediately at startup
+        # instead of requiring a full 70s rescan in every new process.
+        try:
+            from MCP_Server.cache.browser import load_browser_cache_from_disk
+            if load_browser_cache_from_disk():
+                logger.info("Browser cache hydrated from disk at startup")
+        except Exception as e:
+            logger.warning("Browser cache disk hydration skipped: %s", e)
+        
         logger.info("AbleBridgePlus MCP Server initialized")
     
     def _register_tools(self):
