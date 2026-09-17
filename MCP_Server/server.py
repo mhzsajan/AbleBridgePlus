@@ -134,6 +134,8 @@ class MCPServer:
         from MCP_Server.tools import audio_intelligence, producer, studio_memory
         # v0.6.0: undo-safe experimentation
         from MCP_Server.tools import undo_safety
+        # v0.6.x: MCP resources & prompts, whole-mix reference matching
+        from MCP_Server.tools import resources_prompts, mix_matching
 
         # Register all tool modules
         tool_modules = [
@@ -157,7 +159,10 @@ class MCPServer:
             # v0.5.0
             audio_intelligence, producer, studio_memory,
             # v0.6.0
-            undo_safety
+            undo_safety,
+            # v0.6.x: resources/prompts handlers live in server dispatch,
+            # mix_matching registers tools
+            mix_matching
         ]
         
         adapter = _FastMCPAdapter(self.tool_registry)
@@ -195,6 +200,10 @@ class MCPServer:
                 return await self._handle_list_resources(params)
             elif method == 'resources/read':
                 return await self._handle_read_resource(params)
+            elif method == 'prompts/list':
+                return await self._handle_list_prompts(params)
+            elif method == 'prompts/get':
+                return await self._handle_get_prompt(params)
             else:
                 return self._error_response(
                     -32601,
@@ -211,11 +220,12 @@ class MCPServer:
             'protocolVersion': '2024-11-05',
             'capabilities': {
                 'tools': {},
-                'resources': {}
+                'resources': {},
+                'prompts': {}
             },
             'serverInfo': {
                 'name': 'AbleBridgePlus',
-                'version': '0.6.0'
+                'version': '0.6.1'
             }
         }
     
@@ -262,13 +272,39 @@ class MCPServer:
     
     async def _handle_list_resources(self, params: Dict[str, Any]) -> Dict[str, Any]:
         """Handle resources/list request."""
-        return {
-            'resources': []
-        }
+        from MCP_Server.tools.resources_prompts import list_resources
+        return {'resources': list_resources()}
     
     async def _handle_read_resource(self, params: Dict[str, Any]) -> Dict[str, Any]:
         """Handle resources/read request."""
-        return self._error_response(-32601, "No resources available")
+        from MCP_Server.tools.resources_prompts import read_resource
+        uri = params.get('uri')
+        if not uri:
+            return self._error_response(-32602, "Missing resource uri")
+        try:
+            return read_resource(uri)
+        except ValueError as e:
+            return self._error_response(-32602, str(e))
+        except Exception as e:
+            return self._error_response(-32603, f"Resource read failed: {e}")
+    
+    async def _handle_list_prompts(self, params: Dict[str, Any]) -> Dict[str, Any]:
+        """Handle prompts/list request."""
+        from MCP_Server.tools.resources_prompts import list_prompts
+        return {'prompts': list_prompts()}
+    
+    async def _handle_get_prompt(self, params: Dict[str, Any]) -> Dict[str, Any]:
+        """Handle prompts/get request."""
+        from MCP_Server.tools.resources_prompts import get_prompt
+        name = params.get('name')
+        if not name:
+            return self._error_response(-32602, "Missing prompt name")
+        try:
+            return get_prompt(name, params.get('arguments') or {})
+        except ValueError as e:
+            return self._error_response(-32602, str(e))
+        except Exception as e:
+            return self._error_response(-32603, f"Prompt build failed: {e}")
     
     def _error_response(self, code: int, message: str) -> Dict[str, Any]:
         """Create an error response."""

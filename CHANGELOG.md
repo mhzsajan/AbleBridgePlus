@@ -31,6 +31,42 @@ read-only. Every fix was verified live against a running set.
   mirror push pushes the tag first and tolerates a master fast-forward miss
   (patch releases carved from master with unreleased feature work).
 
+## [0.6.1] - 2026-09-17
+
+Completes the v0.6 "Full Circle" roadmap: the MCP server now serves all
+three surfaces (tools, resources, prompts), and mix matching goes whole-mix.
+455 → 457 tools.
+
+### Added
+- **MCP resources** — clients can read live session state via `resources/read`
+  without burning tool calls: `ableton://session/summary` (compact set overview),
+  `ableton://track/{index}` (full track detail + meters), `ableton://journal`
+  (last 50 mutations), `ableton://checkpoints`, `ableton://memory`. Wired through
+  the custom TCP transport (`_handle_list_resources` / `_handle_read_resource`);
+  errors return proper JSON-RPC codes (unknown URI → −32602).
+- **MCP prompts** — four reusable expert workflows served via `prompts/list` and
+  `prompts/get`, each self-hydrating with the current session snapshot when Live
+  is connected: `mix-review`, `song-doctor`, `arrange-my-ideas`,
+  `match-my-reference`.
+- **`analyze_reference_mix`** — server-side DSP fingerprint of a reference audio
+  file: 6-band tonal balance (dB relative to the loudest band), loudness profile
+  (RMS/peak/crest), key and BPM estimates. Reuses the audio_intelligence DSP core.
+- **`match_reference_mix`** — whole-mix comparison: analyzes the reference, then
+  samples Live's master output meters during playback and reports loudness/crest
+  gaps with concrete rollback-safe fix candidates. Meters are linear in Live's
+  API — converted to dBFS with a −70 dB floor; refuses to report on a silent
+  master instead of producing garbage numbers.
+- **`get_master_meters`** remote-script handler — snapshots the master track's
+  output meters (needed by the tools above).
+
+### Fixed
+- `analyze_reference_mix` now rejects nonexistent paths with a clear error
+  instead of leaking `FileNotFoundError`.
+
+### Changed
+- `SCRIPT_VERSION` / `EXPECTED_SCRIPT_VERSION` bumped together to 0.6.1
+  (a remote handler was added — doctor catches drift).
+
 ## [0.6.0] - 2026-09-17
 
 ### Added

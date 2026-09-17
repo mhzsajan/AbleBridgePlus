@@ -35,9 +35,9 @@ real safety net:
   scene names and per-slot clips, plus `list_checkpoints` / `delete_checkpoint`.
 - Effort: ~2–3 days. Unlocks: users let the AI act freely.
 
-### 2. MCP resources & prompts  `high`
-The server currently serves **tools only** (448 of them). MCP also supports *resources*
-(state the client can read) and *prompts* (reusable templates):
+### 2. MCP resources & prompts  `high` — ✅ SHIPPED (unreleased)
+The server now serves all three MCP surfaces. MCP supports *resources*
+(state the client can read) and *prompts* (reusable templates) alongside tools:
 
 - **Resources** — expose live session state (`ableton://session/summary`,
   `ableton://track/{i}`, `ableton://journal`) so clients can read context without burning
@@ -50,20 +50,26 @@ The server currently serves **tools only** (448 of them). MCP also supports *res
   `_handle_list_resources` in server.py).
 - Effort: ~2 days.
 
-### 3. Whole-mix reference matching  `medium`
-`match_reference_track` matches single tracks today. Extend to mix-level:
+### 3. Whole-mix reference matching  `medium` — ✅ SHIPPED (unreleased)
+`match_reference_track` matches single tracks. Mix-level matching is here:
 
-- Analyze a reference audio file (song you like, or your other track) server-side
-  (reuse audio_intelligence DSP).
-- Compare tonal balance vs. the current set's master output… *(needs a master-meter read —
-  may require one small remote-script handler addition, which means one Ableton restart)*
-- Report: "your mix is 3 dB light below 100 Hz vs reference; candidate fixes: …"
-- Effort: ~2–3 days.
+- `analyze_reference_mix` — server-side DSP fingerprint of a reference audio file
+  (6-band tonal balance in relative dB, RMS/peak/crest loudness, key, BPM; reuses the
+  audio_intelligence DSP core).
+- `match_reference_mix` — samples Live's master output meters during playback
+  (new `get_master_meters` remote handler; one Ableton restart, done) and reports
+  loudness/crest gaps vs the reference with concrete, rollback-safe fix candidates.
+- Honest scope: Live exposes broadband master meters only (no per-band spectrum),
+  so the live side contributes loudness numbers; band-balance targets come from the
+  reference analysis. The tools state this plainly instead of pretending.
+- Effort: shipped. Unlocks: "make my mix sit like THAT track" at mix level.
 
 ### 4. Housekeeping  `low`
 - Record fresh replay fixtures after v0.6 tools land (CI stays Ableton-free).
 - If any remote-script handler is added, bump `SCRIPT_VERSION` and `EXPECTED_SCRIPT_VERSION`
-  together (doctor catches drift).
+  together (doctor catches drift). — Done for v0.6.x: `get_master_meters` added,
+  both bumped to 0.6.1, live-verified with zero drift.
+- Record fresh replay fixtures after v0.6 tools land (CI stays Ableton-free). — Still open.
 
 ---
 

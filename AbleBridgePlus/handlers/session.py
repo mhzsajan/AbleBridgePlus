@@ -2,12 +2,14 @@
 
 from __future__ import absolute_import, print_function, unicode_literals
 
+import time
+
 from ._helpers import get_track, get_clip
 
 
 # Version marker of the remote script build. The MCP server's `doctor` tool
 # compares this against its own expected version to detect script drift.
-SCRIPT_VERSION = "0.6.0"
+SCRIPT_VERSION = "0.6.1"
 
 
 def get_session_info(song, ctrl=None):
@@ -1506,4 +1508,38 @@ def get_playing_clips(song, ctrl=None):
     except Exception as e:
         if ctrl:
             ctrl.log_message("Error getting playing clips: " + str(e))
+        raise
+
+
+def get_master_meters(song, ctrl=None):
+    """Snapshot the master track's output meters right now.
+
+    Used by mix-analysis tools that need to sample loudness over time:
+    the tool calls this repeatedly on a schedule and aggregates.
+    Returns dBFS (Live's meter scale, same as get_track_meters).
+    """
+    try:
+        master = song.master_track
+        info = {"name": master.name}
+        errors = []
+        for key, attr in (
+            ("output_meter_left", "output_meter_left"),
+            ("output_meter_right", "output_meter_right"),
+            ("output_meter_level", "output_meter_level"),
+        ):
+            try:
+                info[key] = round(getattr(master, attr), 4)
+            except Exception as e:
+                errors.append(str(e))
+        try:
+            info["has_output_meter"] = bool(master.has_output_meter)
+        except Exception:
+            pass
+        if errors and "output_meter_left" not in info and "output_meter_level" not in info:
+            raise RuntimeError("master meters unavailable: " + "; ".join(errors))
+        info["sampled_at"] = time.time()
+        return info
+    except Exception as e:
+        if ctrl:
+            ctrl.log_message("Error getting master meters: " + str(e))
         raise
