@@ -50,6 +50,45 @@ def _pitch_class_freqs():
     return freqs
 
 
+def _read_extensible_wav(path):
+    """    Minimal RIFF parser for WAVE_FORMAT_EXTENSIBLE PCM files.
+
+    stdlib `wave` rejects format tag 0xFFFE; many modern sample packs
+    (including Ableton Core Library one-shots) use it. Returns
+    (rate, width_bytes, channels, frames_bytes, format_tag) or None
+    if not PCM/float — width is BYTES per sample (like wave.getsampwidth).
+    """
+    try:
+        with open(path, "rb") as f:
+            data = f.read()
+    except OSError:
+        return None
+    if len(data) < 12 or data[:4] != b"RIFF" or data[8:12] != b"WAVE":
+        return None
+    pos = 12
+    fmt = None
+    frames = None
+    while pos + 8 <= len(data):
+        cid = data[pos:pos + 4]
+        (size,) = struct.unpack("<I", data[pos + 4:pos + 8])
+        body = data[pos + 8:pos + 8 + size]
+        if cid == b"fmt ":
+            fmt = body
+        elif cid == b"data":
+            frames = body
+        pos += 8 + size + (size & 1)  # chunks are word-aligned
+    if not fmt or frames is None or len(fmt) < 16:
+        return None
+    tag, channels, rate, _byte_rate, _align, width = struct.unpack(
+        "<HHIIHH", fmt[:16])
+    if tag == 0xFFFE and len(fmt) >= 40:  # extensible: read the subformat GUID
+        subfmt = struct.unpack("<H", fmt[24:26])[0]
+        tag = subfmt
+    if tag not in (1, 3):  # PCM or IEEE float only
+        return None
+    return rate, width // 8, channels, frames, tag  # bits → bytes
+
+
 def _read_audio_mono(path, max_seconds=30.0, target_rate=4410):
     """Read an audio file as mono floats at ~target_rate. Returns (samples, rate).
 
@@ -60,12 +99,26 @@ def _read_audio_mono(path, max_seconds=30.0, target_rate=4410):
     data = None
     rate = None
     width = None
+    float_wav = False
     if ext in (".wav", ".wave"):
-        with wave.open(path, "rb") as w:
-            rate = w.getframerate()
-            width = w.getsampwidth()
-            channels = w.getnchannels()
-            frames = w.readframes(w.getnframes())
+        try:
+            with wave.open(path, "rb") as w:
+                rate = w.getframerate()
+                width = w.getsampwidth()
+                channels = w.getnchannels()
+                frames = w.readframes(w.getnframes())
+        except wave.Error as we:
+            # WAVE_FORMAT_EXTENSIBLE (0xFFFE) is common in modern sample
+            # packs; stdlib wave refuses it. Parse the RIFF chunks by hand
+            # for the PCM subformat case.
+            if "unknown format" in str(we):
+                parsed = _read_extensible_wav(path)
+                if parsed is None:
+                    return None, None
+                rate, width, channels, frames, fmt_tag = parsed
+                float_wav = (fmt_tag == 3)
+            else:
+                raise
     elif ext in (".aif", ".aiff"):
         try:
             import aifc  # deprecated in 3.11 but present; fine for a reader
@@ -90,6 +143,19 @@ def _read_audio_mono(path, max_seconds=30.0, target_rate=4410):
             val = int.from_bytes(b, "little", signed=True)
             ints.append(val)
         peak = 8388608.0
+    elif width == 4 and float_wav:
+        # IEEE float32: samples are already ±1.0; mix channels to mono
+        count = len(frames) // 4
+        vals = struct.unpack("<%df" % count, frames[: count * 4])
+        fstep = channels if channels else 1
+        mono = []
+        for i in range(0, count - fstep + 1, fstep):
+            acc = 0.0
+            for c in range(fstep):
+                acc += vals[i + c]
+            mono.append(acc / fstep)
+        ints = None
+        peak = 1.0
     elif width == 4:
         count = len(frames) // 4
         ints = struct.unpack("<%di" % count, frames[: count * 4])
@@ -98,15 +164,18 @@ def _read_audio_mono(path, max_seconds=30.0, target_rate=4410):
         return None, None
 
     # mix to mono
-    mono = []
-    n = len(ints)
-    step = channels if channels else 1
-    for i in range(0, n, step):
-        acc = 0.0
-        for c in range(step):
-            if i + c < n:
-                acc += ints[i + c]
-        mono.append(acc / step / peak)
+    if ints is None:
+        pass  # float path already produced mono list above
+    else:
+        mono = []
+        n = len(ints)
+        step = channels if channels else 1
+        for i in range(0, n, step):
+            acc = 0.0
+            for c in range(step):
+                if i + c < n:
+                    acc += ints[i + c]
+            mono.append(acc / step / peak)
 
     # decimate by integer factor with simple averaging (anti-alias-ish)
     factor = max(1, int(rate // target_rate))
