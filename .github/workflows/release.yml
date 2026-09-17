@@ -87,7 +87,7 @@ jobs:
       - name: Append install + docs links to the release
         run: |
           python3 - <<'PYEOF'
-          import json, os, urllib.request
+          import json, os, time, urllib.request, urllib.error
 
           tag = "${{ github.ref_name }}"
           token = "${{ secrets.GITHUB_TOKEN }}"
@@ -97,7 +97,18 @@ jobs:
               "Authorization": "Bearer " + token,
               "Accept": "application/vnd.github+json",
           })
-          release = json.loads(urllib.request.urlopen(req).read())
+          release = None
+          for attempt in range(12):
+              try:
+                  release = json.loads(urllib.request.urlopen(req).read())
+                  break
+              except urllib.error.HTTPError as e:
+                  if e.code == 404 and attempt < 11:
+                      time.sleep(5)  # release propagation race; retry
+                  else:
+                      raise
+          if release is None:
+              raise SystemExit("Release not found after retries")
 
           trailer = """
 
