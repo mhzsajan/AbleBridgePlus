@@ -1182,6 +1182,50 @@ def get_clip_file_path(song, track_index, clip_index, ctrl=None):
         raise
 
 
+def get_export_capabilities(song, ctrl=None):
+    """Read-only capability probe for export automation (v0.7 spike).
+
+    Enumerates what the Live Object Model exposes around export / render /
+    dialogs on this Live version. Opens no dialogs, changes nothing.
+    """
+    info = {"live_version_note": "probe only — no dialogs opened"}
+    try:
+        import Live
+        app = Live.Application.get_application()
+        # current dialog state values (v0.7 spike: is the export dialog tracked?)
+        for attr in ("open_dialog_count", "current_dialog_message",
+                     "current_dialog_button_count"):
+            try:
+                info[attr] = str(getattr(app, attr))
+            except Exception as e:
+                info[attr] = "err: " + str(e)
+        info["application_type"] = str(type(app))
+        interesting = ("export", "render", "bounce", "dialog", "window")
+        info["app_attrs"] = [a for a in dir(app)
+                             if any(k in a.lower() for k in interesting)]
+        try:
+            view = app.view
+            info["view_type"] = str(type(view))
+            info["view_attrs"] = [a for a in dir(view)
+                                  if any(k in a.lower() for k in interesting)]
+            try:
+                fv = view.focus_view
+                info["focus_view_type"] = str(type(fv)) if fv is not None else None
+            except Exception as e:
+                info["focus_view_error"] = str(e)
+        except Exception as e:
+            info["view_error"] = str(e)
+    except Exception as e:
+        info["application_error"] = str(e)
+    try:
+        info["song_attrs"] = [a for a in dir(song)
+                              if any(k in a.lower() for k in
+                                     ("export", "render", "bounce", "save"))]
+    except Exception:
+        pass
+    return info
+
+
 def set_session_record(song, enabled, ctrl=None):
     """Enable or disable session recording."""
     try:

@@ -462,6 +462,7 @@ _READONLY_HANDLERS = {
     "get_clip_file_path": lambda song, p, ctrl: handlers.session.get_clip_file_path(
         song, p.get("track_index", 0), p.get("clip_index", 0), ctrl),
     "get_master_meters": lambda song, p, ctrl: handlers.session.get_master_meters(song, ctrl),
+    "get_export_capabilities": lambda song, p, ctrl: handlers.session.get_export_capabilities(song, ctrl),
 
     # --- Tracks ---
     "get_track_info": lambda song, p, ctrl: handlers.tracks.get_track_info(song, p.get("track_index", 0), ctrl),

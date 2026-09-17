@@ -85,9 +85,19 @@ The server now serves all three MCP surfaces. MCP supports *resources*
   file-DSP half of key/BPM detection.
 - **Per-clip loudness (LUFS approximation)** — gated loudness on decoded clip audio;
   flag clips that will jump out of the mix.
-- **Stem export mapping** — drive Live's export dialog programmatically (solo + export
-  per track). Largest effort item; depends on Live's export being scriptable from a
-  Control Surface (needs a spike/spike-test first).
+- **Stem export** — ❌ SPIKE RESULT: not feasible as originally scoped on 12.4.2.
+  Evidence from a live spike test: (1) the Live Object Model has **no export/render
+  API** — `Application` exposes a dialog API (`open_dialog_count`,
+  `current_dialog_message`, `press_current_dialog_button`) but nothing to trigger
+  export; (2) the `Ctrl+Shift+R` hotkey did **not** open export when sent through a
+  verified-working keyboard channel (Space toggled playback reliably through the
+  same path); (3) the export dialog is not an OS window (no new top-level window on
+  open attempt); (4) opening Live's native File menu (Alt+F) **blocks Live's main
+  thread — starving the bridge itself** until dismissed. Feasible instead:
+  a *guided* stem-export workflow (solo track via LOM → file-watcher on the export
+  folder → prompt user to render → verify → un-solo → next). The proper long-term
+  path is Ableton's **Extensions SDK** (public beta since June 2026) — revisit
+  export automation there in v0.8. Probe handler kept: `get_export_capabilities`.
 - **Downbeat-aware BPM refinement** — current autocorrelation is within ~1.5%; use
   onset-pattern matching to snap to exact values (120.0 not 121.6).
 
