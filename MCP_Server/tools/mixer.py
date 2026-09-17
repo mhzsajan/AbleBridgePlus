@@ -87,6 +87,9 @@ def register_tools(mcp):
     def set_track_delay(ctx: Context, track_index: int, delay: float) -> str:
         """Set the track delay compensation in milliseconds.
 
+        Note: unavailable on some Live versions (e.g. 12.4.2) whose Python API
+        does not expose MixerDevice.track_delay — the tool reports that clearly.
+
         Parameters:
         - track_index: The index of the track
         - delay: Delay time in ms (negative = earlier, positive = later)
@@ -102,7 +105,10 @@ def register_tools(mcp):
     @mcp.tool()
     @_tool_handler("getting track delay")
     def get_track_delay(ctx: Context, track_index: int) -> str:
-        """Get the track delay compensation value and range.
+        """Get the track delay compensation value.
+
+        Note: unavailable on some Live versions (e.g. 12.4.2) whose Python API
+        does not expose MixerDevice.track_delay — the tool reports that clearly.
 
         Parameters:
         - track_index: The index of the track

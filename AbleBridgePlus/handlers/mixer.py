@@ -252,12 +252,20 @@ def set_cue_volume(song, value, ctrl=None):
 
 
 def set_track_delay(song, track_index, delay, ctrl=None):
-    """Set the track delay compensation in ms (Live range: -100 to +100)."""
+    """Set the track delay compensation in ms (Live range: -100 to +100).
+
+    Only available when the running Live version exposes MixerDevice.track_delay
+    to the Python API. Live 12.4.2 does not (verified empirically), so the tool
+    reports a clear limitation instead of a generic internal error.
+    """
     try:
         track = get_track(song, track_index)
-        td = track.mixer_device.track_delay
-        # Clamp to Live's fixed TrackDelay range; don't read td.min/td.max
-        # (those attributes don't exist on the TrackDelay object).
+        td = getattr(track.mixer_device, "track_delay", None)
+        if td is None:
+            raise RuntimeError(
+                "Track delay compensation is not exposed by this Live version's "
+                "Python API (MixerDevice.track_delay is missing in Live 12.4.2). "
+                "Adjust it in the Live UI instead.")
         clamped = max(-100.0, min(100.0, float(delay)))
         td.value = clamped
         return {"track_index": track_index, "track_delay": float(td.value)}
@@ -268,12 +276,19 @@ def set_track_delay(song, track_index, delay, ctrl=None):
 
 
 def get_track_delay(song, track_index, ctrl=None):
-    """Get the track delay compensation value."""
+    """Get the track delay compensation value.
+
+    Only available when the running Live version exposes MixerDevice.track_delay
+    to the Python API. Live 12.4.2 does not (verified empirically).
+    """
     try:
         track = get_track(song, track_index)
-        td = track.mixer_device.track_delay
-        # Live's TrackDelay object exposes only .value (range is +/-100 ms
-        # in the UI); reading .min/.max raises and surfaced as "Internal error".
+        td = getattr(track.mixer_device, "track_delay", None)
+        if td is None:
+            raise RuntimeError(
+                "Track delay compensation is not exposed by this Live version's "
+                "Python API (MixerDevice.track_delay is missing in Live 12.4.2). "
+                "Read it in the Live UI instead.")
         return {"track_index": track_index, "track_delay": float(td.value)}
     except Exception as e:
         if ctrl:
