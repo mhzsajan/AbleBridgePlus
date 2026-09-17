@@ -170,7 +170,7 @@ jobs:
           token = os.environ["CODEBERG_TOKEN"]
           api = "https://codeberg.org/api/v1/repos/mhzsajan/AbleBridgePlus/releases"
 
-          section = open("../release_section.md", encoding="utf-8").read().strip()
+          section = open("release_section.md", encoding="utf-8").read().strip()
           trailer = """
 
           ### Quick Install
@@ -219,8 +219,8 @@ jobs:
           rid = release["id"]
           print("codeberg release created, id", rid)
 
-          for asset, name in (("../ablebridge-windows.zip", "ablebridge-windows.zip"),
-                              ("../ablebridge-linux.tar.gz", "ablebridge-linux.tar.gz")):
+          for asset, name in (("ablebridge-windows.zip", "ablebridge-windows.zip"),
+                              ("ablebridge-linux.tar.gz", "ablebridge-linux.tar.gz")):
               data = open(asset, "rb").read()
               req = urllib.request.Request(
                   api + "/{}".format(rid) + "/assets?name=" + name,
