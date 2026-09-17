@@ -5,6 +5,24 @@ All notable changes to AbleBridgePlus will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.2] - 2026-09-17
+
+Patch release fixing a startup inefficiency found during post-release verification.
+
+### Fixed
+- **Browser cache is now loaded from disk at startup** — `populate_browser_cache` wrote every scan to `~/.ableton-bridge/browser_cache.json.gz` but nothing ever called `load_browser_cache_from_disk`, so each new process (MCP server, OpenCode session, test run) started with an empty cache. Consequences of the old behavior:
+  - `search_browser` and `load_instrument_or_effect` name resolution unavailable until a full ~70-second rescan
+  - the `doctor` tool flagged `browser_cache: empty` even when a perfectly fresh disk cache existed
+  - every MCP client restart paid the rescan cost again
+
+### Added
+- **Startup hydration** — server init now loads the disk cache when present and fresh (max age 7 days, unchanged), logging `Browser cache hydrated from disk`. Verified: fresh process reports 4502 items instantly, doctor reports `healthy` with `browser_cache: 4502 items`.
+
+### Also in this cycle
+- **Release pipeline hardening** — the release workflow's trailer-append step hit a GitHub API propagation race (404 immediately after release creation); it now retries for up to 60 seconds.
+
+**Upgrade note:** the only behavioral change is MCP-side, but the control-surface script's version marker moves to 0.5.2 as well. Reinstall (`install.bat` / `install.sh`) and restart Ableton once so the `doctor` tool reports clean alignment.
+
 ## [0.5.1] - 2026-09-17
 
 Hardening release: a full tool-by-tool bug hunt against live Ableton Live 12.4.2 surfaced and fixed seven real bridge bugs, including a connection-killer.
