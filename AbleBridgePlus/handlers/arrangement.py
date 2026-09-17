@@ -85,19 +85,72 @@ def get_arrangement_clips(song, track_index, ctrl=None):
 
 
 def move_arrangement_clip(song, track_index, clip_index_in_arrangement, new_start_time, ctrl=None):
-    """Move an arrangement clip to a new start position (Live 12.2+)."""
+    """Move an arrangement clip to a new start position.
+
+    Live 12.4.2's Python API does not allow writing Clip.start_time
+    (verified: "property of 'Clip' object has no setter"), so the move is
+    done by snapshotting the clip's settable properties, deleting it, and
+    duplicating it back at the new position — which preserves name, color,
+    loop bounds and markers.
+    """
     try:
         track, clip = _get_arrangement_clip(song, track_index, clip_index_in_arrangement, ctrl)
         old_start = clip.start_time
         new_start_time = float(new_start_time)
         if new_start_time < 0:
             raise ValueError("new_start_time must be >= 0")
-        clip.start_time = new_start_time
+        if abs(new_start_time - old_start) < 1e-9:
+            return {
+                "track_index": track_index,
+                "clip_name": clip.name,
+                "old_start_time": old_start,
+                "new_start_time": new_start_time,
+                "method": "noop",
+            }
+        # Snapshot everything settable (gain exists only on audio clips —
+        # reading it on a MIDI clip raises), duplicate to the new position
+        # while the original still exists, delete the original, then restore
+        # the snapshot on the copy (indices shift after deletion, so the copy
+        # is located by its start_time, not by index).
+        def _snap(getter):
+            try:
+                return getter()
+            except Exception:
+                return None  # property unavailable for this clip type
+
+        snapshot = {
+            "name": clip.name,
+            "color_index": clip.color_index,
+            "muted": clip.muted,
+            "gain": _snap(lambda: float(clip.gain)),
+            "loop_start": _snap(lambda: float(clip.loop_start)),
+            "loop_end": _snap(lambda: float(clip.loop_end)),
+            "looping": _snap(lambda: clip.looping),
+            "start_marker": _snap(lambda: float(clip.start_marker)),
+            "end_marker": _snap(lambda: float(clip.end_marker)),
+        }
+        track.duplicate_clip_to_arrangement(clip, new_start_time)
+        track.delete_clip(clip)
+        new_clip = None
+        for candidate in track.arrangement_clips:
+            if abs(float(candidate.start_time) - new_start_time) < 1e-6:
+                new_clip = candidate
+                break
+        if new_clip is None:
+            raise RuntimeError("Re-duplicated clip not found at the new position")
+        for key, value in snapshot.items():
+            if value is None:
+                continue  # not available on this clip type — skip
+            try:
+                setattr(new_clip, key, value)
+            except Exception:
+                pass  # skip anything the API refuses on the copy
         return {
             "track_index": track_index,
-            "clip_name": clip.name,
+            "clip_name": new_clip.name,
             "old_start_time": old_start,
-            "new_start_time": new_start_time,
+            "new_start_time": new_clip.start_time,
+            "method": "duplicate-and-delete",
         }
     except Exception as e:
         if ctrl:

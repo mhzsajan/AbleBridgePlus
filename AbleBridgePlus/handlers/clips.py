@@ -828,24 +828,18 @@ def select_all_notes(song, track_index, clip_index, ctrl=None):
 
 
 def set_clip_start_time(song, track_index, clip_index, time, ctrl=None):
-    """Set the start_time of a clip (arrangement position, Live 12.2+)."""
-    try:
-        _, clip = get_clip(song, track_index, clip_index)
-        time = max(0.0, float(time))
-        if not hasattr(clip, "start_time"):
-            raise RuntimeError(
-                "clip.start_time requires Live 12.2+ and only applies to "
-                "arrangement clips (session clips have a fixed start_time of 0)")
-        clip.start_time = time
-        return {
-            "track_index": track_index,
-            "clip_index": clip_index,
-            "start_time": clip.start_time,
-        }
-    except Exception as e:
-        if ctrl:
-            ctrl.log_message("Error setting clip start time: " + str(e))
-        raise
+    """Set the start_time of a clip.
+
+    Not possible through the Live 12.4.2 Python API: session clips have a
+    fixed start_time of 0, and Clip.start_time is read-only on arrangement
+    clips (verified: "property of 'Clip' object has no setter"). Use
+    move_arrangement_clip instead, which relocates arrangement clips via
+    duplicate-and-delete.
+    """
+    raise RuntimeError(
+        "Clip start_time is not writable through this Live version's Python "
+        "API (session clips are pinned to 0; arrangement clips are read-only). "
+        "Use move_arrangement_clip to reposition arrangement clips.")
 
 
 def stop_track_clips(song, track_index, ctrl=None):
@@ -1233,11 +1227,12 @@ def set_clip_slot_properties(song, track_index, clip_index, has_stop_button=None
             clip_slot.has_stop_button = bool(has_stop_button)
             changes["has_stop_button"] = clip_slot.has_stop_button
         if color_index is not None:
-            color_index = int(color_index)
-            if color_index < 0:
-                raise ValueError("color_index must be >= 0 (Live has 70 colors, 0-69)")
-            clip_slot.color_index = color_index
-            changes["color_index"] = clip_slot.color_index
+            # ClipSlot.color_index is read-only in the Live 12.4.2 Python API
+            # (verified: "property of 'ClipSlot' object has no setter").
+            # Color the clip itself instead — that IS settable.
+            raise RuntimeError(
+                "Clip slot color is read-only in this Live version's Python API. "
+                "Use set_clip_color on the clip instead after it is created.")
         if not changes:
             raise ValueError("No properties specified")
         changes["track_index"] = track_index
