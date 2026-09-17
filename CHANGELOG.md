@@ -5,6 +5,32 @@ All notable changes to AbleBridgePlus will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.1] - 2026-09-17
+
+Hardening release: a full tool-by-tool bug hunt against live Ableton Live 12.4.2 surfaced and fixed seven real bridge bugs, including a connection-killer.
+
+### Fixed
+- **Socket layer hardening** — Live objects (Groove instances, enums) leaking into tool results crashed `json.dumps`, which **disconnected the client mid-session**. Every response is now sanitized through a JSON fallback converter (enum `.value` unwrapping, bytes/set handling, object-name placeholders), so one rogue value can never tear down a session again
+- **`get_clip_properties` no longer crashes** — groove is reported by name (`clip.groove` is a live Groove object, not a string), enum properties are unwrapped to plain values
+- **`set_clip_properties` groove by name** — resolves a groove name against the song's groove pool with a helpful "available grooves" error instead of raising a raw TypeError; validates signature numerator/denominator
+- **`clip_to_grid` / `grid_to_clip` unblocked** — they imported a `MCP_Server.grid_notation` module that never existed. New module renders drum grids (`KK|o---o---|`) and melodic grids (`G4|----o---|`) with velocity characters (X/x/O/o/*) and round-trip parsing (verified)
+- **`get_track_delay` / `set_track_delay`** — Live 12.4.2's Python API does not expose `MixerDevice.track_delay` (confirmed via Live's Log.txt); both tools now feature-detect and return a clear limitation message instead of "Internal error"
+- **Error messages no longer masked** — 12 capability checks ("Device is not a Drum Rack", "Track is not a group track", "Clip is not a MIDI clip", ...) raised `TypeError`, which the dispatcher hid behind "Invalid parameter type". They now raise `ValueError`, so the real message reaches the agent
+- **`set_clip_start_time`** — clear Live 12.2+ requirement message, rejects negative times; **`set_clip_slot_properties`** — validates color_index range
+- **`get_session_info` now reports `scene_count`** — song-builder scripts were appending duplicate scenes on every run because they couldn't count scenes (commit a963a82)
+
+### Added
+- **`get_track_devices` MCP tool** — agents can finally inspect which instruments/effects are loaded on a track; it was referenced in docs but never registered (commit 7242084)
+- **`load_instrument_or_effect` MCP tool** — same story: documented everywhere, registered nowhere. Now registered with browser-cache name resolution (commit a857875). Tool count: 448 → 450
+- **Test harness refresh** — 16 stale `SAFE_ARGS` entries updated to current parameter names, eliminating false "unexpected keyword argument" failures
+
+### Verified live (Ableton Live 12.4.2 Suite)
+- 450 tools registered; quick sweep passes with only intentional validation errors remaining
+- Connection survives property probes that previously reset it
+- `get_clip_properties` returns groove names on real clips; grid notation round-trips
+
+**Upgrade note:** the control-surface script changed — reinstall (or run `install.bat`/`install.sh`) and restart Ableton once. The `doctor` tool will confirm script version 0.5.1.
+
 ## [0.5.0] - 2026-09-15
 
 ### Added — Audio Intelligence ("Ears")
