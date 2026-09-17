@@ -138,6 +138,8 @@ class MCPServer:
         from MCP_Server.tools import resources_prompts, mix_matching
         # v0.7: spectral engine (Ears v2) — per-clip timbre analysis
         from MCP_Server.tools import spectral_analysis
+        # v0.7: loudness (LUFS approximation) — jump-out detection
+        from MCP_Server.tools import loudness_analysis
 
         # Register all tool modules
         tool_modules = [
@@ -166,7 +168,8 @@ class MCPServer:
             # mix_matching registers tools
             mix_matching,
             # v0.7
-            spectral_analysis
+            spectral_analysis,
+            loudness_analysis
         ]
         
         adapter = _FastMCPAdapter(self.tool_registry)

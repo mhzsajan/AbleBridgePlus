@@ -83,8 +83,12 @@ The server now serves all three MCP surfaces. MCP supports *resources*
   regression: `get_clip_file_path` returned None on Live 12.4.2 (Clip.file_path
   is the path; `clip.sample` doesn't exist), which had quietly disabled the
   file-DSP half of key/BPM detection.
-- **Per-clip loudness (LUFS approximation)** — gated loudness on decoded clip audio;
-  flag clips that will jump out of the mix.
+- **Per-clip loudness (LUFS approximation)** — ✅ SHIPPED (unreleased): mono
+  BS.1770-4 approximation (`MCP_Server/loudness.py`, pure Python): K-weighting,
+  gated blocks. Tools: `measure_clip_loudness` (integrated/momentary LUFS +
+  gain-to-target hint) and `audit_mix_loudness` (median-based classification:
+  jumping out ≥ +3 dB, buried ≤ −6 dB — the "who will jump out" report).
+  Verified live with clips engineered ~10 dB apart.
 - **Stem export** — ❌ SPIKE RESULT: not feasible as originally scoped on 12.4.2.
   Evidence from a live spike test: (1) the Live Object Model has **no export/render
   API** — `Application` exposes a dialog API (`open_dialog_count`,

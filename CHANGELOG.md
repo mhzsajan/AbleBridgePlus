@@ -34,7 +34,26 @@ read-only. Every fix was verified live against a running set.
 ## [0.7.0] - 2026-09-17
 
 v0.7 "Ears v2" begins: the AI can now describe HOW things sound, not just
-what key they're in. 457 → 460 tools.
+what key they're in. 457 → 462 tools.
+
+### Added
+- **LUFS loudness engine** (`MCP_Server/loudness.py`) — mono ITU-R BS.1770-4
+  approximation in pure Python: K-weighting biquads designed per sample rate
+  (pyloudnorm-style), 400 ms gated blocks with 100 ms hop, absolute + relative
+  gates. Reports integrated/momentary LUFS, loudness range, and a
+  gain-to-target hint (streaming −14 LUFS).
+- **`measure_clip_loudness`** — integrated LUFS for one audio clip in the set,
+  with clip context and the gain-to-target hint.
+- **`audit_mix_loudness`** — the "who will jump out" report: measures the first
+  audio clip of every track and classifies the set against its median —
+  jumping out (≥ +3 dB), buried (≤ −6 dB), balanced — with per-track skip
+  reporting. Median-based so one screaming clip can't skew the reference.
+  Verified live: two clips engineered ~10 dB apart flagged exactly as designed.
+- **Stem-export spike verdict** — not feasible via Control Surface on 12.4.2
+  (no LOM export trigger; export hotkey doesn't open a tracked dialog; native
+  menus block the bridge's own thread). Feasible alternative documented:
+  guided stem export; Extensions SDK revisit queued for v0.8.
+  New read-only `get_export_capabilities` probe handler.
 
 ### Added
 - **Pure-Python FFT spectral engine** (`MCP_Server/spectral.py`) — iterative
