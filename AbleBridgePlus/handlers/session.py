@@ -1768,3 +1768,57 @@ def set_cue_point_name(song, cue, name, ctrl=None):
             "Rename in the UI instead.".format(e))
     return {"renamed": True, "index": idx, "old_name": old,
             "new_name": str(name)}
+
+
+def probe_vsync_surface(song, ctrl=None):
+    """Diagnostics for the Videosync2 automation build (read-only + safe
+    creation probes at end-of-set beat 999999, clearly named)."""
+    out = {}
+    t13, t15, t16 = song.tracks[13], song.tracks[15], song.tracks[16]
+    out["track13_name"] = t13.name
+    out["track15_name"] = t15.name
+    out["track16_name"] = t16.name
+    out["track13_create_attrs"] = [a for a in dir(t13) if "create" in a.lower()]
+    out["track16_create_attrs"] = [a for a in dir(t16) if "create" in a.lower()]
+
+    # envelope support on an existing arrangement clip (Backdrop)
+    clips = list(t15.arrangement_clips)
+    out["t15_clip_count"] = len(clips)
+    if clips:
+        c0 = clips[0]
+        out["t15_first_clip"] = {"name": c0.name,
+                                 "start": float(c0.start_time),
+                                 "end": float(c0.end_time)}
+        vol = t15.mixer_device.volume
+        try:
+            env = c0.automation_envelope(vol)
+            out["existing_env_query"] = "ok" if env is not None else "none"
+        except Exception as e:
+            out["existing_env_query"] = "ERR: %r" % (e,)
+        try:
+            env2 = c0.create_automation_envelope(vol)
+            out["create_env_on_arrangement_clip"] = ("ok" if env2 is not None
+                                                     else "returned None")
+            if env2 is not None:
+                out["env_attrs"] = [a for a in dir(env2)
+                                    if not a.startswith("_")][:40]
+        except Exception as e:
+            out["create_env_on_arrangement_clip"] = "ERR: %r" % (e,)
+
+    # string-arg semantics of create_audio_clip (bogus path -> error tells us)
+    try:
+        c = t16.create_audio_clip("ZZZ_nonexistent_probe.wav", 999999.0)
+        out["create_audio_clip_string"] = "created %r" % c
+    except Exception as e:
+        out["create_audio_clip_string"] = "ERR: %s" % str(e)[:220]
+
+    # MIDI clip creation on the MIDI track (time, length)?
+    try:
+        m = t13.create_midi_clip(999999.0, 4.0)
+        out["create_midi_clip"] = "created %r" % m
+    except Exception as e:
+        out["create_midi_clip"] = "ERR: %s" % str(e)[:220]
+
+    if ctrl:
+        ctrl.log_message("probe_vsync_surface done")
+    return out

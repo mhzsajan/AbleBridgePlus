@@ -464,6 +464,7 @@ _READONLY_HANDLERS = {
     "get_master_meters": lambda song, p, ctrl: handlers.session.get_master_meters(song, ctrl),
     "get_export_capabilities": lambda song, p, ctrl: handlers.session.get_export_capabilities(song, ctrl),
     "probe_song_locator_surface": lambda song, p, ctrl: handlers.session.probe_song_locator_surface(song, ctrl),
+    "probe_vsync_surface": lambda song, p, ctrl: handlers.session.probe_vsync_surface(song, ctrl),
     "list_cue_points": lambda song, p, ctrl: handlers.session.list_cue_points(song, ctrl),
     "jump_to_cue_point": lambda song, p, ctrl: handlers.session.jump_to_cue_point(song, p.get("cue", 0), ctrl),
     "jump_to_next_cue": lambda song, p, ctrl: handlers.session.jump_to_next_cue(song, ctrl),
