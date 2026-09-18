@@ -4,7 +4,8 @@ Audio Intelligence ("Ears") for AbleBridgePlus.
 Lets the AI listen to the *actual audio* in the session:
 
 - analyze_audio_key_bpm: key + BPM detection by reading the sample file
-  server-side (pure-Python DSP: Goertzel chroma + onset autocorrelation).
+  server-side (pure-Python DSP: Goertzel chroma + onset autocorrelation
+  + downbeat-aware BPM refinement via onset-grid matching).
   Live's embedded Python cannot run numpy, so the DSP lives here.
 - audio_clip_to_midi: one-call Live 12 audio->MIDI conversion with a report
   of where the MIDI landed and what it contains.
@@ -26,6 +27,7 @@ from mcp.server.fastmcp import Context
 
 from MCP_Server.tools._base import _tool_handler
 from MCP_Server.connections.ableton import get_ableton_connection
+from MCP_Server.downbeat import refine_bpm
 
 logger = logging.getLogger("MCP_Server.audio_intelligence")
 
@@ -300,10 +302,16 @@ def _detect_key_bpm_from_file(path):
     chroma = _chroma(samples, rate)
     key = _detect_key(chroma)
     bpm = _detect_bpm(samples, rate)
-    return {"analyzable": True,
-            "key_estimate": key,
-            "bpm_estimate": bpm,
-            "analyzed_seconds": round(len(samples) / rate, 1)}
+    result = {"analyzable": True,
+              "key_estimate": key,
+              "bpm_estimate": bpm,
+              "analyzed_seconds": round(len(samples) / rate, 1)}
+    if bpm:
+        try:
+            result["bpm_refined"] = refine_bpm(samples, rate, bpm)
+        except Exception as exc:  # never let refinement break analysis
+            result["bpm_refined"] = {"refined": False, "reason": str(exc)}
+    return result
 
 
 # ---------------------------------------------------------------------------
@@ -320,7 +328,8 @@ def register_tools(mcp):
 
         Primary source: Live's own warp metadata (exact when the clip is
         warped). Secondary: server-side DSP on the sample file
-        (chroma->Krumhansl key profile + onset autocorrelation BPM),
+        (chroma->Krumhansl key profile + onset autocorrelation BPM
+        snapped to musical tempi by downbeat-aware grid matching),
         returned as labelled estimates with confidence.
 
         Use this before generating material so everything lands in the
@@ -337,19 +346,25 @@ def register_tools(mcp):
         result = {"track_index": track_index, "clip_index": clip_index,
                   "clip_name": info.get("name", "")}
 
-        # 1. Metadata-based BPM (exact for warped clips)
+        # 1. Metadata-based BPM (exact for warped clips). Live 12 exposes no
+        # clip.sample on this version, so derive it honestly: clip length in
+        # beats (warp-aware) over the file's real sample count / rate.
         try:
             props = ableton.send_command("get_clip_properties", {
                 "track_index": track_index, "clip_index": clip_index})
-            sample_len = props.get("sample_length") or props.get(
-                "audio_properties", {}).get("sample_length")
-            sample_rate = props.get("sample_rate") or props.get(
-                "audio_properties", {}).get("sample_rate")
             length_beats = props.get("length") or props.get("length_beats")
-            if sample_len and sample_rate and length_beats:
-                duration = float(sample_len) / float(sample_rate)
-                result["bpm_from_warp_metadata"] = round(
-                    60.0 * float(length_beats) / duration, 1)
+            fp = ableton.send_command("get_clip_file_path", {
+                "track_index": track_index, "clip_index": clip_index})
+            file_path = fp.get("file_path")
+            if length_beats and file_path and os.path.isfile(file_path):
+                try:
+                    mono, rate = _read_audio_mono(file_path)
+                    duration = len(mono) / float(rate)
+                    if duration > 0:
+                        result["bpm_from_warp_metadata"] = round(
+                            60.0 * float(length_beats) / duration, 2)
+                except Exception:
+                    pass
         except Exception:
             pass
 
@@ -363,8 +378,35 @@ def register_tools(mcp):
                 if dsp.get("analyzable"):
                     result["key_estimate"] = dsp["key_estimate"]["key"]
                     result["key_confidence"] = dsp["key_estimate"]["confidence"]
-                    if dsp.get("bpm_estimate") and "bpm_from_warp_metadata" not in result:
+                    ref = dsp.get("bpm_refined") or {}
+                    if dsp.get("bpm_estimate"):
+                        result["bpm_dsp_estimate"] = dsp["bpm_estimate"]
+                    if ref.get("refined"):
+                        result["bpm_refinement"] = {
+                            "raw": ref.get("raw_bpm"),
+                            "confidence": ref.get("confidence"),
+                            "snap_delta_cents": ref.get("snap_delta_cents"),
+                        }
+                        if "bpm_from_warp_metadata" in result:
+                            # Keep warp (ground truth) but surface any
+                            # disagreement — a large gap usually means the
+                            # DSP latched onto a metric multiple (e.g. 90
+                            # vs 120 on a triplet-heavy groove).
+                            gap = abs(result["bpm_from_warp_metadata"]
+                                      - ref["bpm"])
+                            result["bpm_note"] = (
+                                "warp metadata is authoritative; DSP "
+                                "disagrees by {0:.1f} bpm".format(gap)
+                                if gap > 2.0 else
+                                "DSP confirms warp metadata")
+                        else:
+                            result["bpm_estimate"] = ref["bpm"]
+                            result["bpm_downbeat_offset_seconds"] = ref.get(
+                                "downbeat_offset_seconds")
+                    elif "bpm_from_warp_metadata" not in result:
                         result["bpm_estimate"] = dsp["bpm_estimate"]
+                        result["bpm_downbeat_offset_seconds"] = ref.get(
+                            "downbeat_offset_seconds")
             except Exception as dsp_err:
                 result["dsp"] = {"analyzable": False, "reason": str(dsp_err)}
 

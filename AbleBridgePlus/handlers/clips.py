@@ -158,6 +158,12 @@ def get_clip_info(song, track_index, clip_index, ctrl=None):
             "is_midi_clip": hasattr(clip, 'get_notes'),
         }
 
+        # Explicit audio/MIDI classification (consumed by analysis tools)
+        try:
+            result["is_audio"] = bool(clip.is_audio_clip)
+        except Exception:
+            result["is_audio"] = not result["is_midi_clip"]
+
         # Try to get additional properties if available
         try:
             if hasattr(clip, 'start_marker'):

@@ -5,6 +5,40 @@ All notable changes to AbleBridgePlus will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.1] - 2026-09-18
+
+Closes v0.7 "Ears v2": downbeat-aware BPM refinement is live, and the
+end-to-end test exposed (and fixed) two bugs that had silently crippled
+`analyze_audio_key_bpm` since v0.5.
+
+### Added
+- **Downbeat-aware BPM refinement** (`MCP_Server/downbeat.py`) — snaps the
+  raw autocorrelation tempo (±1.5% error) to exact musical values by scoring
+  onset energy on the beat/half/quarter grid across musical tempi. Prefers a
+  musical tempo within ~25 cents of the raw estimate, then falls back to
+  phase-sharpness tie-breaking; non-musical audio (sustained tones, silence)
+  is honestly left unrefined. Verified live: a real Core Library groove's
+  89.9 estimate snaps to 90.0 (1.9 cents); synthetic clicks at 121.6 snap to
+  120.0. `analyze_audio_key_bpm` now also reports `bpm_dsp_estimate`,
+  `bpm_refinement`, and a `bpm_note` when DSP disagrees with warp metadata —
+  warp stays authoritative instead of being silently hidden.
+- **Warp-metadata BPM for Live 12.4.2** — `bpm_from_warp_metadata` was dead
+  on this Live version (no `clip.sample`); it is now derived from the clip's
+  beat length over the file's true sample-count duration.
+- Regression test for the near-tie snap (89.9 → 90.0) and the suite now
+  covers 108 checks.
+
+### Fixed
+- **`analyze_audio_key_bpm` rejected every audio clip** — it gated on an
+  `is_audio` field that `get_clip_info` never returned (only
+  `is_midi_clip`), so the key/BPM tool always errored with "not an audio
+  clip". `get_clip_info` now reports `is_audio` explicitly. Found on the
+  very first live verification of the refinement engine.
+
+### Changed
+- `SCRIPT_VERSION` / `EXPECTED_SCRIPT_VERSION` bumped together to 0.7.1
+  (a remote handler changed — doctor catches drift).
+
 ## [0.5.3] - 2026-09-17
 
 Patch release hardening the tool layer against Live-API reality: three

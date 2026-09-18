@@ -9,7 +9,7 @@ from ._helpers import get_track, get_clip
 
 # Version marker of the remote script build. The MCP server's `doctor` tool
 # compares this against its own expected version to detect script drift.
-SCRIPT_VERSION = "0.7.0"
+SCRIPT_VERSION = "0.7.1"
 
 
 def get_session_info(song, ctrl=None):

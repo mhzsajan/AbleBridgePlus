@@ -102,8 +102,14 @@ The server now serves all three MCP surfaces. MCP supports *resources*
   folder → prompt user to render → verify → un-solo → next). The proper long-term
   path is Ableton's **Extensions SDK** (public beta since June 2026) — revisit
   export automation there in v0.8. Probe handler kept: `get_export_capabilities`.
-- **Downbeat-aware BPM refinement** — current autocorrelation is within ~1.5%; use
-  onset-pattern matching to snap to exact values (120.0 not 121.6).
+- **Downbeat-aware BPM refinement** — ✅ SHIPPED in v0.7.1. Onset-grid engine
+  (`MCP_Server/downbeat.py`): musical-tempo preference window (±25 cents) +
+  phase-sharpness tie-break. Verified live: 89.9 → 90.0 on a real Core Library
+  groove; 121.6 → 120.0 on synthetic clicks. Also fixed two latent bugs the
+  live test exposed: `analyze_audio_key_bpm` rejected every audio clip
+  (`get_clip_info` never emitted `is_audio`), and warp-metadata BPM is now
+  derived honestly (clip beats ÷ file duration) since Live 12.4.2 has no
+  `clip.sample`; DSP/warp disagreement is surfaced, not hidden.
 
 ## v0.8 — "Collaboration"
 
