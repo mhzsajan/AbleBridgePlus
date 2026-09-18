@@ -463,6 +463,13 @@ _READONLY_HANDLERS = {
         song, p.get("track_index", 0), p.get("clip_index", 0), ctrl),
     "get_master_meters": lambda song, p, ctrl: handlers.session.get_master_meters(song, ctrl),
     "get_export_capabilities": lambda song, p, ctrl: handlers.session.get_export_capabilities(song, ctrl),
+    "probe_song_locator_surface": lambda song, p, ctrl: handlers.session.probe_song_locator_surface(song, ctrl),
+    "list_cue_points": lambda song, p, ctrl: handlers.session.list_cue_points(song, ctrl),
+    "jump_to_cue_point": lambda song, p, ctrl: handlers.session.jump_to_cue_point(song, p.get("cue", 0), ctrl),
+    "jump_to_next_cue": lambda song, p, ctrl: handlers.session.jump_to_next_cue(song, ctrl),
+    "jump_to_prev_cue": lambda song, p, ctrl: handlers.session.jump_to_prev_cue(song, ctrl),
+    "get_current_show_section": lambda song, p, ctrl: handlers.session.get_current_show_section(song, ctrl),
+    "set_cue_point_name": lambda song, p, ctrl: handlers.session.set_cue_point_name(song, p.get("cue", 0), p.get("name", ""), ctrl),
 
     # --- Tracks ---
     "get_track_info": lambda song, p, ctrl: handlers.tracks.get_track_info(song, p.get("track_index", 0), ctrl),

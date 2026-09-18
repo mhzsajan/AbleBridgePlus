@@ -830,3 +830,68 @@ def register_tools(mcp):
                       "somewhat different" if overall > 0.4 else
                       "very different",
         })
+
+
+def register_show_navigation_tools(mcp):
+    """v0.8 show navigation: the AI can see and drive the show's locators."""
+
+    @mcp.tool()
+    @_tool_handler("listing arrangement locators")
+    def list_arrangement_locators(ctx: Context) -> str:
+        """List every locator (cue point) in the arrangement — the song
+        sections of a live show. Returns name, beat position and bar for
+        each. Use this to learn the show's structure before jumping."""
+        ableton = get_ableton_connection()
+        return json.dumps(ableton.send_command("list_cue_points", {}))
+
+    @mcp.tool()
+    @_tool_handler("jumping to an arrangement locator")
+    def jump_to_locator(ctx: Context, cue) -> str:
+        """Jump the arrangement playhead to a locator (cue point) by index
+        or by (fuzzy) name — e.g. 'Man Magan'. The playhead lands exactly
+        on the locator, ready to start that section."""
+        ableton = get_ableton_connection()
+        return json.dumps(ableton.send_command("jump_to_cue_point", {"cue": cue}))
+
+    @mcp.tool()
+    @_tool_handler("jumping to the next locator")
+    def jump_to_next_locator(ctx: Context) -> str:
+        """Jump to the next locator in show order (if one exists)."""
+        ableton = get_ableton_connection()
+        return json.dumps(ableton.send_command("jump_to_next_cue", {}))
+
+    @mcp.tool()
+    @_tool_handler("jumping to the previous locator")
+    def jump_to_prev_locator(ctx: Context) -> str:
+        """Jump to the previous locator in show order (if one exists)."""
+        ableton = get_ableton_connection()
+        return json.dumps(ableton.send_command("jump_to_prev_cue", {}))
+
+    @mcp.tool()
+    @_tool_handler("reading the current show section")
+    def get_current_show_section(ctx: Context) -> str:
+        """Where in the show are we? Returns the locator section the
+        playhead is currently in, the next section coming up, and bars
+        until it — 'we're in Man Magan, 12 bars to SONG END'."""
+        ableton = get_ableton_connection()
+        return json.dumps(ableton.send_command("get_current_show_section", {}))
+
+    @mcp.tool()
+    @_tool_handler("renaming an arrangement locator")
+    def rename_locator(ctx: Context, cue, name: str) -> str:
+        """Rename a locator (cue point) by index or (fuzzy) name. Fails
+        with a clear message if this Live version refuses renames from a
+        control surface."""
+        ableton = get_ableton_connection()
+        return json.dumps(ableton.send_command(
+            "set_cue_point_name", {"cue": cue, "name": name}))
+
+
+# The server registration loop calls module.register_tools(mcp) only —
+# fold the show-navigation tools into it so they register together.
+_original_register_tools = register_tools
+
+
+def register_tools(mcp):
+    _original_register_tools(mcp)
+    register_show_navigation_tools(mcp)

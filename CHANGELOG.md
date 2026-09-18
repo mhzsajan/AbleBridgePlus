@@ -5,6 +5,34 @@ All notable changes to AbleBridgePlus will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.8.0] - 2026-09-18 (unreleased)
+
+Starts v0.8 "Collaboration" with the show-navigation layer, built and
+live-verified against the real Videosync2 show set (Deepak Bajracharya
+& The Rhythm Band — 18 tracks, 56 locators, arrangement-driven).
+
+### Added
+- **Show navigation** (6 tools, 462 → 468) — the AI can finally see and
+  drive the arrangement locators that organize live shows:
+  `list_arrangement_locators`, `jump_to_locator` (index or fuzzy song
+  name), `jump_to_next_locator` / `jump_to_prev_locator`,
+  `get_current_show_section` ("we're in Man Magan, N bars to SONG END"),
+  and `rename_locator`. Fuzzy resolution handles your song-name style:
+  exact match first, unique substring second, honest ambiguity errors.
+- Read-only `probe_song_locator_surface` handler kept for future LOM
+  surface checks.
+
+### Fixed
+- **Cue points arrive in creation order, not timeline order** — Live's
+  `song.cue_points` Vector is unsorted (found live: a SONG END locator
+  far ahead of the timeline sat at index 1). All locator handlers now
+  sort by time, so indexes mean *show order*.
+
+### Verified live on the real show set
+- 56/56 locators listed in show order; fuzzy jump to "Man Magan" landed
+  the playhead at bar 1690 exactly; next-cue walk reported SONG END;
+  rename works on Live 12.4.2 (tested + reverted in memory).
+
 ## [0.7.1] - 2026-09-18
 
 Closes v0.7 "Ears v2": downbeat-aware BPM refinement is live, and the
@@ -68,7 +96,7 @@ read-only. Every fix was verified live against a running set.
 ## [0.7.0] - 2026-09-17
 
 v0.7 "Ears v2": the AI can now describe HOW things sound, not just what
-key they're in — and put loudness numbers on it. 457 → 462 tools.
+key they're in — and put loudness numbers on it. 457 → 462 tools (468 by v0.8.0).
 
 ### Added
 - **Pure-Python FFT spectral engine** (`MCP_Server/spectral.py`) — iterative

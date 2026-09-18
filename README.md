@@ -9,11 +9,11 @@
 
 AbleBridgePlus is a free, open-source bridge that connects **AI assistants** (Claude, OpenCode, Cursor, any MCP-compatible tool) to **Ableton Live**. Once connected, you can produce music, fix problems, and run live shows by describing what you want in plain language — the AI does the clicking.
 
-- **462 tools** covering virtually everything in Live
+- **468 tools** covering virtually everything in Live
 - **Works with your existing AI tools** via the open MCP standard
 - **Free and open source** (MIT)
 
-📄 **[Complete tool reference — all 462 tools, organized by what they do](docs/FEATURES.md)**
+📄 **[Complete tool reference — all 468 tools, organized by what they do](docs/FEATURES.md)**
 
 ---
 
@@ -84,7 +84,7 @@ It stores your preferences permanently. Tomorrow's session starts with your tast
 Hands-free scene sequencing for live sets, with tempo changes per section. Plus one-command **emergency stop**, **panic mute**, and **session backups** — the safety net every performer wishes they had.
 
 ### …and all the everyday work
-Create tracks and clips, edit MIDI notes, warp and quantize, automate, set up sidechain, load any instrument or effect from the browser, save/load presets, manage MIDI controllers, control video and DMX lighting, run timers and setlists — **462 tools** across the whole app.
+Create tracks and clips, edit MIDI notes, warp and quantize, automate, set up sidechain, load any instrument or effect from the browser, save/load presets, manage MIDI controllers, control video and DMX lighting, run timers and setlists — **468 tools** across the whole app.
 
 **What it can't do (honest limits):** it can't render/export audio (Live's scripting API doesn't expose that), it can't hear your speakers' output in real time, and key/BPM detection is an estimate — always confirm by ear.
 
@@ -97,7 +97,7 @@ Create tracks and clips, edit MIDI notes, warp and quantize, automate, set up si
 ```
 ┌─────────────────────────────┐
 │  AI client (MCP host)       │  Claude Desktop, OpenCode, Cursor, any MCP client
-│  sees 462 tools             │
+│  sees 468 tools             │
 └──────────────┬──────────────┘
                │ MCP over stdio (JSON-RPC) or TCP :9891
                ▼
@@ -123,7 +123,7 @@ Create tracks and clips, edit MIDI notes, warp and quantize, automate, set up si
 - **Handshake never blocks**: stdio transport answers MCP `initialize` in <1s and connects to Ableton lazily on first tool use.
 - **JSON-RPC envelope is spec-correct** — a bug that silently stalled strict clients (OpenCode) was found and fixed; replay tests now lock the wire format in.
 
-### Feature areas (462 tools)
+### Feature areas (468 tools)
 
 | Area | Highlights |
 |---|---|

@@ -9,7 +9,7 @@ from ._helpers import get_track, get_clip
 
 # Version marker of the remote script build. The MCP server's `doctor` tool
 # compares this against its own expected version to detect script drift.
-SCRIPT_VERSION = "0.7.1"
+SCRIPT_VERSION = "0.8.0"
 
 
 def get_session_info(song, ctrl=None):
@@ -1591,3 +1591,180 @@ def get_master_meters(song, ctrl=None):
         if ctrl:
             ctrl.log_message("Error getting master meters: " + str(e))
         raise
+
+
+def probe_song_locator_surface(song, ctrl=None):
+    """Read-only probe: how does this Live version expose locators?
+
+    Candidate LOM attributes are checked for existence, type and length.
+    Opens nothing, changes nothing — pure evidence for the v0.8 locator
+    feature design.
+    """
+    out = {}
+    # Full capability surface of the CuePoint class + view hooks
+    try:
+        cps = list(song.cue_points)
+        if cps:
+            out["cue_point_dir"] = sorted(
+                a for a in dir(cps[0]) if not a.startswith("_"))
+        try:
+            sv = song.view
+            out["song_view_cue_attrs"] = sorted(
+                a for a in dir(sv) if "cue" in a.lower())
+        except Exception as e:
+            out["song_view_cue_attrs"] = "error: " + str(e)
+        # Song-level creation candidates
+        out["song_cue_methods"] = sorted(
+            a for a in dir(song) if "cue" in a.lower())
+    except Exception as e:
+        out["cue_probe"] = "error: " + str(e)
+    for attr in ("regions", "cue_points", "locator_names", "song_marker_count"):
+        try:
+            val = getattr(song, attr, "__missing__")
+            if val is "__missing__":
+                out[attr] = "ABSENT"
+            else:
+                out[attr] = "{0} (len={1})".format(
+                    type(val).__name__,
+                    len(val) if hasattr(val, "__len__") else "?")
+                try:
+                    items = list(val)
+                    if items:
+                        first = items[0]
+                        out[attr + ".first"] = "{0}: name={1!r} time={2}".format(
+                            type(first).__name__,
+                            getattr(first, "name", None),
+                            getattr(first, "time", None))
+                except Exception as e:
+                    out[attr + ".first"] = "iter failed: " + str(e)
+        except Exception as e:
+            out[attr] = "error: " + str(e)
+    return out
+
+
+# --- v0.8: Show navigation (cue points / arrangement locators) ---
+
+
+def _cue_points_safe(song):
+    try:
+        cps = list(song.cue_points)
+    except Exception:
+        return []
+    # Live returns cue points in CREATION order, not timeline order (found
+    # live on the Videosync2 show set: index 1 was a SONG END far ahead of
+    # index 2). Every consumer here wants show order — sort by time.
+    try:
+        cps.sort(key=lambda cp: float(cp.time))
+    except Exception:
+        pass
+    return cps
+
+
+def list_cue_points(song, ctrl=None):
+    """List all arrangement locators (cue points) with beat times and bars."""
+    out = []
+    for i, cp in enumerate(_cue_points_safe(song)):
+        try:
+            t = float(cp.time)
+            name = cp.name
+        except Exception:
+            continue
+        out.append({"index": i, "name": name, "time_beats": round(t, 3),
+                    "bar": round(t / 4.0 + 1.0, 2)})
+    return {"cue_point_count": len(out), "cue_points": out}
+
+
+def _resolve_cue(song, cue):
+    """Resolve a cue to an index: int index, exact name, or unique substring."""
+    cps = _cue_points_safe(song)
+    if not cps:
+        raise ValueError("No cue points (locators) in this set")
+    if isinstance(cue, int) and not isinstance(cue, bool):
+        if 0 <= cue < len(cps):
+            return cps, cue
+        raise IndexError(
+            "cue index {0} out of range (0..{1})".format(cue, len(cps) - 1))
+    s = str(cue).strip()
+    for i, cp in enumerate(cps):
+        if getattr(cp, "name", None) == s:
+            return cps, i
+    low = s.lower()
+    matches = [i for i, cp in enumerate(cps)
+               if low in str(getattr(cp, "name", "")).lower()]
+    if len(matches) == 1:
+        return cps, matches[0]
+    if len(matches) > 1:
+        raise ValueError("Ambiguous cue name {0!r}: matches {1}".format(
+            s, [cps[i].name for i in matches]))
+    raise ValueError("No cue point matching {0!r}".format(s))
+
+
+def jump_to_cue_point(song, cue, ctrl=None):
+    """Jump the arrangement playhead to a locator by index or (fuzzy) name."""
+    cps, idx = _resolve_cue(song, cue)
+    cps[idx].jump()
+    cp = cps[idx]
+    return {"jumped": True, "index": idx, "name": cp.name,
+            "time_beats": round(float(cp.time), 3)}
+
+
+def jump_to_next_cue(song, ctrl=None):
+    """Jump to the next locator (show order) if one exists."""
+    if not song.can_jump_to_next_cue:
+        return {"jumped": False, "reason": "no next cue point"}
+    song.jump_to_next_cue()
+    return {"jumped": True, "direction": "next"}
+
+
+def jump_to_prev_cue(song, ctrl=None):
+    """Jump to the previous locator (show order) if one exists."""
+    if not song.can_jump_to_prev_cue:
+        return {"jumped": False, "reason": "no previous cue point"}
+    song.jump_to_prev_cue()
+    return {"jumped": True, "direction": "prev"}
+
+
+def get_current_show_section(song, ctrl=None):
+    """Which locator section is the playhead in right now?
+
+    Returns the active song/section (the last cue at or before the
+    playhead) plus the next cue with bars-until, so an AI can answer
+    'where are we in the show' and 'what's coming'.
+    """
+    cps = _cue_points_safe(song)
+    pos = float(song.current_song_time)
+    cur, cur_idx = None, -1
+    for i, cp in enumerate(cps):
+        try:
+            if float(cp.time) <= pos:
+                cur, cur_idx = cp, i
+            else:
+                break
+        except Exception:
+            continue
+    nxt = cps[cur_idx + 1] if 0 <= cur_idx + 1 < len(cps) else None
+    return {
+        "playhead_beats": round(pos, 2),
+        "playhead_bar": round(pos / 4.0 + 1.0, 2),
+        "current_cue": ({"index": cur_idx, "name": cur.name,
+                         "time_beats": round(float(cur.time), 3)}
+                        if cur else None),
+        "next_cue": ({"index": cur_idx + 1, "name": nxt.name,
+                      "time_beats": round(float(nxt.time), 3),
+                      "bars_until": round((float(nxt.time) - pos) / 4.0, 2)}
+                     if nxt else None),
+    }
+
+
+def set_cue_point_name(song, cue, name, ctrl=None):
+    """Rename a locator (only if this Live version allows it — tested live)."""
+    cps, idx = _resolve_cue(song, cue)
+    old = cps[idx].name
+    try:
+        cps[idx].name = str(name)
+    except Exception as e:
+        raise RuntimeError(
+            "Live refuses renaming cue points from a control surface ({0}). "
+            "Rename in the UI instead.".format(e))
+    return {"renamed": True, "index": idx, "old_name": old,
+            "new_name": str(name)}

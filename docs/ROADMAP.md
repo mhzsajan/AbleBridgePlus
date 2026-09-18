@@ -113,6 +113,16 @@ The server now serves all three MCP surfaces. MCP supports *resources*
 
 ## v0.8 — "Collaboration"
 
+- **Show navigation** — ✅ SHIPPED (first v0.8 feature): 6 locator tools built
+  and live-verified on the real Videosync2 show set (56 locators, 18 tracks).
+  The AI can list locators in show order, jump to any song by fuzzy name,
+  walk next/prev, report the current section, and rename. Cue-point creation
+  is not exposed by Live's API (UI-only) — documented honestly.
+- **Show builder workflow** (in progress) — driving the actual Deepak Bajracharya
+  & Rhythm Band show build: lyrics/chords clip generation per song (Ritu pilot
+  pattern → all 28 songs), pre-show doctor (lyrics/tempo/locator-pair/click
+  coverage audit), SECTIONS +CC expansion for lighting/TouchDesigner. Learnings
+  feed StageCraft.
 - **2-way web dashboard** — today it's read-only monitoring. Add click-to-control:
   select a track in the browser → AI receives it as context for the next prompt.
 - **Journal replay** — the change journal already logs every AI mutation; add
