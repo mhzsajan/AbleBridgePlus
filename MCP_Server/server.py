@@ -140,6 +140,8 @@ class MCPServer:
         from MCP_Server.tools import spectral_analysis
         # v0.7: loudness (LUFS approximation) — jump-out detection
         from MCP_Server.tools import loudness_analysis
+        # v0.8: Videosync2 show automation (timeline-baked video control)
+        from MCP_Server.tools import vsync_automation
 
         # Register all tool modules
         tool_modules = [
@@ -169,7 +171,9 @@ class MCPServer:
             mix_matching,
             # v0.7
             spectral_analysis,
-            loudness_analysis
+            loudness_analysis,
+            # v0.8
+            vsync_automation
         ]
         
         adapter = _FastMCPAdapter(self.tool_registry)

@@ -278,6 +278,9 @@ TIER_1_COMMANDS: frozenset = frozenset([
     "set_compressor_sidechain", "set_eq8_properties",
     "set_simpler_properties", "simpler_sample_action", "manage_sample_slices",
     "set_hybrid_reverb_ir", "duplicate_clip_to_arrangement",
+    # v0.8: Videosync2 show automation (arrangement mixer envelopes)
+    "set_arrangement_mixer_automation", "clear_arrangement_mixer_automation",
+    "program_song_video_automation", "video_failover", "set_video_layer",
 ])
 
 # Tier 2: Heavy delay (100ms pre + 100ms post) -- structural/loading changes

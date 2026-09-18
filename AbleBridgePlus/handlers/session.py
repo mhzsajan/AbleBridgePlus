@@ -1621,7 +1621,7 @@ def probe_song_locator_surface(song, ctrl=None):
     for attr in ("regions", "cue_points", "locator_names", "song_marker_count"):
         try:
             val = getattr(song, attr, "__missing__")
-            if val is "__missing__":
+            if val == "__missing__":
                 out[attr] = "ABSENT"
             else:
                 out[attr] = "{0} (len={1})".format(

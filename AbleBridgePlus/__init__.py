@@ -471,6 +471,21 @@ _READONLY_HANDLERS = {
     "get_current_show_section": lambda song, p, ctrl: handlers.session.get_current_show_section(song, ctrl),
     "set_cue_point_name": lambda song, p, ctrl: handlers.session.set_cue_point_name(song, p.get("cue", 0), p.get("name", ""), ctrl),
 
+    # --- v0.8: Videosync2 show automation (see handlers/vsync_automation.py)
+    "set_arrangement_mixer_automation": lambda song, p, ctrl: handlers.vsync_automation.set_arrangement_mixer_automation(
+        song, p.get("track_index", 0), p.get("parameter_name", "volume"), p.get("points", []), ctrl),
+    "get_arrangement_mixer_automation": lambda song, p, ctrl: handlers.vsync_automation.get_arrangement_mixer_automation(
+        song, p.get("track_index", 0), p.get("parameter_name", "volume"), ctrl),
+    "clear_arrangement_mixer_automation": lambda song, p, ctrl: handlers.vsync_automation.clear_arrangement_mixer_automation(
+        song, p.get("track_index", 0), p.get("parameter_name", "volume"), ctrl),
+    "program_song_video_automation": lambda song, p, ctrl: handlers.vsync_automation.program_song_video_automation(
+        song, p.get("song_name", ""), ctrl,
+        p.get("backdrop_volume", 0.85), p.get("sections")),
+    "video_failover": lambda song, p, ctrl: handlers.vsync_automation.video_failover(
+        song, bool(p.get("to_backup", True)), ctrl),
+    "set_video_layer": lambda song, p, ctrl: handlers.vsync_automation.set_video_layer(
+        song, p.get("layer", "backdrop"), p.get("level", 0.85), ctrl),
+
     # --- Tracks ---
     "get_track_info": lambda song, p, ctrl: handlers.tracks.get_track_info(song, p.get("track_index", 0), ctrl),
     "get_all_tracks_info": lambda song, p, ctrl: handlers.tracks.get_all_tracks_info(song, ctrl),

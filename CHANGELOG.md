@@ -28,6 +28,19 @@ live-verified against the real Videosync2 show set (Deepak Bajracharya
   far ahead of the timeline sat at index 1). All locator handlers now
   sort by time, so indexes mean *show order*.
 
+- **Videosync2 timeline automation** (4 tools, 468 → 474) — the bridge can
+  now write mixer automation on arrangement clips, which is the control
+  surface Videosync2 actually follows (track volume = layer visibility):
+  `create_vsync_show_automation` (per-song host clips + baked fade
+  envelopes), `clear_vsync_show_automation` (in-song range),
+  `get_vsync_show_automation_state` (read-only audit), and
+  `set_arrangement_clip_envelope` (generic primitive for any track).
+  Arrangement automation was previously impossible — `create_clip_automation`
+  only reached session clips, and every show set is arrangement-driven.
+- Internal LOM API `_set_arrangement_mixer_automation` (handlers/
+  vsync_automation.py): creates zero-length carrier clips and writes
+  volume envelopes at exact beats — verified against Live 12.4.2.
+
 ### Verified live on the real show set
 - 56/56 locators listed in show order; fuzzy jump to "Man Magan" landed
   the playhead at bar 1690 exactly; next-cue walk reported SONG END;
