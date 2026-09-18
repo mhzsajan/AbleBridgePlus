@@ -127,6 +127,7 @@ jobs:
 
           ### Credits
           Based on [AbletonBridge](https://github.com/hidingwill/AbletonBridge) by [hidingwill](https://github.com/hidingwill).
+          Built and maintained by Sajan Maharjan.
           """
           # Re-add the release title/one-liner (the deprecated 'header' input
           # of the release action was dropped, so do it here instead).
@@ -164,7 +165,23 @@ jobs:
           # master with unreleased feature work) — the tag itself is what
           # release consumers need.
           git remote add codeberg "https://mhzsajan:${CODEBERG_TOKEN}@codeberg.org/mhzsajan/AbleBridgePlus.git"
-          git push codeberg "refs/tags/$TAG"
+          # Idempotent tag push: the tag may already exist on Codeberg (e.g.
+          # pushed manually right after tagging, or a workflow re-run). Only
+          # proceed when the existing remote tag points at the SAME commit —
+          # a different commit means something is wrong and must fail loudly.
+          if ! git push codeberg "refs/tags/$TAG" 2>/dev/null; then
+            REMOTE_SHA=$(git ls-remote codeberg "refs/tags/$TAG" | grep '\^{}' | awk '{print $1}')
+            if [ -z "$REMOTE_SHA" ]; then
+              REMOTE_SHA=$(git ls-remote codeberg "refs/tags/$TAG" | awk 'NR==1{print $1}')
+            fi
+            LOCAL_SHA=$(git rev-parse "$TAG^{commit}")
+            if [ -n "$REMOTE_SHA" ] && [ "$REMOTE_SHA" = "$LOCAL_SHA" ]; then
+              echo "tag $TAG already on Codeberg at the same commit — continuing"
+            else
+              echo "tag $TAG exists on Codeberg at a DIFFERENT commit (remote: $REMOTE_SHA, local: $LOCAL_SHA)" >&2
+              exit 1
+            fi
+          fi
           git push codeberg "HEAD:refs/heads/master" || echo "master mirror not updated (tag on a release branch) — release still complete"
 
           # Create the release with the changelog section extracted earlier
