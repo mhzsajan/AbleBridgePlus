@@ -126,6 +126,7 @@ _MODIFYING_HANDLERS = {
     "create_audio_track": lambda song, p, ctrl: handlers.tracks.create_audio_track(song, p.get("index", -1), ctrl),
     "create_return_track": lambda song, p, ctrl: handlers.tracks.create_return_track(song, ctrl),
     "set_track_name": lambda song, p, ctrl: handlers.tracks.set_track_name(song, p.get("track_index", 0), p.get("name", ""), ctrl),
+    "rename_return": lambda song, p, ctrl: handlers.tracks.rename_return(song, p.get("return_index", 0), p.get("name", ""), ctrl),
     "delete_track": lambda song, p, ctrl: handlers.tracks.delete_track(song, p.get("track_index", 0), ctrl),
     "duplicate_track": lambda song, p, ctrl: handlers.tracks.duplicate_track(song, p.get("track_index", 0), ctrl),
     "set_track_color": lambda song, p, ctrl: handlers.tracks.set_track_color(song, p.get("track_index", 0), p.get("color_index", 0), ctrl),
@@ -201,6 +202,8 @@ _MODIFYING_HANDLERS = {
         song, p.get("track_index", 0), ctrl),
     "create_arrangement_midi_clip": lambda song, p, ctrl: handlers.clips.create_arrangement_midi_clip(
         song, p.get("track_index", 0), p.get("time", 0.0), p.get("length", 4.0), ctrl),
+    "add_notes_to_arrangement_clip": lambda song, p, ctrl: handlers.clips.add_notes_to_arrangement_clip(
+        song, p.get("track_index", 0), p.get("clip_time", 0.0), p.get("notes", []), ctrl),
     "create_arrangement_audio_clip": lambda song, p, ctrl: handlers.clips.create_arrangement_audio_clip(
         song, p.get("track_index", 0), p.get("time", 0.0), p.get("length", 4.0), ctrl),
     "deselect_all_notes": lambda song, p, ctrl: handlers.clips.deselect_all_notes(
@@ -359,6 +362,7 @@ _MODIFYING_HANDLERS = {
 
     # --- Browser ---
     "load_browser_item": lambda song, p, ctrl: handlers.browser.load_browser_item(song, p.get("track_index", 0), p.get("item_uri", ""), ctrl),
+    "load_device_on_return": lambda song, p, ctrl: handlers.browser.load_device_on_return(song, p.get("return_index", 0), p.get("item_uri", ""), ctrl),
     "load_instrument_or_effect": lambda song, p, ctrl: handlers.browser.load_instrument_or_effect(song, p.get("track_index", 0), p.get("uri", ""), ctrl),
     "load_sample": lambda song, p, ctrl: handlers.browser.load_sample(song, p.get("track_index", 0), p.get("sample_uri", ""), ctrl),
     "preview_browser_item": lambda song, p, ctrl: handlers.browser.preview_browser_item(song, p.get("uri"), p.get("action", "preview"), ctrl),
@@ -447,6 +451,7 @@ _READONLY_HANDLERS = {
     # --- Session ---
     "get_session_info": lambda song, p, ctrl: handlers.session.get_session_info(song, ctrl),
     "get_song_transport": lambda song, p, ctrl: handlers.session.get_song_transport(song, ctrl),
+    "save_song": lambda song, p, ctrl: handlers.session.save_song(song, ctrl),
     "get_loop_info": lambda song, p, ctrl: handlers.session.get_loop_info(song, ctrl),
     "get_recording_status": lambda song, p, ctrl: handlers.session.get_recording_status(song, ctrl),
     "get_cue_points": lambda song, p, ctrl: handlers.session.get_cue_points(song, ctrl),

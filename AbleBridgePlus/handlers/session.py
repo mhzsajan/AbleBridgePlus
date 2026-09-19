@@ -1822,3 +1822,19 @@ def probe_vsync_surface(song, ctrl=None):
     if ctrl:
         ctrl.log_message("probe_vsync_surface done")
     return out
+
+
+def save_song(song, ctrl=None):
+    """Save the current Live set to disk (File > Save)."""
+    try:
+        song.save()
+        path = None
+        try:
+            path = song.get_data("Live_Set_path") or None
+        except Exception:
+            pass
+        return {"saved": True}
+    except Exception as e:
+        if ctrl:
+            ctrl.log_message("Error saving song: " + str(e))
+        raise

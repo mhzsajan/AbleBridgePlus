@@ -244,7 +244,7 @@ LIVE_SHOW_TEMPLATE_DIR = "templates"
 
 # Tier 0: No delay -- simple state changes
 TIER_0_COMMANDS: frozenset = frozenset([
-    "set_tempo", "set_track_name", "set_clip_name", "set_track_color",
+    "set_tempo", "set_track_name", "rename_return", "set_clip_name", "set_track_color",
     "set_clip_color", "set_track_mute", "set_track_solo", "set_track_arm",
     "set_metronome", "set_track_pan", "set_track_volume",
     "set_return_track_volume", "set_return_track_pan", "set_track_send",
@@ -268,6 +268,7 @@ TIER_0_COMMANDS: frozenset = frozenset([
 # Tier 1: Light delay (50ms post-delay only) -- note/clip/automation operations
 TIER_1_COMMANDS: frozenset = frozenset([
     "add_notes_to_clip", "add_notes_extended", "remove_notes_range",
+    "add_notes_to_arrangement_clip", "create_arrangement_midi_clip",
     "clear_clip_notes", "quantize_clip_notes", "transpose_clip_notes",
     "set_clip_loop_points", "set_clip_start_end",
     "create_clip_automation", "clear_clip_automation",
@@ -289,6 +290,7 @@ TIER_2_COMMANDS: frozenset = frozenset([
     "delete_clip", "delete_track", "duplicate_track",
     "create_return_track", "create_scene", "delete_scene",
     "load_instrument_or_effect", "load_sample", "load_drum_kit",
+    "load_browser_item", "load_device_on_return",
     "group_tracks", "freeze_track", "unfreeze_track",
     "audio_to_midi", "create_midi_track_with_simpler",
     "sliced_simpler_to_drum_rack", "delete_device",
@@ -296,6 +298,7 @@ TIER_2_COMMANDS: frozenset = frozenset([
     "arm_track", "disarm_track",
     "start_arrangement_recording", "stop_arrangement_recording",
     "set_loop_start", "set_loop_end", "set_loop_length", "set_playback_position",
+    "save_song",
 ])
 
 # Combined set of all modifying commands (union of all tiers)

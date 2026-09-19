@@ -1248,3 +1248,51 @@ def set_clip_slot_properties(song, track_index, clip_index, has_stop_button=None
         if ctrl:
             ctrl.log_message("Error setting clip slot properties: " + str(e))
         raise
+
+
+def add_notes_to_arrangement_clip(song, track_index, clip_time, notes, ctrl=None):
+    """Add MIDI notes to a clip in the arrangement view (found by start time)."""
+    try:
+        track = get_track(song, track_index)
+        clip = None
+        for c in list(track.arrangement_clips):
+            try:
+                if abs(float(c.start_time) - float(clip_time)) < 1e-6:
+                    clip = c
+                    break
+            except Exception:
+                pass
+        if clip is None:
+            raise ValueError("No arrangement clip at time {0} on track {1}".format(clip_time, track_index))
+        if not hasattr(clip, "add_new_notes"):
+            raise RuntimeError("Clip note API requires Live 11+")
+
+        import Live
+        specs = []
+        for n in notes:
+            specs.append({
+                "pitch": max(0, min(127, int(n.get("pitch", 60)))),
+                "start_time": max(0.0, float(n.get("start_time", 0.0))),
+                "duration": max(0.01, float(n.get("duration", 0.25))),
+                "velocity": max(1, min(127, int(n.get("velocity", 100)))),
+                "mute": bool(n.get("mute", False)),
+            })
+
+        added = 0
+        if hasattr(Live.Clip, "MidiNoteSpecification"):
+            note_specs = [Live.Clip.MidiNoteSpecification(
+                pitch=s["pitch"], start_time=s["start_time"],
+                duration=s["duration"], velocity=s["velocity"],
+                mute=s["mute"]) for s in specs]
+            clip.add_new_notes(note_specs)
+            added = len(note_specs)
+        else:
+            for s in specs:
+                clip.add_new_notes(s)
+            added = len(specs)
+
+        return {"added": added, "track_index": track_index, "clip_time": float(clip_time)}
+    except Exception as e:
+        if ctrl:
+            ctrl.log_message("Error adding notes to arrangement clip: " + str(e))
+        raise

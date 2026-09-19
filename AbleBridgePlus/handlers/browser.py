@@ -807,3 +807,43 @@ def preview_browser_item(song, uri=None, action="preview", ctrl=None):
         if ctrl:
             ctrl.log_message("Error previewing browser item: {0}".format(str(e)))
         raise
+
+
+def load_device_on_return(song, return_index, item_uri, ctrl=None):
+    """Load a browser device onto a return track by URI.
+
+    Same as load_browser_item but addresses song.return_tracks, which
+    song.view.selected_track accepts on Live 12.4.2 (verified empirically).
+    """
+    try:
+        returns = list(song.return_tracks)
+        if return_index < 0 or return_index >= len(returns):
+            raise IndexError(
+                "Return index {0} out of range ({1} returns)".format(
+                    return_index, len(returns)))
+        track = returns[return_index]
+        if ctrl is None:
+            raise RuntimeError("load_device_on_return requires ctrl for application()")
+        app = ctrl.application()
+
+        item = find_browser_item_by_uri(app.browser, item_uri, ctrl=ctrl)
+        if not item:
+            raise ValueError("Browser item with URI '{0}' not found".format(item_uri))
+        if hasattr(item, 'is_loadable') and not item.is_loadable:
+            raise ValueError(
+                "Browser item '{0}' (URI: {1}) is not loadable".format(item.name, item_uri))
+
+        song.view.selected_track = track
+        app.browser.load_item(item)
+
+        return {
+            "loaded": True,
+            "item_name": item.name,
+            "return_index": return_index,
+            "return_name": track.name,
+            "uri": item_uri,
+        }
+    except Exception as e:
+        if ctrl:
+            ctrl.log_message("Error loading device on return: " + str(e))
+        raise

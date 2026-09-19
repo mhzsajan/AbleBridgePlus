@@ -819,3 +819,24 @@ def get_track_input_meters(song, track_index=None, ctrl=None):
         if ctrl:
             ctrl.log_message("Error getting track input meters: " + str(e))
         raise
+
+
+def rename_return(song, return_index, name, ctrl=None):
+    """Rename a RETURN track by return index (never touches regular tracks)."""
+    try:
+        returns = list(song.return_tracks)
+        if return_index < 0 or return_index >= len(returns):
+            raise IndexError(
+                "Return index {0} out of range ({1} returns)".format(
+                    return_index, len(returns)))
+        old_name = returns[return_index].name
+        returns[return_index].name = str(name)
+        return {
+            "return_index": return_index,
+            "old_name": old_name,
+            "new_name": returns[return_index].name,
+        }
+    except Exception as e:
+        if ctrl:
+            ctrl.log_message("Error renaming return: " + str(e))
+        raise
