@@ -27,6 +27,26 @@ def register_tools(mcp):
         return f"Track {track_index} is now {state}"
 
     @mcp.tool()
+    @_tool_handler("setting track volume")
+    def set_track_volume(ctx: Context, track_index: int, volume: float) -> str:
+        """
+        Set the volume fader of a track.
+
+        Parameters:
+        - track_index: The index of the track
+        - volume: Volume as a linear gain from 0.0 (silent) to 1.0
+          (0.85 = unity / 0 dB in Live's default scaling)
+        """
+        _validate_index(track_index, "track_index")
+        _validate_range(volume, "volume", 0.0, 1.3)
+        ableton = get_ableton_connection()
+        result = ableton.send_command("set_track_volume", {
+            "track_index": track_index,
+            "volume": volume,
+        })
+        return f"Track {track_index} volume set to {result.get('volume', volume)}"
+
+    @mcp.tool()
     @_tool_handler("setting track send")
     def set_track_send(ctx: Context, track_index: int, send_index: int, value: float) -> str:
         """
