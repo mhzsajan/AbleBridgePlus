@@ -122,7 +122,7 @@ def register_tools(mcp):
 
     @mcp.tool()
     @_tool_handler("creating checkpoint")
-    def create_checkpoint(ctx: Context, name: str) -> str:
+    def create_checkpoint(ctx: Context, name: str, overwrite: bool = False) -> str:
         """
         Snapshot the set structure (tracks + clips layout + scenes) under a
         name so you can diff later with checkpoint_diff or go back with
@@ -131,12 +131,15 @@ def register_tools(mcp):
         checkpoint_diff("before-overhaul") to see what changed, or
         restore_checkpoint("before-overhaul") to undo it all.
 
+        Refuses to replace an existing name unless overwrite=True, so a
+        restore point cannot silently move after you created it.
+
         v0.6: stored in the shared undo-safety store — persists across
         server restarts and is visible to list_checkpoints/rollback tools.
         """
         ableton = get_ableton_connection()
         snapshot = store.capture_snapshot(ableton)
-        tracks_captured = store.store_named(name, snapshot)
+        tracks_captured = store.store_named(name, snapshot, overwrite=overwrite)
         import json as _json
         return _json.dumps({
             "status": "checkpoint_created", "name": name,

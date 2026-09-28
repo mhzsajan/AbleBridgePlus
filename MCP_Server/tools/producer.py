@@ -44,10 +44,15 @@ def _build_skeleton_now(ableton, section_list, key, genre, create_tracks):
         names = {t.get("name") for t in existing.get("tracks", [])}
         for tname in ("Chords", "Bass", "Drums"):
             if tname not in names:
-                ableton.send_command("create_midi_track", {"index": -1})
+                # get_all_tracks_info returns "count", not "track_count";
+                # prefer the index the create call reports back.
+                res = ableton.send_command("create_midi_track", {"index": -1}) or {}
+                idx = res.get("index")
+                if idx is None or int(idx) < 0:
+                    idx = int((ableton.send_command("get_all_tracks_info")
+                               or {}).get("count", 0)) - 1
                 ableton.send_command("set_track_name", {
-                    "track_index": existing.get("track_count", 0)
-                    + len(created["tracks"]), "name": tname})
+                    "track_index": int(idx), "name": tname})
                 created["tracks"].append(tname)
 
     for sec in section_list[:12]:
@@ -146,19 +151,19 @@ def register_tools(mcp):
         # --- 1. checkpoint -------------------------------------------------
         if checkpoint:
             try:
-                from MCP_Server.tools.project_context import _checkpoints
-                all_tracks = _call(ableton, "get_all_tracks_info")
-                import time as _time
-                _checkpoints["pre-demo"] = {
-                    "created": _time.time(),
-                    "tracks": [
-                        {"index": t.get("index"), "name": t.get("name"),
-                         "is_audio": t.get("is_audio"), "is_midi": t.get("is_midi"),
-                         "mute": t.get("mute"), "solo": t.get("solo"),
-                         "volume": t.get("volume"), "panning": t.get("panning")}
-                        for t in all_tracks.get("tracks", [])],
-                }
-                step("checkpoint", True, "'pre-demo' (diff with checkpoint_diff)")
+                from MCP_Server import checkpoints as _ckpt
+                # The real store: this used to import a non-existent
+                # `project_context._checkpoints`, so the ImportError was
+                # swallowed and the run proceeded with NO restore point.
+                snap = _ckpt.capture_snapshot(ableton)
+                if not snap.get("valid", True):
+                    raise RuntimeError(
+                        "incomplete capture (get_all_tracks_info failed) — "
+                        "refusing to store a restore point we cannot trust")
+                _ckpt.store_named("pre-demo", snap, overwrite=True)
+                step("checkpoint", True,
+                     "'pre-demo' ({0} tracks; diff with checkpoint_diff)".format(
+                         len(snap.get("tracks", []))))
             except Exception as e:
                 errors.append("checkpoint: {0} (continuing without)".format(e))
                 step("checkpoint", False, str(e))

@@ -24,6 +24,10 @@ import sys
 
 logger = logging.getLogger("MCP_Server.transport")
 
+# Max bytes for one JSON-RPC line. tools/list here is a ~220 KB payload, so the
+# asyncio default (64 KiB) is too small for a normal handshake.
+_TCP_LINE_LIMIT = 8 * 1024 * 1024
+
 
 def _trace(msg):
     """Optional file tracing (ABLEBRIDGE_TRACE=1) for debugging spawns."""
@@ -60,9 +64,24 @@ def _jsonrpc_wrap(request: dict, result: dict) -> dict:
     under ``"result"`` and errors under ``"error"``.
     """
     rid = request.get('id')
-    if isinstance(result, dict) and 'error' in result and len(result) == 1:
+    if isinstance(result, dict) and isinstance(result.get('error'), dict) \
+            and set(result.keys()) == {'error'}:
         return {'jsonrpc': '2.0', 'id': rid, 'error': result['error']}
     return {'jsonrpc': '2.0', 'id': rid, 'result': result}
+
+
+def _invalid_request(raw) -> dict:
+    """Build an Invalid Request error for a well-formed but non-object frame.
+
+    ``json.loads`` accepts any JSON value. A batch array (``[{...},{...}]``),
+    a bare ``null``, ``123`` or ``"x"`` are all valid JSON but have no
+    ``.get()``; touching them before dispatch raised AttributeError, which
+    nothing caught in stdio mode and which killed the server process.
+    """
+    return {'jsonrpc': '2.0', 'id': None,
+            'error': {'code': -32600,
+                      'message': 'Invalid Request: expected a JSON-RPC object, '
+                                 'got {0}'.format(type(raw).__name__)}}
 
 
 def serve_stdio_sync(server, loop: asyncio.AbstractEventLoop) -> None:
@@ -91,7 +110,18 @@ def serve_stdio_sync(server, loop: asyncio.AbstractEventLoop) -> None:
             sys.stdout.flush()
             continue
 
-        has_id = request.get('id') is not None
+        if not isinstance(request, dict):
+            # Valid JSON, but not a JSON-RPC object (batch array, null, number,
+            # string). Answer with Invalid Request instead of raising
+            # AttributeError out of the read loop and taking the process down.
+            sys.stdout.write(_serialize(_invalid_request(request)))
+            sys.stdout.flush()
+            continue
+
+        # JSON-RPC 2.0: a Notification is a request object with NO "id" member.
+        # An explicit "id": null is still a Request and must be answered, or the
+        # client blocks until its own timeout.
+        has_id = 'id' in request
 
         try:
             result = loop.run_until_complete(server.handle_request(request))
@@ -129,7 +159,13 @@ async def _handle_tcp_client(server, reader: asyncio.StreamReader,
                                      'error': {'code': -32700, 'message': f'Parse error: {e}'}})
                 continue
 
-            has_id = request.get('id') is not None
+            if not isinstance(request, dict):
+                await _send(writer, _invalid_request(request))
+                continue
+
+            # No "id" member => notification => no response. "id": null is a
+            # Request and must be answered.
+            has_id = 'id' in request
             try:
                 result = await server.handle_request(request)
             except Exception as e:
@@ -137,7 +173,9 @@ async def _handle_tcp_client(server, reader: asyncio.StreamReader,
                 result = {'error': {'code': -32603, 'message': str(e)}}
             if has_id:
                 await _send(writer, _jsonrpc_wrap(request, result))
-    except (ConnectionResetError, BrokenPipeError):
+    except (ConnectionResetError, BrokenPipeError, ValueError):
+        # ValueError covers StreamReader LimitOverrunError from an oversized
+        # line; drop that client rather than let it escape to the finally.
         pass
     finally:
         try:
@@ -158,8 +196,17 @@ async def _send(writer: asyncio.StreamWriter, obj: dict) -> None:
 
 async def serve_tcp(server, host: str = '127.0.0.1', port: int = 9891) -> None:
     """Serve MCP over TCP (newline-delimited JSON-RPC per connection)."""
+    # tools/list for this server is a ~220 KB single message, so the default
+    # 64 KiB StreamReader limit would reject a perfectly normal handshake.
+    async def _factory(reader, writer):
+        try:
+            reader._limit = _TCP_LINE_LIMIT
+        except AttributeError:
+            pass
+        await _handle_tcp_client(server, reader, writer)
+
     tcp_server = await asyncio.start_server(
-        lambda r, w: _handle_tcp_client(server, r, w), host, port)
+        _factory, host, port, limit=_TCP_LINE_LIMIT)
     addrs = ', '.join(str(s.getsockname()) for s in tcp_server.sockets or [])
     logger.info("Serving MCP over TCP on %s", addrs)
     async with tcp_server:

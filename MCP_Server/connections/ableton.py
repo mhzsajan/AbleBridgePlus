@@ -47,6 +47,8 @@ class AbletonConnection:
             self.sock.settimeout(5.0)
             self.sock.connect((self.host, self.port))
             self._recv_buffer = ""  # Clear buffer on new connection
+            self._recv_bytes = bytearray()
+            self._connected = True
             logger.info("Connected to Ableton at %s:%s", self.host, self.port)
             return True
         except Exception as e:
@@ -57,10 +59,12 @@ class AbletonConnection:
                 except Exception:
                     pass
             self.sock = None
+            self._connected = False
             return False
 
     def disconnect(self):
         """Disconnect from the Ableton Remote Script"""
+        self._connected = False
         if self.sock:
             try:
                 self.sock.close()
@@ -78,7 +82,12 @@ class AbletonConnection:
 
     def __post_init__(self):
         self._recv_buffer = ""
+        self._recv_bytes = bytearray()
         self._send_lock = threading.Lock()
+        # Read by server.py and dashboard/server.py to report connection
+        # health. Previously never assigned, so both always reported
+        # "disconnected" even with a healthy socket.
+        self._connected = False
 
     def _ensure_udp_socket(self):
         """Create a UDP socket for real-time parameter sending if not already open."""
@@ -101,41 +110,64 @@ class AbletonConnection:
         logger.debug("Sent UDP command: %s", command_type)
 
     def receive_full_response(self, sock, buffer_size=8192, timeout=15.0):
-        """Receive a complete newline-delimited JSON response and return the parsed object"""
+        """Receive a complete newline-delimited JSON response.
+
+        Two correctness points this method has to get right:
+
+        * **Incremental decoding.** ``recv`` splits wherever the packet
+          boundary falls, so decoding each chunk as UTF-8 independently
+          corrupts any multi-byte character straddling a boundary. Bytes are
+          therefore accumulated and split on ``b"\\n"`` BEFORE decoding.
+        * **A wall-clock deadline.** ``settimeout`` applies per ``recv`` call,
+          so a peer dribbling one byte per (timeout - epsilon) would keep this
+          loop alive forever, holding ``_send_lock`` and stalling every other
+          tool. The deadline is checked on every iteration.
+        """
         sock.settimeout(timeout)
+        deadline = time.monotonic() + timeout
 
-        try:
-            while True:
-                # Check if we already have a complete line in the buffer
-                if '\n' in self._recv_buffer:
-                    line, self._recv_buffer = self._recv_buffer.split('\n', 1)
-                    line = line.strip()
-                    if line:
-                        try:
-                            result = json.loads(line)
-                        except json.JSONDecodeError:
-                            logger.error("Malformed JSON from Ableton (first 200 chars): %s", line[:200])
-                            raise
-                        logger.debug("Received complete response (%d chars)", len(line))
-                        return result
-
+        while True:
+            # A complete line already buffered?
+            nl = self._recv_bytes.find(b"\n")
+            if nl != -1:
+                raw_line = bytes(self._recv_bytes[:nl])
+                del self._recv_bytes[:nl + 1]
+                line = raw_line.strip().decode("utf-8", errors="replace")
+                if not line:
+                    continue
                 try:
-                    chunk = sock.recv(buffer_size)
-                    if not chunk:
-                        raise Exception("Connection closed before receiving any data")
+                    result = json.loads(line)
+                except json.JSONDecodeError as e:
+                    # Payload-layer defect, not a transport fault: the socket
+                    # is still perfectly healthy, so raise a type send_command
+                    # re-raises without tearing the connection down.
+                    logger.error("Malformed JSON from Ableton (first 200 chars): %s",
+                                 line[:200])
+                    raise CommandError(
+                        "Ableton sent malformed JSON: {0}".format(e)) from e
+                logger.debug("Received complete response (%d chars)", len(line))
+                return result
 
-                    self._recv_buffer += chunk.decode('utf-8')
-                except socket.timeout:
-                    logger.warning("Socket timeout during receive")
-                    raise
-                except (ConnectionError, BrokenPipeError, ConnectionResetError) as e:
-                    logger.error("Socket connection error during receive: %s", e)
-                    raise
-        except (socket.timeout, json.JSONDecodeError):
-            raise
-        except Exception as e:
-            logger.error("Error during receive: %s", e)
-            raise
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                logger.warning("Receive deadline exceeded after %.1fs", timeout)
+                raise socket.timeout("no complete response from Ableton within "
+                                     "{0}s".format(timeout))
+            if remaining != timeout:
+                sock.settimeout(remaining)
+
+            try:
+                chunk = sock.recv(buffer_size)
+            except socket.timeout:
+                logger.warning("Socket timeout during receive")
+                raise
+            except (ConnectionError, BrokenPipeError, ConnectionResetError) as e:
+                logger.error("Socket connection error during receive: %s", e)
+                raise
+            if not chunk:
+                raise ConnectionError(
+                    "Ableton closed the connection before sending a response")
+            self._recv_bytes += chunk
 
     def _reconnect(self) -> bool:
         """Force a fresh reconnection, clearing all state."""
@@ -181,8 +213,14 @@ class AbletonConnection:
                 try:
                     logger.debug("Sending command: %s (attempt %d)", command_type, attempt)
 
-                    # Send the command as newline-delimited JSON
-                    self.sock.sendall((json.dumps(command) + '\n').encode('utf-8'))
+                    # Bound the WRITE separately from the read. receive_full_response
+                    # sets its own (up to 60s) timeout and leaves it on the socket;
+                    # without an explicit value here, sendall inherits that, and a
+                    # timeout mid-sendall raises with a truncated command already
+                    # sent — which is unrecoverable for non-idempotent commands.
+                    payload = (json.dumps(command) + '\n').encode('utf-8')
+                    self.sock.settimeout(10.0)
+                    self.sock.sendall(payload)
 
                     # Pre-delay: give Ableton time to process before we read the response
                     if pre_delay:
@@ -218,6 +256,7 @@ class AbletonConnection:
                     # Close the broken socket and clear buffer
                     self.disconnect()
                     self._recv_buffer = ""
+                    self._recv_bytes = bytearray()
 
                     if attempt < max_attempts:
                         # Wait briefly then retry with a fresh connection
@@ -229,63 +268,68 @@ class AbletonConnection:
                         raise Exception(f"Command '{command_type}' failed after {max_attempts} attempts: {e}")
 
 
+_conn_lock = threading.Lock()
+
+
 def get_ableton_connection():
-    """Get or create a persistent Ableton connection"""
+    """Get or create a persistent Ableton connection.
 
-    if state.ableton_connection is not None:
-        try:
-            # Test if the socket is still connected
-            if state.ableton_connection.sock is None:
-                raise ConnectionError("Socket is None")
-            state.ableton_connection.sock.settimeout(1.0)
-            state.ableton_connection.sock.getpeername()  # raises if disconnected
-            return state.ableton_connection
-        except Exception as e:
-            logger.warning("Existing connection is no longer valid: %s", e)
+    Serialised with a module-level lock: this is reached from tool worker
+    threads, the event loop (auto-checkpoint), the show-autopilot thread and
+    the dashboard thread. The previous check-then-act version could let two
+    threads each build a connection, publish one to the module global and
+    then validate/destroy the *other* thread's live socket.
+    """
+    with _conn_lock:
+        if state.ableton_connection is not None:
             try:
-                state.ableton_connection.disconnect()
-            except Exception:
-                pass
-            state.ableton_connection = None
-
-    # Connection doesn't exist or is invalid, create a new one
-    if state.ableton_connection is None:
-        # Try to connect up to 3 times with a short delay between attempts
-        max_attempts = 3
-        for attempt in range(1, max_attempts + 1):
-            try:
-                logger.info("Connecting to Ableton (attempt %d/%d)...", attempt, max_attempts)
-                state.ableton_connection = AbletonConnection(host="localhost", port=9877)
-                if state.ableton_connection.connect():
-                    logger.info("Created new persistent connection to Ableton")
-
-                    # Validate connection with a simple command
-                    try:
-                        # Get session info as a test
-                        state.ableton_connection.send_command("get_session_info")
-                        logger.info("Connection validated successfully")
-                        state.ableton_connected_event.set()
-                        return state.ableton_connection
-                    except Exception as e:
-                        logger.error("Connection validation failed: %s", e)
-                        state.ableton_connection.disconnect()
-                        state.ableton_connection = None
-                        # Continue to next attempt
-                else:
-                    state.ableton_connection = None
+                if state.ableton_connection.sock is None:
+                    raise ConnectionError("Socket is None")
+                # NB: do NOT settimeout() here. It is never reverted, so the
+                # next sendall inherited 1.0s and could abort part-way through a
+                # large payload — silently truncating commands. getpeername()
+                # is a purely local call and never blocks, so it needs no
+                # timeout at all.
+                state.ableton_connection.sock.getpeername()
+                return state.ableton_connection
             except Exception as e:
-                logger.error("Connection attempt %d failed: %s", attempt, e)
-                if state.ableton_connection:
+                logger.warning("Existing connection is no longer valid: %s", e)
+                try:
                     state.ableton_connection.disconnect()
+                except Exception:
+                    pass
+                state.ableton_connection = None
+
+        if state.ableton_connection is None:
+            # Try to connect up to 3 times with a short delay between attempts
+            max_attempts = 3
+            for attempt in range(1, max_attempts + 1):
+                conn = None
+                try:
+                    logger.info("Connecting to Ableton (attempt %d/%d)...", attempt, max_attempts)
+                    # Build and validate into a LOCAL, publish only on success.
+                    conn = AbletonConnection(host="localhost", port=9877)
+                    if not conn.connect():
+                        continue
+                    conn.send_command("get_session_info")
+                    logger.info("Created new persistent connection to Ableton")
+                    state.ableton_connection = conn
+                    state.ableton_connected_event.set()
+                    return conn
+                except Exception as e:
+                    logger.error("Connection attempt %d failed: %s", attempt, e)
+                    if conn is not None:
+                        try:
+                            conn.disconnect()
+                        except Exception:
+                            pass
                     state.ableton_connection = None
 
-            # Wait before trying again, but only if we have more attempts left
-            if attempt < max_attempts:
-                time.sleep(1.0)
+                if attempt < max_attempts:
+                    time.sleep(1.0)
 
-        # If we get here, all connection attempts failed
-        if state.ableton_connection is None:
             logger.error("Failed to connect to Ableton after multiple attempts")
-            raise Exception("Could not connect to Ableton. Make sure the Remote Script is running.")
+            raise Exception(
+                "Could not connect to Ableton. Make sure the Remote Script is running.")
 
     return state.ableton_connection

@@ -5,6 +5,9 @@ This package contains all the tools for controlling Ableton Live via MCP.
 """
 
 from typing import Any, Callable, Dict, List, Optional
+import logging
+
+logger = logging.getLogger("AbletonBridge")
 
 
 def schema_from_signature(func: Callable, skip_params: tuple = ('ctx',)) -> Dict[str, Any]:
@@ -64,7 +67,27 @@ class ToolRegistry:
         """Initialize the tool registry."""
         self._tools: Dict[str, Callable] = {}
         self._tool_metadata: Dict[str, Dict[str, Any]] = {}
-    
+        self._duplicates: List[str] = []
+
+    def _register(self, name: str, func: Callable,
+                  metadata: Optional[Dict[str, Any]] = None) -> None:
+        """Register a tool, recording (not silently swallowing) name clashes.
+
+        The new-style ``@mcp.tool()`` and legacy ``@tool(...)`` paths merge into
+        one dict here. A collision used to mean last-writer-wins with no log
+        line at all, so a shadowed tool would only surface as a mysteriously
+        missing tool much later.
+        """
+        if name in self._tools:
+            self._duplicates.append(name)
+            logger.warning(
+                "duplicate tool name %r: %s shadows %s",
+                name, getattr(func, "__module__", "?"),
+                getattr(self._tools[name], "__module__", "?"))
+        self._tools[name] = func
+        if metadata:
+            self._tool_metadata[name] = metadata
+
     def register_module(self, module: Any):
         """
         Register all tools from a module.
@@ -79,8 +102,7 @@ class ToolRegistry:
             
             attr = getattr(module, attr_name)
             if callable(attr) and hasattr(attr, '_tool_metadata'):
-                self._tools[attr_name] = attr
-                self._tool_metadata[attr_name] = attr._tool_metadata
+                self._register(attr_name, attr, attr._tool_metadata)
     
     def register_tool(self, name: str, func: Callable, metadata: Optional[Dict[str, Any]] = None):
         """
@@ -91,9 +113,7 @@ class ToolRegistry:
             func: Tool function
             metadata: Optional metadata for the tool
         """
-        self._tools[name] = func
-        if metadata:
-            self._tool_metadata[name] = metadata
+        self._register(name, func, metadata)
     
     def get_tool(self, name: str) -> Optional[Callable]:
         """
@@ -137,23 +157,38 @@ class ToolRegistry:
             # Reconcile the advertised schema with what the function actually
             # accepts. The signature is the source of truth (that's what the
             # dispatcher calls); hand-written metadata schemas are kept only
-            # for descriptions of params that really exist.
+            # for constraints on params that really exist.
+            #
+            # Previously ONLY `description` was carried across and the metadata
+            # schema was then discarded wholesale, silently dropping every
+            # enum, default, minimum, maximum and items constraint the author
+            # had written (7 enums were being lost this way).
             try:
                 derived = schema_from_signature(func)
                 meta_schema = tool_def['inputSchema']
-                if derived['properties']:
-                    if meta_schema.get('properties'):
-                        descriptions = {
-                            pname: pmeta.get('description', '')
-                            for pname, pmeta in meta_schema['properties'].items()
-                            if isinstance(pmeta, dict)
-                        }
-                        for pname, pmeta in derived['properties'].items():
-                            if pname in descriptions:
-                                pmeta['description'] = descriptions[pname]
-                    tool_def['inputSchema'] = derived
+                if derived['properties'] and meta_schema.get('properties'):
+                    # Constraint keys worth carrying from the declared schema.
+                    _CARRY = ('description', 'enum', 'default', 'minimum',
+                              'maximum', 'exclusiveMinimum', 'exclusiveMaximum',
+                              'minItems', 'maxItems', 'pattern', 'format',
+                              'items', 'anyOf')
+                    for pname, pmeta in derived['properties'].items():
+                        declared = meta_schema['properties'].get(pname)
+                        if not isinstance(declared, dict):
+                            continue
+                        for key in _CARRY:
+                            if key in declared and key not in pmeta:
+                                pmeta[key] = declared[key]
+                    # A declared `required` list wins: it encodes intent that a
+                    # signature cannot express (e.g. optional-in-signature but
+                    # required-in-practice parameters).
+                    if isinstance(meta_schema.get('required'), list) \
+                            and meta_schema['required']:
+                        derived['required'] = list(meta_schema['required'])
+                tool_def['inputSchema'] = derived
             except Exception:
-                pass
+                logger.debug("schema reconciliation failed for %s", name,
+                             exc_info=True)
             
             tools.append(tool_def)
         

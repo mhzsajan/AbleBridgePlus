@@ -67,10 +67,30 @@ def test_prompt_offline_note(monkeypatch):
 # ---------------------------------------------------------------------------
 
 
-def test_list_resources_includes_track_template():
-    uris = [r.get("uri") or r.get("uriTemplate") for r in rp.list_resources()]
+def test_list_resources_every_entry_has_a_uri():
+    """MCP's Resource type requires `uri`.
+
+    A `uriTemplate` descriptor used to be returned inside the plain `resources`
+    array, producing a schema-invalid resource with no `uri` at all; strict
+    clients (which type `uri` as required) saw `undefined`.
+    """
+    entries = rp.list_resources()
+    for entry in entries:
+        assert "uri" in entry, f"resource without uri: {entry}"
+        assert "uriTemplate" not in entry, f"template in resources array: {entry}"
+
+
+def test_track_template_is_served_as_a_template():
+    """Templates belong to resources/templates/list, not resources/list."""
+    uris = [r.get("uri") for r in rp.list_resources()]
     assert "ableton://session/summary" in uris
-    assert "ableton://track/{index}" in uris
+    assert "ableton://track/0" in uris
+
+    templates = [r.get("uriTemplate") for r in rp.list_resource_templates()]
+    assert "ableton://track/{index}" in templates
+    for tpl in rp.list_resource_templates():
+        assert "name" in tpl
+        assert "uriTemplate" in tpl
 
 
 class _FakeConn:

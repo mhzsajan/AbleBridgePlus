@@ -12,9 +12,16 @@ from MCP_Server.constants import (
 )
 
 
-class ValidationError(Exception):
-    """Validation error exception."""
-    
+class ValidationError(ValueError):
+    """Validation error exception.
+
+    Subclasses ``ValueError`` deliberately. ``_tool_handler`` maps ValueError to
+    the ``"Invalid input: ..."`` envelope; as a bare ``Exception`` subclass every
+    out-of-range MIDI note, bad index or oversized batch was instead reported as
+    a generic internal ``"Error <prefix>: ..."``, which is indistinguishable
+    from a real failure in logs and unhelpful to the calling agent.
+    """
+
     def __init__(self, message: str, code: int = -32602):
         """
         Initialize validation error.

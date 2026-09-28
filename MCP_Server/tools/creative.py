@@ -8,6 +8,33 @@ from MCP_Server.connections.ableton import get_ableton_connection
 from MCP_Server.validation import _validate_index, _validate_range, _validate_notes
 
 
+def bjorklund(steps: int, pulses: int) -> List[int]:
+    """Euclidean (Björklund) rhythm generator, shared by every generator here.
+
+    Distributes ``pulses`` onsets as evenly as possible across ``steps`` steps.
+    Equivalent to Björklund's algorithm and to the E(pulses, steps) notation; the
+    result is defined up to rotation, and the callers expose a ``rotation``
+    argument for placing the downbeat.
+
+    This replaced two hand-rolled copies of the algorithm that had drifted
+    apart. The older one (``generate_euclidean_rhythm``) paired front and back
+    groups and then re-merged the already-combined chunks, which skewed every
+    merge after the first: E(5,8) came out as ``10101011`` instead of a
+    tresillo. The Bresenham form below cannot drop or duplicate steps, which
+    is the failure the merge-based version was prone to (the other copy lost
+    steps outright whenever the rest count exceeded the pulse count).
+    """
+    steps = int(steps)
+    pulses = int(pulses)
+    if steps <= 0:
+        return []
+    if pulses <= 0:
+        return [0] * steps
+    if pulses >= steps:
+        return [1] * steps
+    return [1 if ((i * pulses) % steps) < pulses else 0 for i in range(steps)]
+
+
 def register_tools(mcp):
 
     @mcp.tool()
@@ -42,36 +69,6 @@ def register_tools(mcp):
         _validate_range(pitch, "pitch", 0, 127)
         _validate_range(velocity, "velocity", 1, 127)
 
-        # Bjorklund's algorithm
-        def bjorklund(steps, pulses):
-            if pulses == 0:
-                return [0] * steps
-            if pulses >= steps:
-                return [1] * steps
-            pattern = [[1] for _ in range(pulses)] + [[0] for _ in range(steps - pulses)]
-            while True:
-                remainder = len(pattern) - pulses
-                if remainder <= 1:
-                    break
-                new_pattern = []
-                i = 0
-                j = len(pattern) - 1
-                count = 0
-                while i < j and count < pulses:
-                    new_pattern.append(pattern[i] + pattern[j])
-                    i += 1
-                    j -= 1
-                    count += 1
-                while i <= j:
-                    new_pattern.append(pattern[i])
-                    i += 1
-                pattern = new_pattern
-                pulses = count
-            result = []
-            for group in pattern:
-                result.extend(group)
-            return result
-
         pattern = bjorklund(steps, pulses)
 
         # Apply rotation
@@ -81,22 +78,36 @@ def register_tools(mcp):
 
         # Calculate step duration
         step_duration = note_length if note_length else 0.25
-        if clip_length is None:
-            clip_length = steps * step_duration
 
         # Build notes
         notes = []
         for i, hit in enumerate(pattern):
             if hit:
                 notes.append({
-                    "pitch": int(pitch),
+                    "pitch": max(0, min(127, int(pitch))),
                     "start_time": i * step_duration,
                     "duration": note_length,
-                    "velocity": int(velocity),
+                    "velocity": max(1, min(127, int(velocity))),
                 })
 
         if not notes:
             return "No notes generated (0 pulses)"
+
+        # Honour clip_length: the parameter was accepted, documented and then
+        # never referenced, so a clip_length=16 request silently produced one
+        # bar of notes and dropped the rest past the end of the clip.
+        if clip_length is not None:
+            try:
+                limit = float(clip_length)
+            except (TypeError, ValueError):
+                raise ValueError("clip_length must be a number, got "
+                                 f"{clip_length!r}")
+            if limit <= 0:
+                raise ValueError("clip_length must be greater than 0")
+            notes = [n for n in notes if n["start_time"] < limit]
+            if not notes:
+                return (f"No notes fall inside clip_length={limit} for "
+                        f"({steps},{pulses}); nothing was written")
 
         # Write to clip
         ableton = get_ableton_connection()
@@ -106,7 +117,11 @@ def register_tools(mcp):
             "notes": notes,
         })
 
-        return f"Generated Euclidean rhythm ({steps},{pulses}) with {len(notes)} hits on track {track_index} clip {clip_index}"
+        suffix = "" if clip_length is None else (
+            f", truncated to clip_length={clip_length}")
+        return (f"Generated Euclidean rhythm ({steps},{pulses}) with "
+                f"{len(notes)} hits on track {track_index} clip {clip_index}"
+                f"{suffix}")
 
 
     @mcp.tool()
@@ -709,7 +724,10 @@ def register_tools(mcp):
             else:
                 chord_intervals = [0, 4, 7]
                 if has_seventh:
-                    chord_intervals.append(11 if degree == 4 else 10)  # dominant 7th for V, minor 7th otherwise
+                    # A dominant 7th on V is a MINOR seventh (10 semitones).
+                    # This appended 11, which is a MAJOR seventh: V7 in C major
+                    # came out as G-B-D-F# = Gmaj7, the wrong chord entirely.
+                    chord_intervals.append(10)
 
             return [root_interval + ci for ci in chord_intervals]
 
@@ -930,9 +948,15 @@ def register_tools(mcp):
             for pos in positions:
                 if pos >= clip_length:
                     continue
+                # Swing delays the OFF-beat, i.e. anything that is not on an
+                # eighth-note grid position. The old test `(pos * 4) % 2 == 1`
+                # flagged positions 0.25 and 0.75 (the on-beat 16th "e" and "a")
+                # and left the actual 8th-note offbeats at 0.5/1.5/2.5/3.5
+                # completely straight, so hi-hats never swung. Compare against
+                # the nearest 1/8-note grid point with a small tolerance so
+                # triplet positions (0.667) are not mangled.
                 actual_pos = pos
-                # Apply swing to offbeat 16th notes
-                if swing > 0 and (pos * 4) % 2 == 1:
+                if swing > 0 and abs((pos * 2) % 2.0 - 1.0) > 0.05:
                     actual_pos += swing_offset
 
                 notes.append({
@@ -982,35 +1006,7 @@ def register_tools(mcp):
         if steps < 1:
             raise ValueError("steps must be >= 1")
 
-        # Bjorklund algorithm
-        def bjorklund(hits, steps):
-            if hits == 0:
-                return [0] * steps
-            if hits == steps:
-                return [1] * steps
-
-            groups = [[1] for _ in range(hits)] + [[0] for _ in range(steps - hits)]
-            while True:
-                remainder = len(groups) - hits
-                if remainder <= 1:
-                    break
-                new_groups = []
-                take = min(hits, remainder)
-                for i in range(take):
-                    new_groups.append(groups[i] + groups[hits + i])
-                for i in range(take, hits):
-                    new_groups.append(groups[i])
-                for i in range(hits + take, len(groups)):
-                    new_groups.append(groups[i])
-                groups = new_groups
-                hits = take if take < hits else hits
-
-            pattern = []
-            for g in groups:
-                pattern.extend(g)
-            return pattern
-
-        pattern = bjorklund(hits, steps)
+        pattern = bjorklund(steps, hits)
 
         # Apply rotation
         if rotation != 0:
@@ -1093,11 +1089,24 @@ def register_tools(mcp):
         notes = []
 
         if pattern_type == "root_fifth":
-            fifth = root + 7
+            # Fold down an octave rather than clip: with root=125 the literal
+            # fifth is 132, and the remote handler clamps it to 127, collapsing
+            # the alternation into 125,127,125,127 — a semitone shuffle rather
+            # than a root/fifth line. Every sibling branch clamps too; this one
+            # didn't.
+            def _fit(p):
+                while p > 127:
+                    p -= 12
+                while p < 0:
+                    p += 12
+                return p
+            root_p = _fit(root)
+            fifth = _fit(root + 7)
             for i in range(total_steps):
-                p = root if i % 2 == 0 else fifth
+                p = root_p if i % 2 == 0 else fifth
                 notes.append({"pitch": p, "start_time": i * note_length,
-                              "duration": note_length * 0.9, "velocity": int(velocity)})
+                              "duration": note_length * 0.9,
+                              "velocity": max(1, min(127, int(velocity)))})
         elif pattern_type == "walking":
             idx = 0
             direction = 1
@@ -1265,16 +1274,29 @@ def register_tools(mcp):
         root_pc = root % 12
 
         def snap_to_scale(pitch):
+            """Snap to the nearest scale tone, resolving ties UPWARD.
+
+            `min` returned the first minimal element and the intervals are
+            listed ascending, so every exact tie resolved DOWNWARD and the
+            upward-wrap term below was unreachable. The practical result: in C
+            major, C# D# F# G# A# all snapped down (C D F G A), so quantising a
+            sharp melody transposed it flat by a semitone rather than pulling
+            it to the closest scale degree.
+            """
             pc = pitch % 12
             relative_pc = (pc - root_pc) % 12
             if relative_pc in intervals:
                 return pitch
-            # Find closest scale tone
-            best = min(intervals, key=lambda x: min(abs(x - relative_pc), 12 - abs(x - relative_pc)))
-            diff = best - relative_pc
-            if abs(diff) > 6:
-                diff = diff - 12 if diff > 0 else diff + 12
-            return max(0, min(127, pitch + diff))
+
+            def _distance(interval):
+                up = (interval - relative_pc) % 12
+                return min(up, 12 - up)
+
+            # min() on distance; the -x secondary key breaks exact ties
+            # upward (smaller -x == higher scale tone).
+            best = min(intervals, key=lambda x: (_distance(x), -x))
+            up = (best - relative_pc) % 12
+            return max(0, min(127, pitch + up - (12 if up > 6 else 0)))
 
         ableton = get_ableton_connection()
         clip_notes = ableton.send_command("get_clip_notes", {

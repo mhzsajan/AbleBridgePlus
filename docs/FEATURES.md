@@ -1,6 +1,6 @@
 # AbleBridgePlus — Complete Feature & Tool Reference
 
-**448 tools** available to your AI client, grouped by what they do. Everything below is callable through chat — e.g. *"run the doctor"* or *"build a song skeleton in F# minor"*.
+**475 tools** available to your AI client, grouped by what they do. Everything below is callable through chat - e.g. *"run the doctor"* or *"build a song skeleton in F# minor"*.
 
 > Generated from the server's live `tools/list` output (v0.5.0). Names are the exact tool identifiers your AI sees. Regenerate with `python scripts/gen_features.py`.
 

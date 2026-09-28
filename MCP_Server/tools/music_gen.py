@@ -382,10 +382,17 @@ def register_tools(mcp):
             names = {t.get("name") for t in existing.get("tracks", [])}
             for tname in ("Chords", "Bass", "Drums"):
                 if tname not in names:
-                    ableton.send_command("create_midi_track", {"index": -1})
+                    # Use the index create_midi_track reports back. get_all_tracks_info
+                    # returns "count", NOT "track_count" (that key only exists on
+                    # get_session_info), so reading .get("track_count", 0) here always
+                    # yielded 0 and renamed the user's first three tracks.
+                    res = ableton.send_command("create_midi_track", {"index": -1}) or {}
+                    idx = res.get("index")
+                    if idx is None or int(idx) < 0:
+                        idx = int((ableton.send_command("get_all_tracks_info")
+                                   or {}).get("count", 0)) - 1
                     ableton.send_command("set_track_name", {
-                        "track_index": existing.get("track_count", 0)
-                        + len(created["tracks"]), "name": tname})
+                        "track_index": int(idx), "name": tname})
                     created["tracks"].append(tname)
 
         scene_index = 0

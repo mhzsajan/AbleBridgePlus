@@ -372,6 +372,8 @@ def register_tools(mcp):
         cue_points = _try_get_cue_points()
 
         # 6. Build sections from cue points
+        # Beats are quarter notes, so a bar spans sig_num * (4/sig_den) of them.
+        beats_per_bar = sig_num * (4.0 / sig_den) if sig_num else 0
         sections = []
         if cue_points:
             sorted_cues = sorted(cue_points, key=lambda c: c.get("time", 0))
@@ -382,10 +384,13 @@ def register_tools(mcp):
                     "name": cue.get("name", f"Section {idx + 1}"),
                     "start_beat": start,
                     "end_beat": end,
-                    "bars": round((end - start) / sig_num, 1) if sig_num else 0,
+                    # Dividing by sig_num alone reported 2x too few bars in
+                    # 7/8 and 2x too many in 6/8; the same file used the
+                    # correct formula a few lines further down.
+                    "bars": round((end - start) / beats_per_bar, 1)
+                            if beats_per_bar else 0,
                 })
 
-        beats_per_bar = sig_num * (4.0 / sig_den)
         result = {
             "tempo": tempo,
             "time_signature": f"{sig_num}/{sig_den}",

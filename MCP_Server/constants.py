@@ -6,9 +6,19 @@ import os
 from typing import Dict, List, Tuple
 
 # Server Configuration
+# Version lives in one place (MCP_Server.version) and is imported here so the
+# MCP handshake, the `get_server_capabilities` tool and the packaged metadata
+# can never disagree. They previously reported 0.3.0 / 0.5.0 / 0.7.0 from the
+# same process.
+from MCP_Server.version import __version__ as _VERSION  # noqa: E402
+
 SERVER_NAME = "AbleBridgePlus"
-SERVER_VERSION = "0.3.0"
+SERVER_VERSION = _VERSION
+# Newest MCP revision this server implements. _handle_initialize negotiates
+# against this instead of hardcoding a literal.
 PROTOCOL_VERSION = "2024-11-05"
+# Revisions we can still speak if the client asks for something newer.
+SUPPORTED_PROTOCOL_VERSIONS = ("2024-11-05", "2025-03-26", "2025-06-18")
 
 # Default Ports
 ABLETON_TCP_PORT = 9877

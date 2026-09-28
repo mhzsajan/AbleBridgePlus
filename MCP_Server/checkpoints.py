@@ -52,11 +52,21 @@ def capture_snapshot(ableton) -> Dict[str, Any]:
     Uses get_all_tracks_info (tracks + mixer + clips) and get_scene_names /
     get_session_info for the scene dimension. Never raises on individual
     sub-calls — a partial snapshot beats no snapshot.
+
+    The ``valid`` key is the safety interlock for the track-dimension danger:
+    if get_all_tracks_info itself failed, ``tracks`` is empty because we could
+    not READ the set, not because the set is empty. restore() refuses to delete
+    tracks from a snapshot where ``valid`` is False, so a socket hiccup during
+    capture can never translate into "delete every track".
     """
     tracks: List[Dict[str, Any]] = []
+    tracks_ok = False
     try:
         all_tracks = ableton.send_command("get_all_tracks_info") or {}
-        for t in all_tracks.get("tracks", []):
+        raw_tracks = all_tracks.get("tracks")
+        if isinstance(raw_tracks, list):
+            tracks_ok = True
+        for t in raw_tracks or []:
             entry = {
                 "index": t.get("index"),
                 "name": t.get("name"),
@@ -89,9 +99,13 @@ def capture_snapshot(ableton) -> Dict[str, Any]:
         logger.warning("checkpoint capture: get_all_tracks_info failed: %s", e)
 
     scenes: List[str] = []
+    scenes_ok = False
     try:
         sn = ableton.send_command("get_scenes") or {}
-        scenes = [str(s.get("name", "")) for s in sn.get("scenes", [])]
+        raw_scenes = sn.get("scenes")
+        if isinstance(raw_scenes, list):
+            scenes_ok = True
+        scenes = [str(s.get("name", "")) for s in raw_scenes or []]
     except Exception:
         pass
 
@@ -102,7 +116,8 @@ def capture_snapshot(ableton) -> Dict[str, Any]:
         pass
 
     return {"captured_at": round(time.time(), 2), "tempo": tempo,
-            "tracks": tracks, "scenes": scenes}
+            "tracks": tracks, "scenes": scenes,
+            "valid": tracks_ok, "scenes_valid": scenes_ok}
 
 
 def _persist_named() -> None:
@@ -130,7 +145,15 @@ def load_persisted() -> None:
 
 
 def store_auto(snapshot: Dict[str, Any], tool_name: str, args_summary: str) -> None:
-    """Record an automatic pre-mutation checkpoint (capped ring)."""
+    """Record an automatic pre-mutation checkpoint (capped ring).
+
+    Incomplete captures are rejected rather than stored: a ring entry whose
+    track dimension failed to read is a booby trap for the next rollback.
+    """
+    if not snapshot.get("valid", True):
+        logger.warning("auto-checkpoint for %s rejected: incomplete capture",
+                       tool_name)
+        return
     with _lock:
         _auto.append({
             "created": round(time.time(), 2),
@@ -140,9 +163,21 @@ def store_auto(snapshot: Dict[str, Any], tool_name: str, args_summary: str) -> N
         del _auto[:-_AUTO_LIMIT]
 
 
-def store_named(name: str, snapshot: Dict[str, Any]) -> int:
-    """Store a named checkpoint. Returns track count captured."""
+def store_named(name: str, snapshot: Dict[str, Any],
+                overwrite: bool = False) -> int:
+    """Store a named checkpoint. Returns track count captured.
+
+    Refuses to silently replace an existing name: an unnoticed overwrite moves
+    the user's restore point forward, so ``restore_checkpoint`` later reverts to
+    a state that already contains the changes it was supposed to undo. Callers
+    that genuinely own the key (safe_experiment) pass overwrite=True.
+    """
     with _lock:
+        if name in _named and not overwrite:
+            raise ValueError(
+                "checkpoint '{0}' already exists (created {1}); pass "
+                "overwrite=True to replace it, or pick another name.".format(
+                    name, _named[name].get("created")))
         _named[name] = {"created": round(time.time(), 2), "snapshot": snapshot}
         while len(_named) > _NAMED_LIMIT:
             oldest = min(_named, key=lambda k: _named[k]["created"])
@@ -294,14 +329,31 @@ def restore(ableton, snapshot: Dict[str, Any]) -> Dict[str, Any]:
     # --- tracks ---
     want_tracks = snapshot.get("tracks", [])
     want_idx = {t.get("index") for t in want_tracks}
-    for idx in sorted(cur_tracks.keys(), reverse=True):
-        if idx not in want_idx and isinstance(idx, int) and idx >= 0:
-            try:
-                ableton.send_command("delete_track", {"track_index": idx})
-                report["tracks"]["deleted"] += 1
-            except Exception as e:
-                report["tracks"]["errors"].append(
-                    "delete track {0}: {1}".format(idx, e))
+
+    # Deleting tracks is the one irreversible step in restore(), so it is
+    # gated on having actually READ the track dimension. A snapshot whose
+    # capture failed (valid=False) or which is empty while the live set is
+    # not must never be obeyed — that combination means "I could not see your
+    # set", not "your set should be empty".
+    if not snapshot.get("valid", True):
+        report["tracks"]["errors"].append(
+            "track deletion SKIPPED: snapshot capture was incomplete "
+            "(get_all_tracks_info failed); restore the set manually or re-create "
+            "a checkpoint")
+    elif not want_tracks and cur_tracks:
+        report["tracks"]["errors"].append(
+            "track deletion SKIPPED: snapshot captured 0 tracks but the set has "
+            "{0}; refusing to delete everything".format(len(cur_tracks)))
+    else:
+        for idx in sorted(cur_tracks.keys(), reverse=True):
+            if idx not in want_idx and isinstance(idx, int) and idx >= 0:
+                try:
+                    ableton.send_command("delete_track", {"track_index": idx})
+                    report["tracks"]["deleted"] += 1
+                except Exception as e:
+                    report["tracks"]["errors"].append(
+                        "delete track {0}: {1}".format(idx, e))
+
     for t in want_tracks:
         idx = t.get("index")
         cur = cur_tracks.get(idx)
@@ -355,6 +407,26 @@ def restore(ableton, snapshot: Dict[str, Any]) -> Dict[str, Any]:
                 idx = cur_t.get("index")
                 cur_clips = {(c.get("slot"), c.get("name"))
                              for c in cur_t.get("clips", [])}
+                # Remove clips that were not in the snapshot, highest slot
+                # first. Without this, a tool that emptied a clip and was then
+                # rolled back left an EMPTY clip behind — the old code created
+                # clips but never deleted them, so report["clips"]["deleted"]
+                # was a dead counter and "one restore undoes everything" was
+                # not true.
+                for c in sorted(cur_t.get("clips", []),
+                                key=lambda x: (x.get("slot") is None, -(x.get("slot") or 0))):
+                    if (c.get("slot"), c.get("name")) not in {
+                            (w.get("slot"), w.get("name"))
+                            for w in want.get("clips", [])}:
+                        try:
+                            ableton.send_command("delete_clip", {
+                                "track_index": idx,
+                                "clip_index": c.get("slot")})
+                            report["clips"]["deleted"] += 1
+                        except Exception as e:
+                            report["clips"]["errors"].append(
+                                "delete track {0} slot {1}: {2}".format(
+                                    idx, c.get("slot"), e))
                 for c in want.get("clips", []):
                     if (c.get("slot"), c.get("name")) not in cur_clips:
                         try:
@@ -372,6 +444,19 @@ def restore(ableton, snapshot: Dict[str, Any]) -> Dict[str, Any]:
         else:
             report["clips"]["errors"].append(
                 "track count mismatch after restore; clip presence skipped")
+
+        # --- scene deletion ---
+        # Symmetric with the track guard: only shrink scenes when the scene
+        # dimension was actually read at capture time.
+        if snapshot.get("scenes_valid", True) and want_scenes and \
+                len(current.get("scenes") or []) > len(want_scenes):
+            try:
+                n_scenes = len(current.get("scenes") or [])
+                for s in range(n_scenes - 1, len(want_scenes) - 1, -1):
+                    ableton.send_command("delete_scene", {"scene_index": s})
+                    report["scenes"]["deleted"] = report["scenes"].get("deleted", 0) + 1
+            except Exception as e:
+                report["scenes"]["errors"] = [str(e)]
     except Exception as e:
         report["clips"]["errors"].append(str(e))
 

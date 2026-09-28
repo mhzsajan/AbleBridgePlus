@@ -169,7 +169,14 @@ def register_tools(mcp):
 
         return formatted_output
 
-    @mcp.tool()
+    # The function is *defined* under its implementation name, but it is
+    # advertised to clients as refresh_browser_cache (the name doctor's advice
+    # and docs/FEATURES.md both use). Renaming __name__ AFTER @mcp.tool() has
+    # run does nothing — the adapter reads func.__name__ at decoration time —
+    # so the tool used to register as `refresh_browser_cache_tool` and every
+    # doctor recommendation to "call refresh_browser_cache" failed with
+    # -32602 Tool not found. `_FastMCPAdapter.tool(name=...)` is honoured below.
+    @mcp.tool(name="refresh_browser_cache")
     @_tool_handler("refreshing browser cache")
     def refresh_browser_cache_tool(ctx: Context) -> str:
         """
@@ -188,9 +195,6 @@ def register_tools(mcp):
 
         threading.Thread(target=populate_browser_cache, kwargs={'force': True}, daemon=True).start()
         return "Browser cache refresh started in background. Use get_browser_cache_status to check progress; search_browser uses the previous cache until the scan completes."
-
-    # Register under the original tool name
-    refresh_browser_cache_tool.__name__ = "refresh_browser_cache"
 
     @mcp.tool()
     @_tool_handler("checking browser cache status")

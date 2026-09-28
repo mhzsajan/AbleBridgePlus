@@ -3,6 +3,7 @@ Global State Management for AbleBridgePlus MCP Server.
 """
 
 import json
+import logging
 import os
 import socket
 import threading
@@ -127,7 +128,7 @@ class GlobalState:
         cache_file = os.path.join(self.cache_dir, "state.json")
         if os.path.exists(cache_file):
             try:
-                with open(cache_file, 'r') as f:
+                with open(cache_file, 'r', encoding='utf-8') as f:
                     cache_data = json.load(f)
                     # Update state from cache
                     if 'session' in cache_data:
@@ -135,10 +136,15 @@ class GlobalState:
                             if hasattr(self.session, key):
                                 setattr(self.session, key, value)
             except Exception as e:
-                print(f"Warning: Could not load cache: {e}")
-    
+                # MUST be stderr, never stdout: in stdio transport mode stdout
+                # IS the JSON-RPC channel, and a stray line here makes the client
+                # parse a text warning as a protocol frame and report the server
+                # as broken. Reachable on every corrupt/partially-written cache.
+                logging.getLogger("AbletonBridge").warning(
+                    "Could not load state cache %s: %s", cache_file, e)
+
     def _save_cache(self):
-        """Save state to disk cache."""
+        """Save state to disk cache (atomic: temp file + replace)."""
         cache_file = os.path.join(self.cache_dir, "state.json")
         try:
             cache_data = {
@@ -150,10 +156,15 @@ class GlobalState:
                     'last_updated': self.session.last_updated.isoformat() if self.session.last_updated else None
                 }
             }
-            with open(cache_file, 'w') as f:
+            # Truncating in place means a crash mid-dump leaves a corrupt file,
+            # which is what trips the _load_cache warning on the next boot.
+            tmp = cache_file + ".tmp"
+            with open(tmp, 'w', encoding='utf-8') as f:
                 json.dump(cache_data, f, indent=2)
+            os.replace(tmp, cache_file)
         except Exception as e:
-            print(f"Warning: Could not save cache: {e}")
+            logging.getLogger("AbletonBridge").warning(
+                "Could not save state cache %s: %s", cache_file, e)
     
     def update_connection(self, ableton_connected: bool, m4l_connected: bool):
         """Update connection state."""

@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "AbleBridgePlus"
-version = "0.5.0"
+version = "0.8.0"
 description = "AI-integrated live show engineering system for Ableton Live"
 readme = "README.md"
 license = { text = "MIT" }

@@ -5,7 +5,7 @@ All notable changes to AbleBridgePlus will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.8.0] - 2026-09-18 (unreleased)
+## [0.8.0] - 2026-09-28
 
 Starts v0.8 "Collaboration" with the show-navigation layer, built and
 live-verified against the real Videosync2 show set (Deepak Bajracharya
@@ -45,6 +45,75 @@ live-verified against the real Videosync2 show set (Deepak Bajracharya
 - 56/56 locators listed in show order; fuzzy jump to "Man Magan" landed
   the playhead at bar 1690 exactly; next-cue walk reported SONG END;
   rename works on Live 12.4.2 (tested + reverted in memory).
+
+### Fixed — correctness & safety audit pass
+
+A systematic audit of the transport, tool-dispatch, checkpoint and generative
+layers turned up 20 shipped defects. All are pinned by
+`tests/test_safety_regressions.py` (50 new tests, written to fail against the
+old code). See the README's v0.8.0 section for the full narrative; the
+highest-severity items:
+
+- **`build_song_skeleton` renamed the user's first three tracks.**
+  `get_all_tracks_info` returns `count`, not `track_count`, so
+  `existing.get("track_count", 0)` was always `0` and the tool set tracks
+  0/1/2 to Chords/Bass/Drums, then wrote chord clips into them. Both this and
+  the copy in `producer.py` now use the index `create_midi_track` returns.
+- **`checkpoints.restore()` could delete every track in the session.** A
+  snapshot whose capture had failed looked identical to a snapshot of an empty
+  set, so restore treated the whole set as extra and deleted it. Captures now
+  carry a `valid` flag and restore refuses to delete from an unreadable one.
+- **`restore()` never deleted clips or scenes** — `report["clips"]["deleted"]`
+  was a dead counter — so a rollback of an emptied clip left it empty. Both
+  dimensions are now restored.
+- **`produce_idea_from_prompt` ran with no checkpoint at all**: its
+  `from ...project_context import _checkpoints` referenced a symbol that does
+  not exist, and the `ImportError` was swallowed into a non-fatal `errors`
+  entry. It now uses the real store and fails loudly if the capture is
+  incomplete.
+- **`emergency_stop` / `panic_mute` / `panic_unmute` / `activate_backup_scene`
+  never touched Ableton.** The module imported no connection; `panic_mute`
+  reported "Muted 3 tracks" and muted nothing. They now drive Live, report
+  per-item failures as `*_partial`, and `panic_unmute` restores each track's
+  prior mute state instead of blanket-unmuting.
+- **A JSON-RPC batch frame killed the stdio server process.**
+  `json.loads` accepts any value, and `request.get('id')` ran outside the
+  try/except, so `[{...}]`, `null` or `123` raised `AttributeError` out of the
+  read loop. Now answered with `-32600`.
+- **A tool timeout released the connection gate while the abandoned worker
+  thread was still writing to Ableton**, so the agent's retry interleaved with
+  the original call. `asyncio.shield` plus a done-callback now keeps the gate
+  until the worker genuinely stops, and tells the caller not to retry.
+- **The Ableton liveness probe set `settimeout(1.0)` and never reverted it**,
+  so the next `sendall` inherited a 1-second deadline and could truncate large
+  payloads — for commands that are deliberately never retried.
+- **The change journal recorded empty arguments for every mutation**: it
+  sliced `args[1:]` for positional dispatch while the dispatcher uses keywords.
+- **`rollback(steps_back=0)` restored the oldest checkpoint** in the ring
+  (`-abs(0) == 0`).
+- **Bad tool arguments returned a successful result** containing a Python
+  `TypeError`. Missing/unknown/mistyped arguments are now `-32602`.
+- **`{"id": null}` got no response**, `ping` returned `-32601`, a `uriTemplate`
+  descriptor sat in `resources/list` with no `uri`, and schema reconciliation
+  discarded every `enum`/`default`/`minimum`/`maximum` (7 enums lost).
+- **`state.py` printed to stdout**, which in stdio mode is the protocol
+  channel — a corrupt cache file made clients declare the server broken.
+- **`V7` built Gmaj7**, `quantize_to_scale` always snapped downward, drum swing
+  missed the offbeats, two `bjorklund` implementations had drifted (E(5,8)
+  came out as `10101011` instead of `10110110`), and
+  `get_arrangement_overview` used the wrong bar length for non-4/4.
+
+### Changed
+- Version is single-sourced from `MCP_Server/version.py`; `initialize`
+  negotiates `protocolVersion` instead of hardcoding it. The same process
+  previously reported 0.3.0, 0.5.0 and 0.7.0.
+- Mutation classification is now explicit: a structural-mutation set that gets
+  a pre-mutation checkpoint, and a journal-only set for cheaper tools. 32
+  mutating tools that matched no pattern are now covered.
+- `create_checkpoint` refuses to replace an existing name unless
+  `overwrite=True`, so a restore point cannot silently move.
+- `doctor`'s M4L check can now fail, and the tool it recommends
+  (`refresh_browser_cache`) is actually registered under that name.
 
 ## [0.7.1] - 2026-09-18
 

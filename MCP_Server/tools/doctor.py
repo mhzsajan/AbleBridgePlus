@@ -91,10 +91,20 @@ def register_tools(mcp):
         m4l = state.m4l_connection
         if m4l is not None:
             try:
-                _add("m4l_bridge", bool(getattr(m4l, "sock", None) or True),
-                     "send {0}/recv {1} (only needed for M4L-device features)"
-                     .format(getattr(m4l, "send_port", "?"),
-                             getattr(m4l, "recv_port", "?")))
+                # `x or True` is unconditionally True, so this check reported a
+                # healthy bridge even with no socket, telling a user chasing
+                # dead M4L devices that everything was fine.
+                connected = bool(getattr(m4l, "sock", None)) or \
+                    bool(getattr(m4l, "_connected", False))
+                _add("m4l_bridge", connected,
+                     ("connected — send {0}/recv {1} (only needed for M4L-device "
+                      "features)".format(getattr(m4l, "send_port", "?"),
+                                         getattr(m4l, "recv_port", "?"))
+                      if connected else
+                      "not connected (M4L-device features unavailable)"),
+                     None if connected else
+                     "Expected if you do not use Max for Live devices. If you "
+                     "DO use them, check the AbleBridgePlus Max device is loaded.")
             except Exception as e:
                 _add("m4l_bridge", False, str(e),
                      "Ignore if you do not use Max for Live devices.")

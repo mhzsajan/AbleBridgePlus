@@ -48,10 +48,20 @@ def register_tools(mcp):
         Undo-safe revert: restore the set to how it was just BEFORE a recent
         mutating tool call. steps_back=1 restores the most recent automatic
         checkpoint, 2 the one before it, and so on. Use list_checkpoints to
-        see the ring. Restores structure + mixer + scene shape (clip contents
-        are not duplicated; Live's undo handles micro-edits).
+        see the ring. Restores structure + mixer + scene and clip-slot shape
+        (clip contents are not duplicated; Live's undo handles micro-edits).
         """
-        entry = store.get_auto(-abs(int(steps_back)))
+        if isinstance(steps_back, bool) or not isinstance(steps_back, int):
+            raise ValueError("steps_back must be an integer >= 1")
+        if steps_back < 1:
+            # -abs(0) == 0, which indexes the OLDEST entry in the ring rather
+            # than the newest. Silently rewinding 20 steps is the worst possible
+            # behaviour for an undo tool, so reject it instead.
+            raise ValueError(
+                "steps_back must be 1 or more (1 = most recent automatic "
+                "checkpoint); got {0}. Use list_checkpoints to see the ring."
+                .format(steps_back))
+        entry = store.get_auto(-steps_back)
         if entry is None:
             raise ValueError(
                 "No automatic checkpoint at steps_back={0}. The ring fills as "
@@ -123,7 +133,7 @@ def register_tools(mcp):
 
         ableton = get_ableton_connection()
         snapshot = store.capture_snapshot(ableton)
-        store.store_named("safe_experiment:" + name, snapshot)
+        store.store_named("safe_experiment:" + name, snapshot, overwrite=True)
 
         executed, failed = [], None
         for step in parsed:

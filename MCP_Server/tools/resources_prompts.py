@@ -139,10 +139,29 @@ def _resource_descriptors() -> List[Dict[str, Any]]:
             "mimeType": "application/json",
         },
         {
-            "uriTemplate": "ableton://track/{index}",
+            "uri": "ableton://track/0",
             "name": "Track detail",
             "description": "Full info for one track by zero-based index: mixer, devices, "
-                           "clip slots and live meters.",
+                           "clip slots and live meters. See the ableton://track/{index} "
+                           "resource template for other indices.",
+            "mimeType": "application/json",
+        },
+    ]
+
+
+def _resource_template_descriptors() -> List[Dict[str, Any]]:
+    """Descriptors that carry a uriTemplate, served by resources/templates/list.
+
+    A template must not appear in the plain `resources` array: MCP's Resource
+    type requires `uri`, and clients that tried to expand a `uriTemplate` found
+    in `resources` got -32601 for the method that legitimately serves them.
+    """
+    return [
+        {
+            "uriTemplate": "ableton://track/{index}",
+            "name": "Track detail",
+            "description": "Full info for one track by zero-based index "
+                           "(0-based, as everywhere else in this server).",
             "mimeType": "application/json",
         },
     ]
@@ -150,6 +169,10 @@ def _resource_descriptors() -> List[Dict[str, Any]]:
 
 def list_resources() -> List[Dict[str, Any]]:
     return _resource_descriptors()
+
+
+def list_resource_templates() -> List[Dict[str, Any]]:
+    return _resource_template_descriptors()
 
 
 def read_resource(uri: str) -> Dict[str, Any]:
@@ -166,6 +189,14 @@ def read_resource(uri: str) -> Dict[str, Any]:
             index = int(uri.rsplit("/", 1)[1])
         except ValueError:
             raise ValueError("track index must be an integer: " + uri)
+        # Resources bypass the per-tool validation layer, so bound the index
+        # here: a negative or absurd value used to travel straight to Live.
+        if index < 0:
+            raise ValueError("track index must be >= 0 (got {0})".format(index))
+        if index > 512:
+            raise ValueError(
+                "track index {0} is implausible; a set has at most a few "
+                "hundred tracks".format(index))
         text = _res_track(index)
     else:
         raise ValueError("Unknown resource: " + uri)
