@@ -233,6 +233,24 @@ code, pre { font-family: var(--mono); }
   -webkit-text-fill-color: transparent; color: transparent;
 }
 
+.byline {
+  margin: -6px 0 18px;
+  color: var(--text-3);
+  font-size: 15px;
+  letter-spacing: .01em;
+}
+.byline a {
+  color: var(--text-2);
+  font-weight: 620;
+  border-bottom: 1px solid transparent;
+  transition: color .16s ease, border-color .16s ease;
+}
+.byline a:hover {
+  color: var(--amber);
+  border-bottom-color: var(--amber-dim);
+  text-decoration: none;
+}
+
 .lede {
   max-width: 30em;
   margin: 0 0 30px;
