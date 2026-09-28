@@ -36,11 +36,12 @@ uv sync                      # or: pip install -e .
 
 ```bash
 # from a GitHub release (recommended):
-#   Windows     → unzip ablebridge-windows.zip, run install.bat
-#   macOS/Linux → untar ablebridge-linux.tar.gz, ./install.sh
+#   Windows     -> unzip the .zip, run install.bat
+#   macOS/Linux -> untar the .tar.gz, ./install.sh
 
-# or copy manually:
-#   Windows: %USERPROFILE%\Documents\Ableton\User Library\Remote Scripts\
+# or copy the AbleBridgePlus/ folder by hand:
+#   Windows: %USERPROFILE%\Documents\Ableton\
+#            User Library\Remote Scripts\
 #   macOS:   ~/Music/Ableton/User Library/Remote Scripts/
 ```
 
@@ -55,7 +56,10 @@ AbleBridgePlus**. Restart Live if it was already open.
 "mcp": {
   "ablebridge": {
     "type": "local",
-    "command": ["C:/path/to/AbleBridgePlus/.venv/Scripts/AbleBridgePlus.exe", "--transport", "stdio"]
+    "command": [
+      "C:/path/AbleBridgePlus/.venv/Scripts/AbleBridgePlus.exe",
+      "--transport", "stdio"
+    ]
   }
 }
 ```
@@ -67,7 +71,10 @@ AbleBridgePlus**. Restart Live if it was already open.
   "mcpServers": {
     "ablebridge": {
       "command": "python",
-      "args": ["C:/path/to/AbleBridgePlus/mcp_stdio_launcher.py", "--transport", "stdio"]
+      "args": [
+        "C:/path/AbleBridgePlus/mcp_stdio_launcher.py",
+        "--transport", "stdio"
+      ]
     }
   }
 }
