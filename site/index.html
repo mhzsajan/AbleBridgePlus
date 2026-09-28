@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AbleBridgePlus — control Ableton Live by talking to it</title>
+<meta name="description" content="An open-source MCP bridge that lets any AI assistant — Claude, OpenCode, Cursor — operate Ableton Live. 475 tools, runs entirely on your machine, free and MIT licensed.">
+<meta property="og:title" content="AbleBridgePlus — control Ableton Live by talking to it">
+<meta property="og:description" content="Describe what you want; the AI does the clicking in Ableton Live. 475 tools, fully local, MIT licensed.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://mhzsajan.github.io/AbleBridgePlus/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="nav" id="nav">
+  <div class="wrap nav-inner">
+    <a class="brand" href="#top">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 12h4l3-8 4 16 3-8h4"/>
+        </svg>
+      </span>
+      <span class="brand-text">AbleBridge<em>Plus</em></span>
+    </a>
+
+    <nav class="nav-links" id="navLinks" aria-label="Sections">
+      <a href="#what">What it is</a>
+      <a href="#capabilities">What it does</a>
+      <a href="#safety">Safety</a>
+      <a href="#install">Install</a>
+      <a href="https://github.com/mhzsajan/AbleBridgePlus/blob/master/docs/FEATURES.md"
+         target="_blank" rel="noopener">All 475 tools</a>
+    </nav>
+
+    <div class="nav-actions">
+      <a class="btn btn-ghost" href="https://github.com/mhzsajan/AbleBridgePlus"
+         target="_blank" rel="noopener">
+        <svg viewBox="0 0 16 16" width="16" height="16" fill="currentColor" aria-hidden="true">
+          <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38
+                   0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13
+                   -.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66
+                   .07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15
+                   -.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.4 7.4 0 0 1 2-.27c.68 0
+                   1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56
+                   .82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0
+                   1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42
+                   -3.58-8-8-8z"/>
+        </svg>
+        <span>GitHub</span>
+      </a>
+      <a class="btn btn-primary" href="#install">Get started</a>
+    </div>
+
+    <button class="nav-toggle" id="navToggle" aria-expanded="false"
+            aria-controls="navLinks" aria-label="Toggle navigation">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- ─────────────────────────────  HERO  ───────────────────────────── -->
+  <section class="hero" id="top">
+    <div class="hero-glow" aria-hidden="true"></div>
+    <div class="hero-grid-bg" aria-hidden="true"></div>
+
+    <div class="wrap hero-inner">
+      <div class="hero-copy">
+        <p class="eyebrow">
+          <span class="dot" aria-hidden="true"></span>
+          v0.8.0 — MCP bridge for Ableton Live
+        </p>
+
+        <h1>Control Ableton Live<br>by <span class="grad">talking</span> to it.</h1>
+
+        <p class="lede">
+          Ableton Live is powerful, but it rewards you for clicking. AbleBridgePlus
+          lets you skip that — describe what you want in plain language, and it does
+          the work inside Live.
+        </p>
+
+        <div class="hero-cta">
+          <a class="btn btn-primary btn-lg" href="#install">Get started</a>
+          <a class="btn btn-ghost btn-lg"
+             href="https://github.com/mhzsajan/AbleBridgePlus/releases/tag/v0.8.0"
+             target="_blank" rel="noopener">Download v0.8.0</a>
+        </div>
+
+        <ul class="hero-facts">
+          <li><strong>475</strong><span>tools across Live</span></li>
+          <li><strong>100%</strong><span>runs on your machine</span></li>
+          <li><strong>MIT</strong><span>free &amp; open source</span></li>
+        </ul>
+      </div>
+
+      <div class="hero-demo">
+        <div class="terminal" role="img"
+             aria-label="Example exchange: asking the assistant to fix the balance between drums and bass">
+          <div class="terminal-bar">
+            <span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span>
+            <span class="terminal-title">Live — set.alsh</span>
+          </div>
+          <div class="terminal-body" id="terminalBody">
+            <div class="line line-you">
+              <span class="who">You</span>
+              <p>the drums are drowning out the bass — fix the balance</p>
+            </div>
+            <div class="line line-ai">
+              <span class="who">Assistant</span>
+              <p>Found 3 conflicts. Ducking bass on every kick…</p>
+            </div>
+            <div class="line line-ok">
+              <span class="tick" aria-hidden="true">✓</span>
+              <p>Done. Sidechained 4 tracks, −3.5 dB on the bass.<br>
+                 <span class="muted">Change journalled · checkpoint saved</span></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ────────────────────────  WHAT IS AN MCP BRIDGE  ──────────────────── -->
+  <section class="section" id="what">
+    <div class="wrap">
+      <p class="kicker">The idea</p>
+      <h2 class="section-title">What is an MCP bridge?</h2>
+      <p class="section-lede">
+        You've seen tools like this described as “an MCP bridge”. Here's what that
+        means, without the jargon.
+      </p>
+
+      <div class="bridge">
+        <div class="bridge-row">
+          <div class="bridge-step">
+            <span class="step-num">1</span>
+            <h3>The problem</h3>
+            <p>AI assistants are great at talking and poor at <em>doing</em>. Ask one
+               to tighten a compressor and it will happily explain how — but it
+               can't reach into your computer and turn the knob.</p>
+          </div>
+          <div class="bridge-step">
+            <span class="step-num">2</span>
+            <h3>The fix — MCP</h3>
+            <p><strong>Model Context Protocol</strong> is an open standard that lets
+               an assistant connect to other software. Think of it as a universal
+               plug: a tool says what it can do, and any assistant that speaks the
+               standard can use it.</p>
+          </div>
+          <div class="bridge-step">
+            <span class="step-num">3</span>
+            <h3>The bridge</h3>
+            <p>Ableton doesn't speak MCP, and MCP doesn't speak Ableton. This is
+               the translator in between — software that does the work in Live
+               through Ableton's own official controls.</p>
+          </div>
+        </div>
+
+        <div class="chain" aria-label="Request flow: you, then the AI assistant, then the bridge, then Ableton Live">
+          <div class="chain-node"><span>You</span></div>
+          <div class="chain-arrow" aria-hidden="true"></div>
+          <div class="chain-node"><span>AI assistant</span></div>
+          <div class="chain-arrow" aria-hidden="true"></div>
+          <div class="chain-node chain-hi"><span>This bridge</span></div>
+          <div class="chain-arrow" aria-hidden="true"></div>
+          <div class="chain-node"><span>Ableton&nbsp;Live</span></div>
+        </div>
+
+        <p class="chain-note">
+          You talk. The assistant understands. The bridge does the clicking.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ────────────────────────────  CAPABILITIES  ────────────────────────── -->
+  <section class="section alt" id="capabilities">
+    <div class="wrap">
+      <p class="kicker">What you can ask</p>
+      <h2 class="section-title">Seven things it does well</h2>
+      <p class="section-lede">
+        You never memorise a command. You say what you want the way you'd say it
+        to a producer sitting next to you.
+      </p>
+
+      <div class="cards">
+        <article class="card">
+          <div class="card-ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                 stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>
+            </svg>
+          </div>
+          <h3>Make me a track</h3>
+          <p class="card-say">“produce a demo: energetic 128 BPM house in G minor”</p>
+          <p>Sets the tempo, builds Intro / Verse / Chorus / Drop scenes, and writes
+             chords, bassline, drums and a lead hook — all in key.</p>
+        </article>
+
+        <article class="card">
+          <div class="card-ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                 stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1"/><path d="M12 18v4"/>
+            </svg>
+          </div>
+          <h3>Turn what I played into a clip</h3>
+          <p class="card-say">“turn what I hummed into a full clip”</p>
+          <p>Captures your playing, quantizes the timing, and adds matching chord
+             pads underneath in the right key.</p>
+        </article>
+
+        <article class="card">
+          <div class="card-ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                 stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 12h2l2-6 3 14 3-11 2 5 2-3h4"/>
+            </svg>
+          </div>
+          <h3>What's this sample?</h3>
+          <p class="card-say">“what key and BPM is that sample on track 3?”</p>
+          <p>Real audio analysis, not a guess — key, tempo and a confidence value.
+             It can then turn the audio into editable MIDI.</p>
+        </article>
+
+        <article class="card">
+          <div class="card-ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                 stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 20V10M10 20V4M16 20v-7M22 20V8"/>
+            </svg>
+          </div>
+          <h3>Do my tracks clash?</h3>
+          <p class="card-say">“do any of my tracks clash with each other?”</p>
+          <p>Finds tracks fighting over the same frequencies, then suggests fixes:
+             pan one away, EQ the collision, or duck a few dB.</p>
+        </article>
+
+        <article class="card">
+          <div class="card-ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                 stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2v4M12 18v4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M2 12h4M18 12h4M4.9 19.1l2.8-2.8M16.3 7.7l2.8-2.8"/>
+            </svg>
+          </div>
+          <h3>Keep my computer fast</h3>
+          <p class="card-say">“Ableton is getting heavy, freeze what I don't need”</p>
+          <p>Finds the heaviest tracks that are playing right now, flattens them to
+             audio, and checks the result.</p>
+        </article>
+
+        <article class="card">
+          <div class="card-ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                 stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 8v4l3 2"/><circle cx="12" cy="12" r="9"/>
+            </svg>
+          </div>
+          <h3>Remember how I work</h3>
+          <p class="card-say">“remember I always work at 124 BPM in F# minor”</p>
+          <p>Stores it permanently, so tomorrow's session starts already knowing.
+             Ask “what did you change today?” any time.</p>
+        </article>
+
+        <article class="card card-wide">
+          <div class="card-ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                 stroke-linecap="round" stroke-linejoin="round">
+              <path d="M8 6v12M16 6v12M4 9v6M20 9v6M2 11v2M22 11v2M10 6v12M14 6v12"/>
+            </svg>
+          </div>
+          <h3>Run my live show</h3>
+          <p class="card-say">“fire scene 5, then go to the next scene every 16 bars”</p>
+          <p>Hands-free scene sequencing with per-section tempo, plus one-command
+             <strong>emergency stop</strong>, <strong>panic mute</strong> and
+             session backups. Plus video, DMX lighting, setlists and timers.</p>
+        </article>
+      </div>
+
+      <p class="limits">
+        <strong>What it can't do:</strong> render or export audio (Ableton doesn't
+        allow that), hear your speakers in real time, or work with any DAW other
+        than Live. Key and BPM detection are estimates — always confirm by ear.
+      </p>
+    </div>
+  </section>
+
+  <!-- ──────────────────────────────  SAFETY  ────────────────────────────── -->
+  <section class="section" id="safety">
+    <div class="wrap">
+      <p class="kicker">The important part</p>
+      <h2 class="section-title">Is it safe to let an AI touch my music?</h2>
+      <p class="section-lede">Reasonable question. Four things make it safer than it sounds.</p>
+
+      <div class="safety">
+        <div class="safety-item">
+          <span class="safety-ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                 stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </span>
+          <div>
+            <h3>It only acts when you tell it to</h3>
+            <p>No autonomous behaviour. It waits for you.</p>
+          </div>
+        </div>
+
+        <div class="safety-item">
+          <span class="safety-ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                 stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>
+          </span>
+          <div>
+            <h3>It saves your work first</h3>
+            <p>Before changing anything it snapshots your set — tracks, mixer,
+               arrangement. Change your mind? One word puts it back.</p>
+          </div>
+        </div>
+
+        <div class="safety-item">
+          <span class="safety-ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                 stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z"/><path d="M8 9h8M8 13h8M8 17h5"/></svg>
+          </span>
+          <div>
+            <h3>It keeps a diary</h3>
+            <p>Every change is written down: what tool, what arguments, what
+               happened, when. Ask “what did you change today?”</p>
+          </div>
+        </div>
+
+        <div class="safety-item">
+          <span class="safety-ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                 stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M3 12h18"/></svg>
+          </span>
+          <div>
+            <h3>It can only do what you could do</h3>
+            <p>It talks to Live through the same official interface a person would
+               use. No back door into your system.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="privacy">
+        <h3>And your music never leaves your computer.</h3>
+        <p>
+          The AI assistant, this bridge and Ableton all run locally. Your project is
+          never uploaded anywhere, there's no telemetry and no account to create.
+          Once installed it works offline. It's also MIT licensed — you can read
+          every line of it.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ────────────────────────────  COVERAGE  ────────────────────────────── -->
+  <section class="section alt" id="coverage">
+    <div class="wrap">
+      <p class="kicker">Depth</p>
+      <h2 class="section-title">475 operations across Live</h2>
+      <p class="section-lede">
+        That's a measure of how much is covered, not something you have to study.
+      </p>
+
+      <div class="areas" id="areas"></div>
+
+      <p class="areas-foot">
+        Plus audio analysis, spectral and loudness tooling, a producer pipeline, a
+        show autopilot, a change journal and persistent studio memory.
+        <a href="https://github.com/mhzsajan/AbleBridgePlus/blob/master/docs/FEATURES.md"
+           target="_blank" rel="noopener">See the complete list →</a>
+      </p>
+    </div>
+  </section>
+
+  <!-- ────────────────────────────  INSTALL  ─────────────────────────────── -->
+  <section class="section" id="install">
+    <div class="wrap install-wrap">
+      <p class="kicker">Setup</p>
+      <h2 class="section-title">Get started in about ten minutes</h2>
+
+      <ul class="needs">
+        <li><span>Ableton Live</span><strong>11 or 12</strong></li>
+        <li><span>Python</span><strong>3.10 or newer</strong></li>
+        <li><span>An AI assistant</span><strong>Claude, OpenCode, Cursor…</strong></li>
+        <li><span>Accounts to create</span><strong>None</strong></li>
+      </ul>
+
+      <ol class="steps">
+        <li>
+          <h3>Install</h3>
+          <div class="copy">
+            <pre><code>git clone https://github.com/mhzsajan/AbleBridgePlus.git
+cd AbleBridgePlus
+uv sync</code></pre>
+            <button class="copy-btn" data-copy aria-label="Copy install commands">Copy</button>
+          </div>
+        </li>
+
+        <li>
+          <h3>Put the script inside Live</h3>
+          <p class="step-note">
+            Download the release and run the installer, or copy the
+            <code>AbleBridgePlus/</code> folder by hand:
+          </p>
+          <div class="copy">
+            <pre><code># Windows
+%USERPROFILE%\Documents\Ableton\User Library\Remote Scripts\
+
+# macOS
+~/Music/Ableton/User Library/Remote Scripts/</code></pre>
+            <button class="copy-btn" data-copy aria-label="Copy install paths">Copy</button>
+          </div>
+          <p class="step-note">
+            Then in Live: <strong>Preferences → Link, Tempo &amp; MIDI → Control
+            Surface → AbleBridgePlus</strong>. Restart Live if it was already open.
+          </p>
+        </li>
+
+        <li>
+          <h3>Connect your AI client</h3>
+          <div class="tabs" data-tabs>
+            <div class="tablist" role="tablist" aria-label="AI client">
+              <button class="tab is-active" role="tab" aria-selected="true"
+                      aria-controls="tab-opencode" id="t-opencode">OpenCode</button>
+              <button class="tab" role="tab" aria-selected="false"
+                      aria-controls="tab-claude" id="t-claude">Claude Desktop</button>
+            </div>
+
+            <div class="tabpanel is-active" role="tabpanel"
+                 id="tab-opencode" aria-labelledby="t-opencode">
+              <p class="step-note">Add to <code>~/.config/opencode/opencode.jsonc</code>:</p>
+              <div class="copy">
+                <pre><code>"mcp": {
+  "ablebridge": {
+    "type": "local",
+    "command": [
+      "C:/path/AbleBridgePlus/.venv/Scripts/AbleBridgePlus.exe",
+      "--transport", "stdio"
+    ]
+  }
+}</code></pre>
+                <button class="copy-btn" data-copy aria-label="Copy OpenCode config">Copy</button>
+              </div>
+            </div>
+
+            <div class="tabpanel" role="tabpanel"
+                 id="tab-claude" aria-labelledby="t-claude" hidden>
+              <p class="step-note">Add to <code>claude_desktop_config.json</code>:</p>
+              <div class="copy">
+                <pre><code>{
+  "mcpServers": {
+    "ablebridge": {
+      "command": "python",
+      "args": [
+        "C:/path/AbleBridgePlus/mcp_stdio_launcher.py",
+        "--transport", "stdio"
+      ]
+    }
+  }
+}</code></pre>
+                <button class="copy-btn" data-copy aria-label="Copy Claude Desktop config">Copy</button>
+              </div>
+            </div>
+          </div>
+        </li>
+
+        <li>
+          <h3>Check it works</h3>
+          <p class="step-note">Ask your AI:</p>
+          <p class="askbox"><code>run the doctor</code></p>
+          <p class="step-note">
+            <code>doctor</code> reports connection state, script-version drift, port
+            conflicts and cache staleness in plain language, each with a suggested fix.
+          </p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ──────────────────────────────  CLOSING  ───────────────────────────── -->
+  <section class="section alt closing">
+    <div class="wrap">
+      <h2 class="section-title">Ready when you are.</h2>
+      <p class="section-lede">
+        Star it if it's useful, or open an issue if something's missing —
+        it's built in the open.
+      </p>
+      <div class="hero-cta center">
+        <a class="btn btn-primary btn-lg"
+           href="https://github.com/mhzsajan/AbleBridgePlus/releases/tag/v0.8.0"
+           target="_blank" rel="noopener">Download v0.8.0</a>
+        <a class="btn btn-ghost btn-lg"
+           href="https://github.com/mhzsajan/AbleBridgePlus/issues"
+           target="_blank" rel="noopener">Report an issue</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="wrap footer-inner">
+    <div class="footer-col">
+      <p class="footer-brand">AbleBridge<em>Plus</em></p>
+      <p class="footer-note">
+        MIT licensed. Built and maintained by
+        <a href="https://github.com/mhzsajan" target="_blank" rel="noopener">Sajan Maharjan</a>,
+        on the foundation of
+        <a href="https://github.com/hidingwill/AbletonBridge" target="_blank" rel="noopener">AbletonBridge</a>
+        by <a href="https://github.com/hidingwill" target="_blank" rel="noopener">hidingwill</a>.
+      </p>
+    </div>
+
+    <nav class="footer-col" aria-label="Documentation">
+      <h4>Docs</h4>
+      <a href="https://github.com/mhzsajan/AbleBridgePlus/blob/master/README.md"
+         target="_blank" rel="noopener">Readme</a>
+      <a href="https://github.com/mhzsajan/AbleBridgePlus/blob/master/docs/FEATURES.md"
+         target="_blank" rel="noopener">All 475 tools</a>
+      <a href="https://github.com/mhzsajan/AbleBridgePlus/blob/master/docs/INSTALLATION.md"
+         target="_blank" rel="noopener">Installation guide</a>
+      <a href="https://github.com/mhzsajan/AbleBridgePlus/blob/master/docs/ARCHITECTURE.md"
+         target="_blank" rel="noopener">Architecture</a>
+    </nav>
+
+    <nav class="footer-col" aria-label="Project">
+      <h4>Project</h4>
+      <a href="https://github.com/mhzsajan/AbleBridgePlus/releases"
+         target="_blank" rel="noopener">Releases</a>
+      <a href="https://github.com/mhzsajan/AbleBridgePlus/blob/master/CHANGELOG.md"
+         target="_blank" rel="noopener">Changelog</a>
+      <a href="https://github.com/mhzsajan/AbleBridgePlus/blob/master/docs/ROADMAP.md"
+         target="_blank" rel="noopener">Roadmap</a>
+      <a href="https://github.com/mhzsajan/AbleBridgePlus/issues"
+         target="_blank" rel="noopener">Issues</a>
+    </nav>
+  </div>
+</footer>
+
+<script src="assets/app.js"></script>
+</body>
+</html>
