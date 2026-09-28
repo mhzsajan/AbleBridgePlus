@@ -177,36 +177,37 @@ one that doesn't:
 ## How it works
 
 ```
-┌─────────────────────────────┐
-│  AI client (MCP host)       │  Claude Desktop, OpenCode, Cursor, any MCP client
-│  sees 475 tools             │
-└──────────────┬──────────────┘
-               │ MCP over stdio (JSON-RPC) or TCP :9891
-               ▼
-┌─────────────────────────────┐
-│  AbleBridgePlus MCP server  │  Python, stdlib-only DSP, few deps
-│  MCP_Server/                │
-└──────────────┬──────────────┘
-               │ TCP :9877 (newline-JSON RPC)  ·  UDP/OSC :9878–9882 (realtime, M4L)
-               ▼
-┌─────────────────────────────┐
-│  Ableton Live               │
-│  AbleBridgePlus control     │  Remote Script (Python, runs inside Live)
-│  surface + optional M4L     │  · schedules all LOM calls on Live's main thread
-│  bridge device              │  · optional Max for Live bridge: hidden params,
-└─────────────────────────────┘    rack internals, chunked discovery
+┌────────────────────────────┐
+│  AI client (MCP host)      │
+│  sees 475 tools            │
+└─────────────┬──────────────┘
+              │ MCP over stdio, or TCP :9891
+              ▼
+┌────────────────────────────┐
+│  AbleBridgePlus            │
+│  MCP server (MCP_Server/)  │
+└─────────────┬──────────────┘
+              │ TCP :9877  ·  UDP/OSC :9878–9882
+              ▼
+┌────────────────────────────┐
+│  Ableton Live              │
+│  Remote Script             │
+│  + optional M4L bridge     │
+└────────────────────────────┘
 ```
 
-Three layers, and the middle one is the only part that talks to the outside world:
+Three layers, and only the middle one talks to the outside world:
 
 - **Inside Live**, a Remote Script listens on TCP :9877. Ableton's Live Object
   Model is not thread-safe, so every LOM call is dispatched onto Live's main
-  thread — the UI never freezes and the session never corrupts.
+  thread — the UI never freezes and the session never corrupts. An optional Max
+  for Live bridge on UDP/OSC :9878–9882 handles real-time parameter writes.
 - **Outside Live**, the MCP server exposes 475 tools over stdio (what MCP clients
-  spawn) or TCP :9891. The stdio handshake answers `initialize` in under a second
-  and dials Live lazily on first tool call, so client startup is never blocked.
-- **Optional M4L bridge** on UDP/OSC :9878–9882 for real-time parameter writes
-  into Max for Live devices.
+  spawn) or TCP :9891 for multiple local clients and the web dashboard. The stdio
+  handshake answers `initialize` in under a second and dials Live lazily on the
+  first tool call, so client startup is never blocked.
+- **DSP is stdlib-only** — key/BPM detection, spectral analysis and loudness
+  measurement are implemented in Python with no heavyweight dependencies.
 
 More detail: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
 
