@@ -1,0 +1,50 @@
+name: Deploy site
+
+# Publishes site/ to GitHub Pages.
+#
+# The Pages REST API only accepts "/" or "/docs" as a source path, so a
+# branch-based deploy from site/ is not available and the site cannot live
+# there. (It also should not live in docs/, which holds the six markdown
+# guides the README links to.) Deploying with Actions keeps site/ at the repo
+# root and rebuilds on every change to it.
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'site/**'
+      - '.github/workflows/pages.yml'
+  # Lets the site be re-published from the Actions tab without a commit.
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Never let two deploys race; a newer push should win.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          # Static site, no build step: upload the folder as-is.
+          path: site
+
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4
