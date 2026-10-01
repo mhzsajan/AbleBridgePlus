@@ -34,25 +34,35 @@ This will install all required Python packages.
 ### Windows
 1. Copy the `AbleBridgePlus` folder to:
    ```
-   Documents/Ableton/User Library/Remote Scripts/
+   Documents/Ableton/User Library/Remote Scripts/AbleBridgePlus_0_8_0
    ```
+   (rename the copy: the folder name carries the version — it is the text
+   Ableton shows in the Control Surface list)
 
 ### macOS
 1. Copy the `AbleBridgePlus` folder to:
    ```
-   ~/Music/Ableton/User Library/Remote Scripts/
+   ~/Music/Ableton/User Library/Remote Scripts/AbleBridgePlus_0_8_0
    ```
+   (rename the copy as above)
 
-**Note:** Rename the folder to `AbletonBridge` if you want a simpler name.
+**Note:** The folder must be named `AbleBridgePlus_0_8_0` (that exact string —
+underscores, not dots: Python splits module names on `.`, so a dotted folder
+name cannot be imported). This name is what appears in Preferences.
 
 ## Step 4: Configure Ableton Live
 
 1. Open Ableton Live
 2. Go to **Preferences** → **Link, Tempo & MIDI**
-3. Under **Control Surface**, select "AbletonBridge"
-4. Set **Input** to "AbletonBridge"
-5. Set **Output** to "AbletonBridge"
+3. Under **Control Surface**, select `AbleBridgePlus_0_8_0`
+4. Leave **Input** as "None"
+5. Leave **Output** as "None"
 6. Close Preferences
+
+**Upgrading?** The entry name contains the version, so it changes on every
+release. Live keeps the old (now missing) name selected — re-select the new
+entry once, or Live comes up with no bridge at all. `doctor` reports this
+explicitly.
 
 **Check the installed version:** when the control surface loads, Ableton's
 status bar shows `AbleBridgePlus v<version> ready - TCP 9877 / UDP 9882`.
@@ -129,9 +139,10 @@ Add to your MCP configuration:
 **Problem:** MCP Server can't connect to Ableton
 **Solution:**
 1. Make sure Ableton is running
-2. Make sure the Remote Script is properly installed
-3. Check that the Control Surface is selected in Ableton preferences
-4. Restart Ableton and the MCP Server
+2. Make sure the Remote Script is properly installed (folder `AbleBridgePlus_0_8_0`)
+3. Check that `AbleBridgePlus_0_8_0` is selected in Ableton preferences
+   — after a release the folder name changes, so the previous selection is gone
+4. Restart Ableton and the MCP Server, or run the `doctor` tool for a diagnosis
 
 **Problem:** M4L Bridge not working
 **Solution:**

@@ -16,7 +16,7 @@ your PATH.
 
 ## 2. Make sure Ableton is running
 
-The MCP server connects to the **AbleBridgePlus** control surface
+The MCP server connects to the **AbleBridgePlus_0_8_0** control surface
 (TCP 127.0.0.1:9877) when it starts. If Ableton is closed, tools that touch
 Live will report connection errors until it is running.
 

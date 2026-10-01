@@ -5,9 +5,10 @@ your Ableton Live session directly from chat.
 
 ## 1. Prerequisites
 
-- Ableton Live 11/12 with the **AbleBridgePlus** control surface installed
+- Ableton Live 11/12 with the **AbleBridgePlus_0_8_0** control surface installed
   (run `install.bat` / `install.sh` from a release, then select
-  **AbleBridgePlus** in Preferences → Link/Tempo/MIDI) and Ableton running
+  **AbleBridgePlus_0_8_0** in Preferences → Link/Tempo/MIDI — the entry name
+  carries the version, so re-select it after each upgrade) and Ableton running
 - Claude Desktop for Windows or macOS
 - Python 3.10+ available at a fixed path
 
@@ -60,7 +61,7 @@ see a tools icon (hammer/🔌) — AbleBridgePlus exposes 448 tools.
 | Symptom | Fix |
 |---|---|
 | No tools icon | Check the config file is valid JSON (no trailing commas) |
-| Tools exist but errors mention connection | Ableton isn't running or **AbleBridgePlus** isn't selected as a control surface |
+| Tools exist but errors mention connection | Ableton isn't running or **AbleBridgePlus_0_8_0** isn't selected as a control surface (run `doctor` — it names the expected folder) |
 | Timeouts on first use | First tool call connects to Ableton; later calls are fast |
 | Server log | Claude Desktop: `~/Library/Logs/Claude/mcp*.log` (macOS), `%APPDATA%\Claude\logs` (Windows) |
 | Diagnose startup stalls | Set env `ABLEBRIDGE_TRACE=1` on the server entry; the launcher writes `%TEMP%/ablebridge_mcp_trace.log` |

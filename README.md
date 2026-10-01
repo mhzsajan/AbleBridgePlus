@@ -5,7 +5,7 @@
 [![Release](https://img.shields.io/github/v/release/mhzsajan/AbleBridgePlus)](https://github.com/mhzsajan/AbleBridgePlus/releases/latest)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
-[![Tests: 162 passing](https://img.shields.io/badge/tests-162%20passing-brightgreen.svg)](https://github.com/mhzsajan/AbleBridgePlus/actions)
+[![Tests: 164 passing](https://img.shields.io/badge/tests-164%20passing-brightgreen.svg)](https://github.com/mhzsajan/AbleBridgePlus/actions)
 [![Ableton Live 11+](https://img.shields.io/badge/ableton-Live%2011%2B-orange.svg)](https://www.ableton.com/en/live/)
 
 ---
@@ -210,14 +210,20 @@ uv sync                      # or: pip install -e .
 #   Windows     -> unzip the .zip, run install.bat
 #   macOS/Linux -> untar the .tar.gz, ./install.sh
 
-# or copy the AbleBridgePlus/ folder by hand:
+# or copy the AbleBridgePlus/ folder by hand, renaming the copy so the
+# folder name carries the version - that name is what Live prints in the
+# Control Surface list:
 #   Windows: %USERPROFILE%\Documents\Ableton\
-#            User Library\Remote Scripts\
-#   macOS:   ~/Music/Ableton/User Library/Remote Scripts/
+#            User Library\Remote Scripts\AbleBridgePlus_0_8_0
+#   macOS:   ~/Music/Ableton/User Library/Remote Scripts/AbleBridgePlus_0_8_0
 ```
 
 Then in Ableton: **Preferences → Link, Tempo & MIDI → Control Surface →
-AbleBridgePlus**. Restart Live if it was already open.
+AbleBridgePlus_0_8_0**. Restart Live if it was already open.
+
+Because the entry name contains the version, upgrading changes it — Live still
+has the old name selected, so re-select the new entry once after each release
+(`doctor` reminds you if you forget).
 
 ### 3. Connect your AI client
 
@@ -268,7 +274,7 @@ connects. The same number is written to Live's `Log.txt` and returned by
 <summary>More ways to verify (optional)</summary>
 
 ```bash
-# 162 unit + replay tests — no Ableton required
+# 164 unit + replay tests — no Ableton required
 uv run --with pytest pytest tests/ -q
 
 # every module imports cleanly

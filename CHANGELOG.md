@@ -16,18 +16,38 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   the ports, so the only ways to see a version were `doctor` or reading source
   files — and the old AbletonBridge → AbleBridgePlus version-number reset
   (4.0.0 → 0.8.0) made "which one is installed?" a fair question.
+- **The version is also in Ableton's Preferences now.** The control surface
+  entry in *Preferences → Link, Tempo & MIDI* is nothing but the script's
+  folder name, so the installed copy is now named `AbleBridgePlus_0_8_0`
+  (from `MCP_Server.version.remote_script_folder()`). Underscores rather than
+  dots because Python splits module names on `.` — a folder called
+  `AbleBridgePlus 0.8.0` cannot be imported at all (`ModuleNotFoundError: No
+  module named 'AbleBridgePlus 0'`, verified against Live 12's Python 3.11).
+- `doctor` checks the installed folder name against the expected
+  `AbleBridgePlus_0_8_0` and reports stale copies, since that name changing is
+  how a user ends up with a dead port 9877 and no visible entry to pick.
 
 ### Changed
+- **Upgrading requires one re-selection in Preferences.** Live stores the
+  control surface choice *by name*, and the name now contains the version, so
+  after every release the saved selection points at a folder that no longer
+  exists. The installers therefore delete all previous `AbleBridgePlus*`
+  folders, print the new name to select, and `doctor` names the exact folder
+  if you come back to a silent bridge. Input/Output stay `None` (the script
+  registers no MIDI ports) — the installers and `docs/INSTALLATION.md` used to
+  tell you to set them to a port name that does not exist, and
+  `INSTALLATION.md` still said "AbletonBridge" in four places.
 - The script's version now lives in a single file, `AbleBridgePlus/version.py`
   (the script is *copied* into Live's User Library and cannot import
   `MCP_Server`). `handlers/session.py` — whose `get_session_info` reply is what
   `doctor` checks — and the control surface both import it instead of carrying
   their own literals.
 - New `tests/test_version_sync.py` fails if `pyproject.toml`,
-  `MCP_Server/version.py`, `AbleBridgePlus/version.py` and doctor's
-  `EXPECTED_SCRIPT_VERSION` ever disagree, if the status bar stops showing the
-  version, or if the script folder grows a second hardcoded version literal.
-  README test counts updated 159 → 162.
+  `MCP_Server/version.py`, `AbleBridgePlus/version.py`, doctor's
+  `EXPECTED_SCRIPT_VERSION` and the installers' own version banners ever
+  disagree, if the status bar stops showing the version, if the script folder
+  grows a second hardcoded version literal, or if the installers/docs stop
+  naming the same versioned folder. README test counts updated 159 → 164.
 
 ## [0.8.0] - 2026-09-28
 

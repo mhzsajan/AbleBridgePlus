@@ -16,6 +16,7 @@ from mcp.server.fastmcp import Context
 
 from MCP_Server.tools._base import _tool_handler
 from MCP_Server.connections.ableton import get_ableton_connection
+from MCP_Server.version import remote_script_folder
 import MCP_Server.state as state
 
 logger = logging.getLogger("MCP_Server.doctor")
@@ -26,6 +27,24 @@ ABridge_PORT = 9877
 # or `doctor` flags an install/repo drift (a failure mode we have hit).
 EXPECTED_SCRIPT_VERSION = "0.8.0"
 
+# Live's Control Surface dropdown prints the script *folder* name, and that
+# name carries the version (MCP_Server.version.remote_script_folder). Because
+# it changes every release, the selection Live saved for the old name silently
+# stops matching - which is exactly how a user ends up with a dead port 9877
+# and no idea why.
+EXPECTED_SCRIPT_FOLDER = remote_script_folder(EXPECTED_SCRIPT_VERSION)
+
+
+def _remote_script_dirs():
+    """Candidate Ableton "Remote Scripts" folders on this platform."""
+    home = os.path.expanduser("~")
+    candidates = [
+        os.path.join(home, "Documents", "Ableton", "User Library", "Remote Scripts"),
+        os.path.join(home, "Music", "Ableton", "User Library", "Remote Scripts"),
+        os.path.join(home, ".ableton", "User Library", "Remote Scripts"),
+    ]
+    return [c for c in candidates if os.path.isdir(c)]
+
 
 def register_tools(mcp):
 
@@ -35,9 +54,11 @@ def register_tools(mcp):
         """
         Full health check of the AbleBridgePlus stack. Checks: Ableton
         reachable, round-trip latency, remote-script version drift vs this
-        server, M4L bridge status, browser cache age, and (with
-        deep=true) Ableton's own log for script errors. Returns plain
-        language results with a suggested fix for every problem found.
+        server, the installed script folder name (which is what Live shows in
+        Preferences and changes on every release), M4L bridge status, browser
+        cache age, and (with deep=true) Ableton's own log for script errors.
+        Returns plain language results with a suggested fix for every problem
+        found.
         """
         import json as _json
         checks: List[Dict[str, Any]] = []
@@ -56,8 +77,9 @@ def register_tools(mcp):
         except Exception as e:
             _add("ableton_reachable", False, "port {0} not answering: {1}".format(
                 ABridge_PORT, e),
-                 "Start Ableton and confirm the AbleBridgePlus control surface "
-                 "is selected (Preferences > Link/Tempo/MIDI).")
+                 "Start Ableton and confirm the {0} control surface "
+                 "is selected (Preferences > Link/Tempo/MIDI).".format(
+                     EXPECTED_SCRIPT_FOLDER))
         if sock_ok:
             _add("ableton_reachable", True,
                  "TCP {0} up, connect {1}ms".format(ABridge_PORT, latency_ms))
@@ -87,7 +109,45 @@ def register_tools(mcp):
                      "The control surface may have failed to load. Check "
                      "Ableton's Log.txt for AbleBridgePlus tracebacks.")
 
-        # 3. M4L bridge (optional feature)
+        # 3. Remote script folder name - this string *is* the entry shown in
+        # Preferences > Link/Tempo/MIDI > Control Surface, and it carries the
+        # version, so a release bump leaves Live pointing at a folder that no
+        # longer exists.
+        script_dirs = _remote_script_dirs()
+        if not script_dirs:
+            _add("remote_script_folder", False, "no Ableton User Library found",
+                 "Copy the script folder into "
+                 "Documents/Ableton/User Library/Remote Scripts "
+                 "(macOS: ~/Music/Ableton).")
+        else:
+            installed = sorted({
+                name
+                for d in script_dirs
+                for name in os.listdir(d)
+                if name.startswith("AbleBridgePlus")
+                and os.path.isdir(os.path.join(d, name))
+            })
+            if EXPECTED_SCRIPT_FOLDER in installed:
+                stale = [n for n in installed if n != EXPECTED_SCRIPT_FOLDER]
+                _add("remote_script_folder", True,
+                     "installed as {0}".format(EXPECTED_SCRIPT_FOLDER) +
+                     (" (stale copies also present: {0})".format(
+                         ", ".join(stale)) if stale else ""),
+                     "Delete the old folder(s) so the Control Surface list "
+                     "stays clean: {0}".format(", ".join(stale))
+                     if stale else "")
+            else:
+                _add("remote_script_folder", False,
+                     "found {0}, but this build expects {1}".format(
+                         ", ".join(installed) or "nothing",
+                         EXPECTED_SCRIPT_FOLDER),
+                     "Copy {0} from this release into your Remote Scripts "
+                     "folder, then RE-SELECT it under Preferences > "
+                     "Link/Tempo/MIDI > Control Surface - Live stores that "
+                     "selection by name, so every version bump changes it."
+                     .format(EXPECTED_SCRIPT_FOLDER))
+
+        # 4. M4L bridge (optional feature)
         m4l = state.m4l_connection
         if m4l is not None:
             try:

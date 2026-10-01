@@ -1,7 +1,7 @@
 #!/bin/bash
 
 echo "========================================"
-echo "AbleBridgePlus Installer v0.3.0"
+echo "AbleBridgePlus Installer v0.8.0"
 echo "========================================"
 echo ""
 echo "MCP bridge for Ableton Live - 448 tools"
@@ -87,11 +87,12 @@ if [ ! -d "$ABLETON_DIR" ]; then
     echo "Please manually copy AbleBridgePlus to your Remote Scripts folder."
     echo ""
 else
-    # Clean replace: remove the old folder first so upgrades never leave stale files
-    rm -rf "$ABLETON_DIR/AbleBridgePlus"
-    mkdir -p "$ABLETON_DIR/AbleBridgePlus"
-    cp -r "$INSTALL_DIR/AbleBridgePlus"/* "$ABLETON_DIR/AbleBridgePlus/"
-    echo "Remote Script installed to: $ABLETON_DIR/AbleBridgePlus"
+    # Drop every AbleBridgePlus* folder first: the folder name carries the
+    # version, so older versions would otherwise pile up in the dropdown.
+    rm -rf "$ABLETON_DIR"/AbleBridgePlus*
+    mkdir -p "$ABLETON_DIR/AbleBridgePlus_0_8_0"
+    cp -r "$INSTALL_DIR/AbleBridgePlus"/* "$ABLETON_DIR/AbleBridgePlus_0_8_0/"
+    echo "Remote Script installed to: $ABLETON_DIR/AbleBridgePlus_0_8_0"
 fi
 
 echo ""
@@ -103,8 +104,11 @@ echo "Next steps:"
 echo ""
 echo "1. Open Ableton Live"
 echo "2. Go to Preferences -> Link, Tempo & MIDI"
-echo "3. Under 'Control Surface', select 'AbleBridgePlus'"
-echo "4. Set Input and Output to 'AbleBridgePlus'"
+echo "3. Under 'Control Surface', select 'AbleBridgePlus_0_8_0'"
+echo "4. Leave Input and Output as 'None'"
+echo ""
+echo "NOTE: the control surface entry is named after the folder, so it changes"
+echo "with every release. After an upgrade, re-select it once in step 3."
 echo ""
 echo "To start the MCP Server:"
 echo "   cd $INSTALL_DIR"
