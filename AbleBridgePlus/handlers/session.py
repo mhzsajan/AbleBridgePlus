@@ -5,11 +5,13 @@ from __future__ import absolute_import, print_function, unicode_literals
 import time
 
 from ._helpers import get_track, get_clip
+from ..version import SCRIPT_VERSION  # noqa: F401  (re-exported)
 
-
-# Version marker of the remote script build. The MCP server's `doctor` tool
-# compares this against its own expected version to detect script drift.
-SCRIPT_VERSION = "0.8.0"
+# Version marker of the remote script build, defined once in
+# AbleBridgePlus/version.py. The MCP server's `doctor` tool compares it
+# against its own expected version to detect script drift, and Live's status
+# bar shows it while the control surface loads. tests/test_version_sync.py
+# keeps every copy in step.
 
 
 def get_session_info(song, ctrl=None):

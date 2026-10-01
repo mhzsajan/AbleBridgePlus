@@ -5,6 +5,30 @@ All notable changes to AbleBridgePlus will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- **The installed version is now visible inside Ableton Live.** The remote
+  script's status bar reads `AbleBridgePlus v<version> ready - TCP 9877 /
+  UDP 9882` when the control surface loads, and `AbleBridgePlus v<version>:
+  Client connected` each time an AI client connects; `Log.txt` records
+  `AbleBridgePlus v<version> initialized`. Previously the message carried only
+  the ports, so the only ways to see a version were `doctor` or reading source
+  files — and the old AbletonBridge → AbleBridgePlus version-number reset
+  (4.0.0 → 0.8.0) made "which one is installed?" a fair question.
+
+### Changed
+- The script's version now lives in a single file, `AbleBridgePlus/version.py`
+  (the script is *copied* into Live's User Library and cannot import
+  `MCP_Server`). `handlers/session.py` — whose `get_session_info` reply is what
+  `doctor` checks — and the control surface both import it instead of carrying
+  their own literals.
+- New `tests/test_version_sync.py` fails if `pyproject.toml`,
+  `MCP_Server/version.py`, `AbleBridgePlus/version.py` and doctor's
+  `EXPECTED_SCRIPT_VERSION` ever disagree, if the status bar stops showing the
+  version, or if the script folder grows a second hardcoded version literal.
+  README test counts updated 159 → 162.
+
 ## [0.8.0] - 2026-09-28
 
 Starts v0.8 "Collaboration" with the show-navigation layer, built and

@@ -5,7 +5,7 @@
 [![Release](https://img.shields.io/github/v/release/mhzsajan/AbleBridgePlus)](https://github.com/mhzsajan/AbleBridgePlus/releases/latest)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
-[![Tests: 159 passing](https://img.shields.io/badge/tests-159%20passing-brightgreen.svg)](https://github.com/mhzsajan/AbleBridgePlus/actions)
+[![Tests: 162 passing](https://img.shields.io/badge/tests-162%20passing-brightgreen.svg)](https://github.com/mhzsajan/AbleBridgePlus/actions)
 [![Ableton Live 11+](https://img.shields.io/badge/ableton-Live%2011%2B-orange.svg)](https://www.ableton.com/en/live/)
 
 ---
@@ -258,11 +258,17 @@ Ask your AI: **"run the doctor"**
 `doctor` reports connection state, script-version drift, port conflicts and cache
 staleness in plain language, each with a suggested fix.
 
+No terminal needed to read the version: Ableton's status bar shows
+`AbleBridgePlus v<version> ready - TCP 9877 / UDP 9882` when the control surface
+loads, and `AbleBridgePlus v<version>: Client connected` every time your AI
+connects. The same number is written to Live's `Log.txt` and returned by
+`get_session_info`, which is what `doctor` compares against.
+
 <details>
 <summary>More ways to verify (optional)</summary>
 
 ```bash
-# 159 unit + replay tests — no Ableton required
+# 162 unit + replay tests — no Ableton required
 uv run --with pytest pytest tests/ -q
 
 # every module imports cleanly

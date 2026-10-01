@@ -54,6 +54,12 @@ This will install all required Python packages.
 5. Set **Output** to "AbletonBridge"
 6. Close Preferences
 
+**Check the installed version:** when the control surface loads, Ableton's
+status bar shows `AbleBridgePlus v<version> ready - TCP 9877 / UDP 9882`.
+That is the version of the remote script *inside* Live — if you just upgraded
+and it still shows the old number, Live is running the old copy: restart Live
+(or reselect the control surface) after copying the new folder.
+
 ## Step 5: Start the MCP Server
 
 Open a terminal and run:

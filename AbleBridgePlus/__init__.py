@@ -15,6 +15,7 @@ except ImportError:
     import queue  # Python 3
 
 from . import handlers
+from .version import SCRIPT_VERSION
 
 # Constants for socket communication
 DEFAULT_PORT = 9877
@@ -659,10 +660,13 @@ class AbleBridgePlus(ControlSurface):
         self.start_server()
         self.start_udp_server()
 
-        self.log_message("AbleBridgePlus initialized")
+        self.log_message("AbleBridgePlus v" + SCRIPT_VERSION + " initialized")
 
-        # Show a message in Ableton
-        self.show_message("AbleBridgePlus: TCP " + str(DEFAULT_PORT) + " / UDP " + str(UDP_REALTIME_PORT))
+        # Show the installed version in Ableton's status bar, so anyone looking
+        # at Live can see which build is running without opening a terminal.
+        self.show_message(
+            "AbleBridgePlus v" + SCRIPT_VERSION + " ready - TCP "
+            + str(DEFAULT_PORT) + " / UDP " + str(UDP_REALTIME_PORT))
 
     @property
     def _song(self):
@@ -843,7 +847,8 @@ class AbleBridgePlus(ControlSurface):
                 try:
                     client, address = self.server.accept()
                     self.log_message("Connection accepted from " + str(address))
-                    self.show_message("AbleBridgePlus: Client connected")
+                    self.show_message(
+                        "AbleBridgePlus v" + SCRIPT_VERSION + ": Client connected")
 
                     client_thread = threading.Thread(
                         target=self._handle_client,
