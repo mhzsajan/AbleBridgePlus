@@ -131,6 +131,30 @@ The server now serves all three MCP surfaces. MCP supports *resources*
 - **Taste profile v2** — studio memory grows into a profile: preferred progressions,
   synth choices per genre, mix references. Producer pipeline reads it automatically.
 
+## Live-show gaps found 2026-11-16 (v0.9 candidates)
+
+These came out of driving the WING console's vocal FX from an Ableton MIDI track during a real
+show build. Full context in the private `StageCraft-Graphified` repo:
+`docs/live-pipeline/bands/deepak-bajracharya-rhythm-band/hardware/WING-CONSOLE.md`.
+
+- **MIDI CC envelope lanes** `high` — AbleBridge can write device/mixer clip automation but **not**
+  MIDI CC lanes. `_find_parameter` in `handlers/automation.py` only resolves Volume/Pan/Sends/device
+  parameters; `create_clip_automation` therefore cannot create a "MIDI Ctrl → CC 12/13" envelope.
+  Needed to automate an external mixer's sends from a MIDI track. Add a dedicated tool that uses
+  Live's `MidiClip` CC envelope API (or an M4L helper), with read-back.
+- **Arrangement clip envelope clear** `medium` — `clear_all_clip_envelopes` calls `get_clip()`, which
+  resolves **Session clip slots only**, so Arrangement clips are invisible. Workaround used: delete
+  and recreate the arrangement clip. Add `clear_arrangement_clip_envelopes(track, clip_index_in_arrangement)`.
+- **MIDI port Sync (clock) toggle** `medium` — no tool to enable "Sync" on a specific MIDI output port
+  in Live's MIDI Preferences. Needed to send MIDI Clock to external gear (WING delay test: tempo
+  115→80→120, `/fx/5/time` never moved). A `set_midi_port_sync(port_name, sync, remote, track)` tool
+  would let us test/compensate without manual Preferences clicking.
+- **Cue-point creation** `low` — already documented in v0.8 (`get_cue_points` needs M4L bridge;
+  `list_arrangement_locators` works). Keep on the list: `create_locator(name, beat)` via LOM if possible.
+- **External-device FX time helper** `low` — not a bridge feature, but record the pattern: when a device
+  exposes a writable OSC/TCP parameter for effect time, a tiny helper can read Live tempo and write
+  ms (`30000 / BPM` for 1/8 notes). Consider a generic `set_external_param` tool if this recurs.
+
 ## Backlog (unscheduled)
 
 - **Template/preset marketplace** — shareable `.ablebridge` packs (producer pipeline
