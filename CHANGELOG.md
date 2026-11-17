@@ -53,6 +53,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   grows a second hardcoded version literal, or if the installers/docs stop
   naming the same versioned folder. README test counts updated 159 → 164.
 
+## [0.9.1-hotfix] - 2026-11-17 (server-side only, no remote-script change)
+
+- **OSC int→float fix (found by live test against the WING console):** `_send_osc_message`
+  emitted python-osc's `,i` type tag for Python ints. The Behringer WING (and
+  possibly other show gear) silently **ignores** `,i`-tagged numeric OSC and only
+  acts on `,f` — so `set_external_param` / `set_wing_delay_time_from_tempo`
+  reported `sent: true` while the console stored nothing. Numeric args are now
+  coerced to float before sending (bools left as `,T`/`,F`). **Verified live:**
+  `/fx/5/time` written as int was ignored (stayed 499); after the fix the same
+  helper wrote 250 and the console stored 250 (read back via MCP). Restored to
+  499 after the test. This is a server-side-only change — the Ableton remote
+  script is unchanged, so no reinstall or version bump is needed.
+
 ## [0.9.1] - 2026-11-17
 
 Show-control follow-up: AbleSet state, tempo-driven WING delay, a generic LOM

@@ -106,6 +106,29 @@ def _to_args(value):
     return [value]
 
 
+def _coerce_osc_args(args):
+    """Coerce Python ints to float for OSC transport.
+
+    python-osc emits an ``,i`` type tag for ints and ``,f`` for floats. Several
+    show devices — notably the Behringer WING — only act on numeric OSC values
+    tagged ``,f`` and silently ignore ``,i`` (verified live 2026-11-17:
+    ``/fx/5/time`` as int was ignored, as float it stored). Coercing ints to
+    float is safe for the usual OSC consumers (they parse either as a number);
+    bools are left alone (python-osc tags them ``,T``/``,F`` on purpose).
+    """
+    out = []
+    for value in args:
+        if isinstance(value, bool):
+            out.append(value)
+        elif isinstance(value, int):
+            out.append(float(value))
+        elif isinstance(value, (list, tuple)):
+            out.append(_coerce_osc_args(value))
+        else:
+            out.append(value)
+    return out
+
+
 def _send_osc_message(host, port, address, args):
     """Send one OSC message over UDP. Returns {"sent": bool, "error": str|None}."""
     if SimpleUDPClient is None:
@@ -113,7 +136,7 @@ def _send_osc_message(host, port, address, args):
                 "error": "python-osc is not installed (python-osc>=1.8.0 required)"}
     try:
         client = SimpleUDPClient(str(host), int(port))
-        client.send_message(str(address), list(args))
+        client.send_message(str(address), _coerce_osc_args(list(args)))
         return {"sent": True, "error": None}
     except Exception as exc:  # bad host, bad port, unreachable network ...
         return {"sent": False,
