@@ -1,6 +1,6 @@
 # AbleBridgePlus — Roadmap
 
-> Living document. Updated after each release. Current version: **v0.5.0** (448 tools, 37 tests, CI green).
+> Living document. Updated after each release. Current version: **v0.9.0** (475+ tools).
 
 ## Where the project is
 
@@ -45,9 +45,11 @@ The server now serves all three MCP surfaces. MCP supports *resources*
 - **Prompts** — pre-built templates: "mix review", "song doctor", "arrange my ideas",
   "match my reference". One click in Claude Desktop / OpenCode gives the AI a full
   expert workflow.
-- Note: stdio transport handled by FastMCP handles resources natively; the custom TCP
-  transport needs the resource handlers wired through (skeleton exists:
-  `_handle_list_resources` in server.py).
+- Note: both transports are wired. stdio is handled natively by FastMCP; the custom
+  TCP transport routes `resources/list`, `resources/read`, `prompts/list` and
+  `prompts/get` through `_handle_list_resources` / `_handle_read_resource` /
+  `_handle_list_prompts` / `_handle_get_prompt` in `server.py`, backed by
+  `tools/resources_prompts.py`.
 - Effort: ~2 days.
 
 ### 3. Whole-mix reference matching  `medium` — ✅ SHIPPED (unreleased)
@@ -117,7 +119,9 @@ The server now serves all three MCP surfaces. MCP supports *resources*
   and live-verified on the real Videosync2 show set (56 locators, 18 tracks).
   The AI can list locators in show order, jump to any song by fuzzy name,
   walk next/prev, report the current section, and rename. Cue-point creation
-  is not exposed by Live's API (UI-only) — documented honestly.
+  is possible: `set_or_delete_cue` (a server tool, `tools/session.py:275`)
+  toggles one at the playhead, and v0.9.0 added `create_named_locator` to
+  create one at an arbitrary beat with a best-effort name.
 - **Show builder workflow** (in progress) — driving the actual Deepak Bajracharya
   & Rhythm Band show build: lyrics/chords clip generation per song (Ritu pilot
   pattern → all 28 songs), pre-show doctor (lyrics/tempo/locator-pair/click
@@ -136,21 +140,27 @@ The server now serves all three MCP surfaces. MCP supports *resources*
 These came out of driving the WING console's vocal FX from an Ableton MIDI track during a real
 show build. Full context in the private `StageCraft-Graphified` repo:
 `docs/live-pipeline/bands/deepak-bajracharya-rhythm-band/hardware/WING-CONSOLE.md`.
+Statuses below reflect v0.9.0 (2026-11-17).
 
-- **MIDI CC envelope lanes** `high` — AbleBridge can write device/mixer clip automation but **not**
-  MIDI CC lanes. `_find_parameter` in `handlers/automation.py` only resolves Volume/Pan/Sends/device
-  parameters; `create_clip_automation` therefore cannot create a "MIDI Ctrl → CC 12/13" envelope.
-  Needed to automate an external mixer's sends from a MIDI track. Add a dedicated tool that uses
-  Live's `MidiClip` CC envelope API (or an M4L helper), with read-back.
-- **Arrangement clip envelope clear** `medium` — `clear_all_clip_envelopes` calls `get_clip()`, which
-  resolves **Session clip slots only**, so Arrangement clips are invisible. Workaround used: delete
-  and recreate the arrangement clip. Add `clear_arrangement_clip_envelopes(track, clip_index_in_arrangement)`.
+- **MIDI CC envelope lanes** `high` — **capability probe added 2026-11-17** (`probe_midi_cc_envelope_surface`,
+  read-only `dir()` introspection of a MIDI clip's envelope/CC/automation-target surface).
+  API existence is **still unproven**; Arrangement red lanes remain impossible. `_find_parameter` in
+  `handlers/automation.py` still only resolves Volume/Pan/Sends/device parameters, so
+  `create_clip_automation` cannot create a "MIDI Ctrl → CC 12/13" envelope. MIDI CC envelopes are
+  clip-envelope-only in Live and cannot be shown as Arrangement automation lanes; the working
+  workaround for red lanes remains an M4L device with mapped macros (no M4L installed here).
+- **Arrangement clip envelope clear** `medium` — **ADDRESSED in v0.9.0**: `clear_arrangement_clip_envelopes(track_index, clip_index)`
+  resolves the clip directly from `track.arrangement_clips` (the old `clear_all_clip_envelopes` went through
+  `get_clip()`, Session slots only), reports the pre-clear envelope count, and no longer requires
+  deleting/recreating the clip.
 - **MIDI port Sync (clock) toggle** `medium` — no tool to enable "Sync" on a specific MIDI output port
   in Live's MIDI Preferences. Needed to send MIDI Clock to external gear (WING delay test: tempo
   115→80→120, `/fx/5/time` never moved). A `set_midi_port_sync(port_name, sync, remote, track)` tool
-  would let us test/compensate without manual Preferences clicking.
-- **Cue-point creation** `low` — already documented in v0.8 (`get_cue_points` needs M4L bridge;
-  `list_arrangement_locators` works). Keep on the list: `create_locator(name, beat)` via LOM if possible.
+  would let us test/compensate without manual Preferences clicking. Still open.
+- **Cue-point creation** `low` — **ADDRESSED in v0.9.0**: `create_named_locator(beat, name)` moves the
+  playhead to an absolute beat, creates a cue via `song.set_or_delete_cue()` (which *does* exist —
+  server tool in `tools/session.py:275`), and best-effort renames it. Earlier claims that cue creation
+  needs an M4L bridge were wrong. `list_arrangement_locators` (a.k.a. `list_cue_points`) also works.
 - **External-device FX time helper** `low` — not a bridge feature, but record the pattern: when a device
   exposes a writable OSC/TCP parameter for effect time, a tiny helper can read Live tempo and write
   ms (`30000 / BPM` for 1/8 notes). Consider a generic `set_external_param` tool if this recurs.

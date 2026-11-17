@@ -77,6 +77,8 @@ _MODIFYING_HANDLERS = {
     "continue_playing": lambda song, p, ctrl: handlers.session.continue_playing(song, ctrl),
     "re_enable_automation": lambda song, p, ctrl: handlers.session.re_enable_automation(song, ctrl),
     "set_or_delete_cue": lambda song, p, ctrl: handlers.session.set_or_delete_cue(song, ctrl),
+    "create_named_locator": lambda song, p, ctrl: handlers.session.create_named_locator(
+        song, p.get("beat", 0.0), p.get("name", ""), ctrl),
     "jump_to_cue": lambda song, p, ctrl: handlers.session.jump_to_cue(song, p.get("direction", "next"), ctrl),
     "set_groove_settings": lambda song, p, ctrl: handlers.session.set_groove_settings(
         song, p.get("groove_amount"), p.get("groove_index"),
@@ -404,6 +406,8 @@ _MODIFYING_HANDLERS = {
         p.get("parameter_name", ""), ctrl),
     "clear_all_clip_envelopes": lambda song, p, ctrl: handlers.automation.clear_all_clip_envelopes(
         song, p.get("track_index", 0), p.get("clip_index", 0), ctrl),
+    "clear_arrangement_clip_envelopes": lambda song, p, ctrl: handlers.automation.clear_arrangement_clip_envelopes(
+        song, p.get("track_index", 0), p.get("clip_index", 0), ctrl),
     "create_step_automation": lambda song, p, ctrl: handlers.automation.create_step_automation(
         song, p.get("track_index", 0), p.get("clip_index", 0),
         p.get("parameter_name", ""), p.get("steps", []), ctrl),
@@ -470,6 +474,8 @@ _READONLY_HANDLERS = {
     "get_master_meters": lambda song, p, ctrl: handlers.session.get_master_meters(song, ctrl),
     "get_export_capabilities": lambda song, p, ctrl: handlers.session.get_export_capabilities(song, ctrl),
     "probe_song_locator_surface": lambda song, p, ctrl: handlers.session.probe_song_locator_surface(song, ctrl),
+    "probe_midi_cc_envelope_surface": lambda song, p, ctrl: handlers.probe.probe_midi_cc_envelope_surface(
+        song, p.get("track_index", 0), p.get("clip_index", 0), ctrl),
     "probe_vsync_surface": lambda song, p, ctrl: handlers.session.probe_vsync_surface(song, ctrl),
     "list_cue_points": lambda song, p, ctrl: handlers.session.list_cue_points(song, ctrl),
     "jump_to_cue_point": lambda song, p, ctrl: handlers.session.jump_to_cue_point(song, p.get("cue", 0), ctrl),

@@ -14,4 +14,4 @@ Where the user sees it (inside Ableton):
 
 from __future__ import absolute_import, print_function, unicode_literals
 
-SCRIPT_VERSION = "0.8.0"
+SCRIPT_VERSION = "0.9.0"

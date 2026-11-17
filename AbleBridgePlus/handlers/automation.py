@@ -475,6 +475,73 @@ def clear_all_clip_envelopes(song, track_index, clip_index, ctrl=None):
         raise
 
 
+def clear_arrangement_clip_envelopes(song, track_index, clip_index, ctrl=None):
+    """Clear ALL automation envelopes from one ARRANGEMENT clip.
+
+    ``clear_all_clip_envelopes`` goes through ``get_clip()``, which resolves
+    Session clip slots only, so Arrangement clips are invisible to it. This
+    handler resolves the clip directly from ``track.arrangement_clips`` - the
+    fix for that gap. ``clip_index`` indexes that Arrangement list (as returned
+    by ``get_arrangement_clips``), not the Session clip slots.
+
+    Errors are reported in the returned dict (rather than raised) so callers
+    always receive a JSON-serializable result with an explicit error field.
+    """
+    result = {
+        "track_index": track_index,
+        "clip_index": clip_index,
+        "cleared": False,
+        "envelope_count_before": None,
+        "message": "",
+        "error": None,
+    }
+    try:
+        track = get_track(song, track_index)
+    except Exception as e:
+        result["error"] = "Invalid track: {0}".format(e)
+        if ctrl:
+            ctrl.log_message("Error clearing arrangement clip envelopes: " + str(e))
+        return result
+
+    try:
+        clips = list(track.arrangement_clips)
+    except Exception as e:
+        result["error"] = "Cannot read arrangement_clips: {0}".format(e)
+        return result
+
+    if clip_index < 0 or clip_index >= len(clips):
+        result["error"] = "Arrangement clip index {0} out of range (0..{1})".format(
+            clip_index, len(clips) - 1)
+        return result
+
+    clip = clips[clip_index]
+
+    # Envelope count before clearing, if this Live version exposes it.
+    env_before = getattr(clip, "envelopes", None)
+    if env_before is not None:
+        try:
+            result["envelope_count_before"] = len(env_before)
+        except Exception:
+            result["envelope_count_before"] = None
+
+    if not hasattr(clip, "clear_all_envelopes"):
+        result["error"] = ("Clip does not support clear_all_envelopes() "
+                           "on this Live version")
+        return result
+
+    try:
+        clip.clear_all_envelopes()
+        result["cleared"] = True
+        result["message"] = (
+            "Cleared all automation envelopes from arrangement clip {0} "
+            "on track {1}".format(clip_index, track_index))
+    except Exception as e:
+        result["error"] = "clear_all_envelopes() failed: {0}".format(e)
+        if ctrl:
+            ctrl.log_message("Error clearing arrangement clip envelopes: " + str(e))
+    return result
+
+
 def get_clip_automation_value(song, track_index, clip_index, parameter_name, time, ctrl=None):
     """Read the automation envelope value at a specific time."""
     try:

@@ -209,6 +209,8 @@ class MCPServer:
         from MCP_Server.tools import loudness_analysis
         # v0.8: Videosync2 show automation (timeline-baked video control)
         from MCP_Server.tools import vsync_automation
+        # v0.9.0: live-show OSC/UDP bridge + remote-command wrappers
+        from MCP_Server.tools import live_show_bridge
 
         # Register all tool modules
         tool_modules = [
@@ -240,7 +242,9 @@ class MCPServer:
             spectral_analysis,
             loudness_analysis,
             # v0.8
-            vsync_automation
+            vsync_automation,
+            # v0.9.0
+            live_show_bridge
         ]
         
         adapter = _FastMCPAdapter(self.tool_registry)

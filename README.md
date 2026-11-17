@@ -214,12 +214,12 @@ uv sync                      # or: pip install -e .
 # folder name carries the version - that name is what Live prints in the
 # Control Surface list:
 #   Windows: %USERPROFILE%\Documents\Ableton\
-#            User Library\Remote Scripts\AbleBridgePlus_0_8_0
-#   macOS:   ~/Music/Ableton/User Library/Remote Scripts/AbleBridgePlus_0_8_0
+#            User Library\Remote Scripts\AbleBridgePlus_0_9_0
+#   macOS:   ~/Music/Ableton/User Library/Remote Scripts/AbleBridgePlus_0_9_0
 ```
 
 Then in Ableton: **Preferences → Link, Tempo & MIDI → Control Surface →
-AbleBridgePlus_0_8_0**. Restart Live if it was already open.
+AbleBridgePlus_0_9_0**. Restart Live if it was already open.
 
 Because the entry name contains the version, upgrading changes it — Live still
 has the old name selected, so re-select the new entry once after each release

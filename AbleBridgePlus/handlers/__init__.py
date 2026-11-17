@@ -13,6 +13,7 @@ from . import audio
 from . import midi
 from . import automation
 from . import vsync_automation
+from . import probe
 
 __all__ = [
     "session",
@@ -27,4 +28,5 @@ __all__ = [
     "midi",
     "automation",
     "vsync_automation",
+    "probe",
 ]

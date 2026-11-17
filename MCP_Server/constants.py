@@ -273,6 +273,8 @@ TIER_0_COMMANDS: frozenset = frozenset([
     "preview_browser_item", "move_clip_playing_pos",
     "set_transmute_properties", "rack_variation_action",
     "set_return_track_mute", "set_return_track_solo", "set_clip_grid",
+    # v0.9.0: create a named locator (cue point) — simple state change
+    "create_named_locator",
 ])
 
 # Tier 1: Light delay (50ms post-delay only) -- note/clip/automation operations
@@ -292,6 +294,8 @@ TIER_1_COMMANDS: frozenset = frozenset([
     # v0.8: Videosync2 show automation (arrangement mixer envelopes)
     "set_arrangement_mixer_automation", "clear_arrangement_mixer_automation",
     "program_song_video_automation", "video_failover", "set_video_layer",
+    # v0.9.0: clearing every envelope in an arrangement clip (clip edit)
+    "clear_arrangement_clip_envelopes",
 ])
 
 # Tier 2: Heavy delay (100ms pre + 100ms post) -- structural/loading changes
@@ -313,6 +317,16 @@ TIER_2_COMMANDS: frozenset = frozenset([
 
 # Combined set of all modifying commands (union of all tiers)
 MODIFYING_COMMANDS: frozenset = TIER_0_COMMANDS | TIER_1_COMMANDS | TIER_2_COMMANDS
+
+# Read-only (probe/query) commands. AbletonConnection.send_command treats any
+# command NOT in MODIFYING_COMMANDS as read-only already (no post-delay,
+# shorter default timeout); this frozenset exists to make that classification
+# explicit and auditable. The dispatch-side authoritative set is the remote
+# script's _READONLY_HANDLERS (AbleBridgePlus/__init__.py, separate release).
+READ_ONLY_COMMANDS: frozenset = frozenset([
+    # v0.9.0: capability probe — changes nothing
+    "probe_midi_cc_envelope_surface",
+])
 
 # Per-command timeout overrides for legitimately slow operations.
 # Used by send_command() when the caller doesn't specify a timeout.

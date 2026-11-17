@@ -1772,6 +1772,102 @@ def set_cue_point_name(song, cue, name, ctrl=None):
             "new_name": str(name)}
 
 
+def create_named_locator(song, beat, name, ctrl=None):
+    """Create a named locator (cue point) at an absolute beat position.
+
+    Live's LOM has no single "create named cue point" call. The reliable
+    primitive is ``song.set_or_delete_cue()`` at the playhead (the same call
+    the existing ``set_or_delete_cue`` handler uses), followed by a best-effort
+    rename of the cue it created. Some Live versions refuse renaming cue
+    points from a control surface - that is reported honestly via ``renamed``
+    / ``error`` instead of raising, so the locator still exists even when the
+    name did not stick.
+    """
+    result = {"beat": None, "name": None, "created": False,
+              "renamed": False, "position": None, "error": None}
+    try:
+        target = max(0.0, float(beat))
+        label = str(name)
+        result["beat"] = target
+        result["name"] = label
+    except Exception as e:
+        result["error"] = "Invalid beat/name: {0}".format(e)
+        return result
+
+    try:
+        def _cue_times(cues):
+            times = []
+            for cp in cues:
+                try:
+                    times.append(round(float(cp.time), 6))
+                except Exception:
+                    pass
+            return times
+
+        before = _cue_points_safe(song)
+        before_times = set(_cue_times(before))
+
+        # 1) move the playhead (same primitive as set_song_time)
+        song.current_song_time = target
+        # 2) create (or toggle) a cue at the playhead
+        song.set_or_delete_cue()
+
+        after = _cue_points_safe(song)
+
+        if len(after) < len(before):
+            # A cue already existed at that position; set_or_delete_cue removed it.
+            result["error"] = (
+                "A cue already existed at beat {0}; set_or_delete_cue() "
+                "removed it instead of creating one".format(target))
+            result["position"] = float(song.current_song_time)
+            return result
+
+        # Identify the new cue by a beat time that was not present before.
+        # Live's LOM proxy objects change identity across reads, so id()-based
+        # comparison is unreliable; time is the stable property here.
+        new_idx = None
+        for i, cp in enumerate(after):
+            try:
+                t = round(float(cp.time), 6)
+            except Exception:
+                continue
+            if t not in before_times:
+                new_idx = i
+                break
+        if new_idx is None:
+            result["error"] = ("No new cue point appeared at beat {0}; "
+                               "Live may not have created one".format(target))
+            result["position"] = float(song.current_song_time)
+            return result
+
+        result["created"] = True
+        result["position"] = float(song.current_song_time)
+        result["index"] = new_idx
+
+        # 3) try to rename the newly created cue (best effort, read back).
+        try:
+            after[new_idx].name = label
+            # Re-read from Live rather than trusting the (possibly stale) proxy.
+            fresh = _cue_points_safe(song)
+            actual = None
+            if new_idx < len(fresh):
+                actual = getattr(fresh[new_idx], "name", None)
+            if actual == label:
+                result["renamed"] = True
+            else:
+                result["error"] = (
+                    "Cue created but Live kept a different name: {0!r}"
+                    .format(actual))
+        except Exception as e:
+            result["error"] = "Live refused cue rename: {0}".format(e)
+        return result
+    except Exception as e:
+        result["error"] = "Could not create named locator: {0}".format(e)
+        if ctrl:
+            ctrl.log_message("Error creating named locator: " + str(e))
+        return result
+
+
 def probe_vsync_surface(song, ctrl=None):
     """Diagnostics for the Videosync2 automation build (read-only + safe
     creation probes at end-of-set beat 999999, clearly named)."""

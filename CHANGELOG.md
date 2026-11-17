@@ -22,13 +22,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   (4.0.0 → 0.8.0) made "which one is installed?" a fair question.
 - **The version is also in Ableton's Preferences now.** The control surface
   entry in *Preferences → Link, Tempo & MIDI* is nothing but the script's
-  folder name, so the installed copy is now named `AbleBridgePlus_0_8_0`
+  folder name, so the installed copy is now named `AbleBridgePlus_0_9_0`
   (from `MCP_Server.version.remote_script_folder()`). Underscores rather than
   dots because Python splits module names on `.` — a folder called
-  `AbleBridgePlus 0.8.0` cannot be imported at all (`ModuleNotFoundError: No
+  `AbleBridgePlus 0.9.0` cannot be imported at all (`ModuleNotFoundError: No
   module named 'AbleBridgePlus 0'`, verified against Live 12's Python 3.11).
 - `doctor` checks the installed folder name against the expected
-  `AbleBridgePlus_0_8_0` and reports stale copies, since that name changing is
+  `AbleBridgePlus_0_9_0` and reports stale copies, since that name changing is
   how a user ends up with a dead port 9877 and no visible entry to pick.
 
 ### Changed
@@ -52,6 +52,49 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   disagree, if the status bar stops showing the version, if the script folder
   grows a second hardcoded version literal, or if the installers/docs stop
   naming the same versioned folder. README test counts updated 159 → 164.
+
+## [0.9.0] - 2026-11-17
+
+Show-control gap-closing release for the WING vocal-FX / live-show workflow.
+Nine new tools total (475 → **484**, verified by instantiating `MCPServer()`):
+three MCP wrappers over new remote-script commands, plus six server-side
+live-show OSC tools. Version and versioned install folder bumped to
+`0.9.0` / `AbleBridgePlus_0_9_0` everywhere.
+
+### Added
+- `clear_arrangement_clip_envelopes(track_index, clip_index)` — clears every
+  automation envelope on one **Arrangement** clip. `clear_all_clip_envelopes`
+  resolved clips through `get_clip()` (Session slots only), so Arrangement
+  clips were invisible and had to be deleted and recreated. This resolves the
+  clip directly from `track.arrangement_clips` and reports how many envelopes
+  existed before the clear.
+- `create_named_locator(beat, name)` — moves the playhead to an absolute beat,
+  creates a cue point via `song.set_or_delete_cue()`, then best-effort renames
+  it. Live sometimes refuses control-surface renames, so the result reports
+  `created` / `renamed` / `error` honestly rather than raising.
+- `probe_midi_cc_envelope_surface(track_index, clip_index=0)` — read-only
+  capability probe of a MIDI clip's envelope / CC / automation-target surface
+  using `dir()` introspection only. Changes nothing; tells us whether Live 12
+  exposes a CC-envelope LOM surface (existence still unproven).
+
+### Changed
+- Bumped the single-sourced release version to 0.9.0 in `pyproject.toml`,
+  `MCP_Server/version.py`, `AbleBridgePlus/version.py` and doctor's
+  `EXPECTED_SCRIPT_VERSION`; versioned install/docs folder is now
+  `AbleBridgePlus_0_9_0`.
+- Correction: the v0.8.0 note below referred to `set_arrangement_clip_envelope`;
+  the tool that actually shipped is `set_arrangement_mixer_automation`.
+
+- **Live-show OSC tools (new module `MCP_Server/tools/live_show_bridge.py`):**
+  `set_external_param` (generic OSC/UDP write to any device, e.g. WING
+  `192.168.1.3:2223`), `send_osc_macro` (batch of OSC messages),
+  `send_transport_state` (one-shot play/tempo/beat/locator push),
+  `show_level_watch` (broadband master-meter threshold → OSC warning; **not**
+  true LUFS), `register_locator_macro` + `fire_locator_macro` (OSC macro bound
+  to a locator name; fired explicitly — auto-fire on `jump_to_locator` is
+  intentionally deferred because that tool lives in `tools/arrangement.py`).
+  All are server-side and need no new LOM handler. Honest limitation notes are
+  in each tool's docstring.
 
 ## [0.8.0] - 2026-09-28
 
@@ -82,7 +125,7 @@ live-verified against the real Videosync2 show set (Deepak Bajracharya
   `create_vsync_show_automation` (per-song host clips + baked fade
   envelopes), `clear_vsync_show_automation` (in-song range),
   `get_vsync_show_automation_state` (read-only audit), and
-  `set_arrangement_clip_envelope` (generic primitive for any track).
+  `set_arrangement_mixer_automation` (generic primitive for any track).
   Arrangement automation was previously impossible — `create_clip_automation`
   only reached session clips, and every show set is arrangement-driven.
 - Internal LOM API `_set_arrangement_mixer_automation` (handlers/
