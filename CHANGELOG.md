@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- `docs/PLUGIN_COMPATIBILITY.md` and `docs/extensions_sdk_bridge.md` — recovered from the frozen
+  legacy `mhzsajan/stagecraft` repo (2026-11-17) before it was archived. The SDK/Extensions
+  transport client code lives in `MCP_Server/connections/extensions_sdk.py`, but its setup guide
+  existed only in the legacy repo. Files are byte-identical to the originals.
 - **The installed version is now visible inside Ableton Live.** The remote
   script's status bar reads `AbleBridgePlus v<version> ready - TCP 9877 /
   UDP 9882` when the control surface loads, and `AbleBridgePlus v<version>:
