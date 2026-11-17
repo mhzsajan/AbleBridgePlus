@@ -211,6 +211,8 @@ class MCPServer:
         from MCP_Server.tools import vsync_automation
         # v0.9.0: live-show OSC/UDP bridge + remote-command wrappers
         from MCP_Server.tools import live_show_bridge
+        # v0.9.x: output-routing presets + AbleSet subscription helpers
+        from MCP_Server.tools import output_routing, ableset_subscribe
 
         # Register all tool modules
         tool_modules = [
@@ -244,7 +246,9 @@ class MCPServer:
             # v0.8
             vsync_automation,
             # v0.9.0
-            live_show_bridge
+            live_show_bridge,
+            # v0.9.x: output-routing presets + AbleSet subscribe tools
+            output_routing, ableset_subscribe
         ]
         
         adapter = _FastMCPAdapter(self.tool_registry)

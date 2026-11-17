@@ -669,11 +669,12 @@ def register_tools(mcp):
                          peak_db: float = -1.0, rms_db: float = -6.0) -> str:
         """Check Live's master meters and send an OSC warning on an over-level.
 
-        HONESTY NOTE: Ableton exposes only broadband output meters (dBFS here),
-        NOT true LUFS or a standards-compliant loudness measurement. The
-        ``peak_db`` / ``rms_db`` thresholds are compared against the master's
-        broadband meter readings (with a simple L/R RMS estimate); do NOT
-        treat this as a broadcast loudness or true-peak checker.
+        HONESTY NOTE: Ableton exposes only broadband output meters, NOT true
+        LUFS or a standards-compliant loudness measurement. Live's meters are
+        LINEAR 0..1 (confirmed in mix_matching._linear_to_db) — this tool
+        converts them to dBFS with the same -70 dB floor before comparing
+        against ``peak_db`` / ``rms_db``. Do NOT treat this as broadcast
+        loudness or true-peak: it is a coarse broadband over-level warning.
 
         Sends one OSC warning message to ``address`` when either threshold is
         exceeded, and reports ``alerted`` / ``sent`` in the result.
@@ -681,39 +682,52 @@ def register_tools(mcp):
         ableton = get_ableton_connection()
         meters = ableton.send_command("get_master_meters")
 
+        def linear_to_db(v):
+            """Live meters are linear 0..1; convert to dBFS (-70 dB floor)."""
+            return round(20.0 * math.log10(max(float(v), 10 ** (-70.0 / 20.0))), 2)
+
+        def is_num(v):
+            return isinstance(v, (int, float)) and not isinstance(v, bool)
+
         left = meters.get("output_meter_left")
         right = meters.get("output_meter_right")
         level = meters.get("output_meter_level")
 
+        # raw linear readings (for transparency) + converted dBFS
         readings = {}
+        for name, val in (("left_linear", left), ("right_linear", right),
+                          ("level_linear", level)):
+            if is_num(val):
+                readings[name] = round(float(val), 4)
+
+        dbfs = {}
         for name, val in (("left_dbfs", left), ("right_dbfs", right),
                           ("level_dbfs", level)):
-            if isinstance(val, (int, float)) and not isinstance(val, bool):
-                readings[name] = round(float(val), 2)
+            if is_num(val):
+                dbfs[name] = linear_to_db(val)
 
-        candidates = [float(v) for v in (left, right, level)
-                      if isinstance(v, (int, float)) and not isinstance(v, bool)]
-        peak = max(candidates) if candidates else None
+        # Peak in dBFS = loudest single sample across the three meter readings.
+        peak_dbfs = max(dbfs.values()) if dbfs else None
 
-        rms = None
-        if (isinstance(left, (int, float)) and not isinstance(left, bool)
-                and isinstance(right, (int, float)) and not isinstance(right, bool)):
-            lin_l = 10.0 ** (float(left) / 20.0)
-            lin_r = 10.0 ** (float(right) / 20.0)
+        # RMS estimate: convert each linear channel to dBFS then average power.
+        rms_dbfs = None
+        if is_num(left) and is_num(right):
+            lin_l = max(float(left), 1e-9)
+            lin_r = max(float(right), 1e-9)
             rms_lin = math.sqrt((lin_l * lin_l + lin_r * lin_r) / 2.0)
-            rms = round(20.0 * math.log10(max(rms_lin, 1e-9)), 2)
+            rms_dbfs = linear_to_db(rms_lin)
 
         peak_threshold = float(peak_db)
         rms_threshold = float(rms_db)
-        peak_exceeded = peak is not None and peak >= peak_threshold
-        rms_exceeded = rms is not None and rms >= rms_threshold
+        peak_exceeded = peak_dbfs is not None and peak_dbfs >= peak_threshold
+        rms_exceeded = rms_dbfs is not None and rms_dbfs >= rms_threshold
         alerted = bool(peak_exceeded or rms_exceeded)
 
         sent = False
         error = None
         if alerted:
             payload = {
-                "peak_dbfs": peak, "rms_dbfs_est": rms,
+                "peak_dbfs": peak_dbfs, "rms_dbfs_est": rms_dbfs,
                 "peak_threshold": peak_threshold, "rms_threshold": rms_threshold,
                 "reason": "peak" if peak_exceeded else "rms",
             }
@@ -723,11 +737,12 @@ def register_tools(mcp):
 
         return json.dumps({
             "host": host, "port": port, "address": address,
-            "readings": readings, "peak_dbfs": peak, "rms_dbfs_est": rms,
+            "readings_linear": readings, "readings_dbfs": dbfs,
+            "peak_dbfs": peak_dbfs, "rms_dbfs_est": rms_dbfs,
             "thresholds": {"peak_db": peak_threshold, "rms_db": rms_threshold},
             "peak_exceeded": peak_exceeded, "rms_exceeded": rms_exceeded,
             "alerted": alerted, "sent": sent, "error": error,
-            "note": "broadband dBFS meters, NOT true LUFS / true-peak",
+            "note": "broadband dBFS (linear 0..1 converted), NOT true LUFS / true-peak",
         })
 
     # -----------------------------------------------------------------------

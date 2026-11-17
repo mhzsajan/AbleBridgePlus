@@ -5,7 +5,18 @@ All notable changes to AbleBridgePlus will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [Unreleased] - 2026-11-17
+
+### Fixed (found by live testing 2026-11-17)
+- **`show_level_watch` meter units:** Live's master meters are LINEAR 0..1, not
+  dBFS (confirmed by `mix_matching._linear_to_db`). The tool compared raw linear
+  values against dB thresholds, so even silence could trigger a false over-level
+  warning. It now converts linear→dBFS with the same -70 dB floor before comparing,
+  reports `readings_linear` and `readings_dbfs` separately, and computes RMS from
+  linear power (was treating linear as dB).
+- **`get_server_capabilities` tool_count:** reported `0` because it read
+  `mcp._tool_manager._tools` on the FastMCP adapter (no such attribute). Now reads
+  the real `tool_registry.tool_count` (495 tools after this batch).
 
 ### Added
 - `docs/PLUGIN_COMPATIBILITY.md` and `docs/extensions_sdk_bridge.md` — recovered from the frozen
@@ -52,6 +63,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   disagree, if the status bar stops showing the version, if the script folder
   grows a second hardcoded version literal, or if the installers/docs stop
   naming the same versioned folder. README test counts updated 159 → 164.
+
+### Added in this batch (2026-11-17)
+- **Named audio-output routing presets** for the PC ↔ WING switch: five tools
+  (`get_current_output_routing`, `save_output_preset`, `list_output_presets`,
+  `apply_output_preset`, `delete_output_preset`). A preset snapshots every
+  track's output type/channel into `~/.ableton-bridge/routing-presets.json`
+  (same directory as named checkpoints). `apply_output_preset` defaults to
+  `dry_run=True`, writes via the existing `set_track_routing` command when
+  asked, and verifies each write by reading the routing back; the report splits
+  applied / already-matching / mismatched / skipped / errored tracks. No set
+  restructure, input routing, or mixer state is touched. See
+  `docs/SHOW-SETUP-TOOLS.md`.
+- **AbleSet subscription tools** `subscribe_ableset` and `unsubscribe_ableset`
+  in a new `MCP_Server/tools/ableset_subscribe.py`. `subscribe_ableset` sends
+  `/subscribe` to AbleSet and then checks the listener snapshot, reporting an
+  honest `no_data` result (with the exact manual OSC Command Tester recipe)
+  when AbleSet ignores the message — sending the command is not treated as
+  proof it worked.
 
 ## [0.9.1-hotfix] - 2026-11-17 (server-side only, no remote-script change)
 
