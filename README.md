@@ -20,6 +20,25 @@ a README first.
 - **Want to try it?** Jump to [Getting started](#getting-started).
 - **Building or integrating?** See [How it works](#how-it-works) and
   [What's inside](#whats-inside).
+- **Picture first?** [See it at a glance](#see-it-at-a-glance) or skim the
+  [five plain-language diagrams](docs/BRIDGE-DIAGRAMS.md).
+
+---
+
+## See it at a glance
+
+![How the pieces fit — a schematic of AI client, bridge and Live](docs/images/bridge-layers.svg)
+
+This is a translator that lets an AI assistant make real changes inside Ableton
+Live. **The AI is a build-time tool**: you use it to set up, edit and rehearse
+your set, then step away. The bridge reaches Live through a small script that
+runs *inside* Live, so every change goes through Ableton's own controls — no
+secret back door.
+
+Want the whole picture in words and pictures? [docs/BRIDGE-DIAGRAMS.md](docs/BRIDGE-DIAGRAMS.md)
+has five short diagrams covering the layers, build vs. show time, one-click
+audio profiles, the safety pipeline and every port the rig uses. *(The image
+above is a schematic illustration, not a photo.)*
 
 ---
 
@@ -67,9 +86,9 @@ You talk. The assistant understands. The bridge does the clicking.
 
 ### Do I need to learn anything?
 
-No. You don't memorize commands, and you don't learn 488 tool names. You say what
+No. You don't memorize commands, and you don't learn 495 tool names. You say what
 you want the way you'd say it to a producer sitting next to you. Under the hood
-there are 488 operations available across Live — that's a measure of depth, not
+there are 495 operations available across Live — that's a measure of depth, not
 something you have to study.
 
 ### Is it safe to let an AI touch my music?
@@ -304,7 +323,7 @@ AbleBridgePlus --transport tcp --tcp-port 9891
 </details>
 
 Guides: [OpenCode](docs/OPENCODE.md) · [Claude Desktop](docs/CLAUDE_DESKTOP.md) ·
-[Installation](docs/INSTALLATION.md) · [All 488 tools](docs/FEATURES.md)
+[Installation](docs/INSTALLATION.md) · [All 495 tools](docs/FEATURES.md)
 
 ---
 
@@ -313,7 +332,7 @@ Guides: [OpenCode](docs/OPENCODE.md) · [Claude Desktop](docs/CLAUDE_DESKTOP.md)
 ```
 ┌────────────────────────────┐
 │  AI client (MCP host)      │
-│  sees 488 tools            │
+│  sees 495 tools            │
 └─────────────┬──────────────┘
               │ MCP over stdio, or TCP :9891
               ▼
@@ -336,7 +355,7 @@ Three layers, and only the middle one talks to the outside world:
   Model is not thread-safe, so every LOM call is dispatched onto Live's main
   thread — the UI never freezes and the session never corrupts. An optional Max
   for Live bridge on UDP/OSC :9878–9882 handles real-time parameter writes.
-- **Outside Live**, the MCP server exposes 488 tools over stdio (what MCP clients
+- **Outside Live**, the MCP server exposes 495 tools over stdio (what MCP clients
   spawn) or TCP :9891 for multiple local clients and the web dashboard. The stdio
   handshake answers `initialize` in under a second and dials Live lazily on the
   first tool call, so client startup is never blocked.
@@ -388,7 +407,7 @@ Plus the headline tools that don't fit a category:
 
 *Counts are the main tool areas from a `tools/list` snapshot — plus the headline
 tools below and the audio-analysis / producer / autopilot tooling, they make up the
-488 operations. The grid is a map, not an exhaustive inventory; the full list is
+495 operations. The grid is a map, not an exhaustive inventory; the full list is
 [docs/FEATURES.md](docs/FEATURES.md).*
 
 ---
@@ -409,7 +428,7 @@ Regenerate the presets after any setlist edit. See `docs/SHOW-SETUP-TOOLS.md`.
 ### v0.9.1 — talk to the rest of the rig
 
 A small follow-up to v0.9 that closes the live-show gaps found while building a
-real show. 484 → **488 tools**, full suite **164 passing / 0 failing**.
+real show. 484 → **495 tools**, full suite **164 passing / 0 failing**.
 
 - **Talk to external gear.** `set_external_param` and `send_osc_macro` send OSC to
   any device on the network — a mixing console, a visuals app, a lighting desk.
@@ -573,7 +592,7 @@ code (159 total).
 - 127 legacy `@tool(...)` tools still bypass the semaphore, the per-tool timeout
   and the unified error envelope, and they block the event loop because they are
   `async def` performing synchronous I/O.
-- ~196 of 488 tool names have a >0.80-similarity sibling (e.g. `freeze_track` /
+- ~196 of 495 tool names have a >0.80-similarity sibling (e.g. `freeze_track` /
   `unfreeze_track`, and `_m4l`-suffixed duplicates). `tools/list` is a single
   ~220 KB message with no cursor pagination.
 - `humanize_notes`, `transform_notes` and `quantize_to_scale` still delete a
@@ -625,9 +644,10 @@ practice.
 
 | | |
 |---|---|
-| [docs/FEATURES.md](docs/FEATURES.md) | All 488 tools, organised by what they do |
+| [docs/FEATURES.md](docs/FEATURES.md) | All 495 tools, organised by what they do |
 | [docs/INSTALLATION.md](docs/INSTALLATION.md) | Full install guide |
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Protocol and threading design |
+| [docs/BRIDGE-DIAGRAMS.md](docs/BRIDGE-DIAGRAMS.md) | Five visual diagrams, in plain language |
 | [docs/OPENCODE.md](docs/OPENCODE.md) | OpenCode setup + troubleshooting |
 | [docs/CLAUDE_DESKTOP.md](docs/CLAUDE_DESKTOP.md) | Claude Desktop setup + troubleshooting |
 | [docs/ROADMAP.md](docs/ROADMAP.md) | What's planned |

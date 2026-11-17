@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-labelledby="abpTitle abpDesc">
+  <title id="abpTitle">AbleBridgePlus — how the pieces fit</title>
+  <desc id="abpDesc">Schematic illustration, not a photo. AI clients at build time talk to the AbleBridgePlus MCP server, which talks to a remote script inside Ableton Live. AbleSet is the show-time brain and the WING console is reached through its own MCP server.</desc>
+
+  <defs>
+    <marker id="arrBlue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#2f4bb3"/>
+    </marker>
+    <marker id="arrGreen" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#2f9e63"/>
+    </marker>
+    <marker id="arrOrange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#d97706"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="1200" height="675" fill="#f7f9fc"/>
+
+  <!-- Header -->
+  <text x="600" y="34" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="26" font-weight="700" fill="#1f2a44">AbleBridgePlus — how the pieces fit</text>
+  <text x="600" y="56" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#6b7280">Schematic illustration — not a photo, not to scale</text>
+
+  <!-- AI clients (top) -->
+  <rect x="300" y="82" width="250" height="66" rx="10" fill="#e8efff" stroke="#4a67c9" stroke-width="2"/>
+  <text x="425" y="110" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="17" font-weight="700" fill="#1f2a44">AI client · OpenCode</text>
+  <text x="425" y="131" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#44506b">speaks MCP</text>
+
+  <rect x="650" y="82" width="250" height="66" rx="10" fill="#e8efff" stroke="#4a67c9" stroke-width="2"/>
+  <text x="775" y="110" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="17" font-weight="700" fill="#1f2a44">AI client · Claude / Cursor</text>
+  <text x="775" y="131" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#44506b">speaks MCP</text>
+
+  <!-- Build-time badge -->
+  <rect x="920" y="92" width="250" height="34" rx="17" fill="#1f2a44"/>
+  <text x="1045" y="114" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700" fill="#ffffff">AI = build time only</text>
+  <text x="1045" y="145" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#6b7280">set up and rehearse, then step away</text>
+
+  <!-- AI -> MCP arrows -->
+  <path d="M 425 148 L 600 205" stroke="#4a67c9" stroke-width="2.5" fill="none"/>
+  <path d="M 775 148 L 600 205" stroke="#4a67c9" stroke-width="2.5" fill="none"/>
+  <line x1="600" y1="205" x2="600" y2="211" stroke="#2f4bb3" stroke-width="2.5" marker-end="url(#arrBlue)"/>
+  <text x="792" y="178" text-anchor="start" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#2f4bb3">MCP · stdio / TCP 9891</text>
+
+  <!-- MCP server (middle) -->
+  <rect x="300" y="215" width="600" height="112" rx="14" fill="#e3ecff" stroke="#2f4bb3" stroke-width="2.5"/>
+  <text x="600" y="248" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="22" font-weight="700" fill="#1f2a44">AbleBridgePlus — MCP server</text>
+  <text x="600" y="277" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="600" fill="#2f4bb3">495 tools · resources · prompts</text>
+  <text x="600" y="303" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#44506b">Turns AI requests into real actions inside Live</text>
+
+  <!-- MCP -> Live arrow -->
+  <line x1="600" y1="327" x2="600" y2="381" stroke="#2f4bb3" stroke-width="2.5" marker-end="url(#arrBlue)"/>
+  <text x="612" y="360" text-anchor="start" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#2f4bb3">TCP 9877 commands · UDP 9882 params</text>
+
+  <!-- Ableton Live (bottom) -->
+  <rect x="300" y="385" width="600" height="120" rx="14" fill="#e9f7ee" stroke="#2f8f5b" stroke-width="2.5"/>
+  <text x="600" y="417" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="22" font-weight="700" fill="#173d2b">Ableton Live</text>
+  <text x="600" y="443" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="600" fill="#2f8f5b">Remote script runs inside Live</text>
+  <text x="600" y="466" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#3b5c4c">Live Object Model (LOM): tracks · devices · clips · mixer</text>
+  <text x="600" y="488" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#3b5c4c">OSC profile listener UDP 9883 — zero-AI audio switching</text>
+
+  <!-- AbleSet (left, show time) -->
+  <rect x="20" y="300" width="210" height="120" rx="12" fill="#eafaf0" stroke="#2f9e63" stroke-width="2"/>
+  <text x="125" y="330" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="18" font-weight="700" fill="#173d2b">AbleSet</text>
+  <text x="125" y="353" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#2f9e63">show brain · show time</text>
+  <text x="125" y="374" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#3b5c4c">song · section · tempo</text>
+  <text x="125" y="397" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#3b5c4c">OSC :39051 → bridge :39052</text>
+  <path d="M 230 360 L 296 425" stroke="#2f9e63" stroke-width="2.5" fill="none" marker-end="url(#arrGreen)"/>
+  <text x="150" y="447" text-anchor="start" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#2f9e63">song state — no AI</text>
+
+  <!-- WING (right, its own MCP) -->
+  <rect x="970" y="300" width="210" height="120" rx="12" fill="#fff1e2" stroke="#d97706" stroke-width="2"/>
+  <text x="1075" y="330" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="18" font-weight="700" fill="#7c3f06">WING console</text>
+  <text x="1075" y="353" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#d97706">via its own MCP server</text>
+  <text x="1075" y="374" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#7c3f06">OSC UDP :2223</text>
+  <text x="1075" y="397" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#7c3f06">separate rig, no AI</text>
+  <path d="M 902 430 L 966 372" stroke="#d97706" stroke-width="2.5" fill="none" marker-end="url(#arrOrange)"/>
+  <text x="905" y="398" text-anchor="start" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#d97706">OSC :2223</text>
+
+  <!-- Footer / legend -->
+  <line x1="40" y1="600" x2="1160" y2="600" stroke="#d1d5db" stroke-width="1"/>
+  <text x="600" y="628" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#6b7280">Solid arrows show control paths. Blue = build-time AI path · green = AbleSet show control · orange = WING gear.</text>
+  <text x="600" y="652" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#9ca3af">Illustration only — a simplified schematic, not a photograph or an exact wiring diagram.</text>
+</svg>
