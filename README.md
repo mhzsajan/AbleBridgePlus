@@ -25,6 +25,8 @@ a README first.
 
 ---
 
+> **👋 New here? [See what this is in one simple picture](docs/EASY-PICTURE.md)** — no technical words, just who uses it and when.
+
 ## See it at a glance
 
 ![How the pieces fit — a schematic of AI client, bridge and Live](docs/images/bridge-layers.svg)
