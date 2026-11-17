@@ -476,6 +476,10 @@ _READONLY_HANDLERS = {
     "probe_song_locator_surface": lambda song, p, ctrl: handlers.session.probe_song_locator_surface(song, ctrl),
     "probe_midi_cc_envelope_surface": lambda song, p, ctrl: handlers.probe.probe_midi_cc_envelope_surface(
         song, p.get("track_index", 0), p.get("clip_index", 0), ctrl),
+    "probe_lom_capability": lambda song, p, ctrl: handlers.probe.probe_lom_capability(
+        song, p.get("root", "song"), p.get("track_index", 0),
+        p.get("clip_index", 0), p.get("device_index", 0),
+        p.get("pattern", ""), ctrl),
     "probe_vsync_surface": lambda song, p, ctrl: handlers.session.probe_vsync_surface(song, ctrl),
     "list_cue_points": lambda song, p, ctrl: handlers.session.list_cue_points(song, ctrl),
     "jump_to_cue_point": lambda song, p, ctrl: handlers.session.jump_to_cue_point(song, p.get("cue", 0), ctrl),

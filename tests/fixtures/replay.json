@@ -1,0 +1,30 @@
+{
+  "get_all_tracks_info:{}": {
+    "tracks": [
+      {"index": 0, "name": "Drums", "is_audio": true, "is_midi": false,
+       "mute": false, "solo": false, "arm": false, "volume": 0.8,
+       "panning": 0.0, "clip_count": 1, "devices": []}
+    ]
+  },
+  "get_session_info:{}": {
+    "tempo": 120.0,
+    "signature_numerator": 4,
+    "signature_denominator": 4,
+    "track_count": 1,
+    "version": "0.5.0"
+  },
+  "get_song_scale:{}": {
+    "root_note": 9,
+    "scale_name": "minor",
+    "scale_mode": "natural"
+  },
+  "get_song_transport:{}": {
+    "is_playing": false
+  },
+  "get_playing_clips:{}": {
+    "clips": []
+  },
+  "get_track_meters:{}": {
+    "tracks": []
+  }
+}

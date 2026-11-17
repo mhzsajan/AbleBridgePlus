@@ -110,6 +110,16 @@ def _res_memory() -> str:
     return json.dumps(load_memory(), indent=2)
 
 
+def _res_ableset_state() -> str:
+    """Same snapshot as the get_ableset_state tool, without a blocking read.
+
+    A human must point AbleSet's OSC output at the listener port (default
+    39052) in AbleSet's settings; the bridge cannot auto-configure AbleSet.
+    """
+    from MCP_Server.tools.live_show_bridge import get_ableset_snapshot
+    return json.dumps(get_ableset_snapshot(), indent=2)
+
+
 def _resource_descriptors() -> List[Dict[str, Any]]:
     return [
         {
@@ -136,6 +146,16 @@ def _resource_descriptors() -> List[Dict[str, Any]]:
             "uri": "ableton://memory",
             "name": "Studio memory",
             "description": "Persisted preferences and notes the AI has stored about your studio.",
+            "mimeType": "application/json",
+        },
+        {
+            "uri": "ableton://ableset/state",
+            "name": "AbleSet show state",
+            "description": "Latest AbleSet show-state OSC snapshot (song name, section, "
+                           "start/end, is-playing) plus listener status. A human must "
+                           "point AbleSet's OSC output at the listener port "
+                           "(default 39052) in AbleSet's settings — the bridge cannot "
+                           "auto-configure AbleSet. Reports no_data until OSC arrives.",
             "mimeType": "application/json",
         },
         {
@@ -184,6 +204,8 @@ def read_resource(uri: str) -> Dict[str, Any]:
         text = _res_checkpoints()
     elif uri == "ableton://memory":
         text = _res_memory()
+    elif uri == "ableton://ableset/state":
+        text = _res_ableset_state()
     elif uri.startswith("ableton://track/"):
         try:
             index = int(uri.rsplit("/", 1)[1])

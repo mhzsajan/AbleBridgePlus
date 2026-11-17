@@ -324,8 +324,10 @@ MODIFYING_COMMANDS: frozenset = TIER_0_COMMANDS | TIER_1_COMMANDS | TIER_2_COMMA
 # explicit and auditable. The dispatch-side authoritative set is the remote
 # script's _READONLY_HANDLERS (AbleBridgePlus/__init__.py, separate release).
 READ_ONLY_COMMANDS: frozenset = frozenset([
-    # v0.9.0: capability probe — changes nothing
+    # v0.9.0: capability probes — change nothing
     "probe_midi_cc_envelope_surface",
+    # v0.9.1: read-only dir() introspection of whitelisted LOM roots
+    "probe_lom_capability",
 ])
 
 # Per-command timeout overrides for legitimately slow operations.

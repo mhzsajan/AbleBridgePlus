@@ -67,9 +67,9 @@ You talk. The assistant understands. The bridge does the clicking.
 
 ### Do I need to learn anything?
 
-No. You don't memorize commands, and you don't learn 475 tool names. You say what
+No. You don't memorize commands, and you don't learn 488 tool names. You say what
 you want the way you'd say it to a producer sitting next to you. Under the hood
-there are 475 operations available across Live — that's a measure of depth, not
+there are 488 operations available across Live — that's a measure of depth, not
 something you have to study.
 
 ### Is it safe to let an AI touch my music?
@@ -214,12 +214,12 @@ uv sync                      # or: pip install -e .
 # folder name carries the version - that name is what Live prints in the
 # Control Surface list:
 #   Windows: %USERPROFILE%\Documents\Ableton\
-#            User Library\Remote Scripts\AbleBridgePlus_0_9_0
-#   macOS:   ~/Music/Ableton/User Library/Remote Scripts/AbleBridgePlus_0_9_0
+#            User Library\Remote Scripts\AbleBridgePlus_0_9_1
+#   macOS:   ~/Music/Ableton/User Library/Remote Scripts/AbleBridgePlus_0_9_1
 ```
 
 Then in Ableton: **Preferences → Link, Tempo & MIDI → Control Surface →
-AbleBridgePlus_0_9_0**. Restart Live if it was already open.
+AbleBridgePlus_0_9_1**. Restart Live if it was already open.
 
 Because the entry name contains the version, upgrading changes it — Live still
 has the old name selected, so re-select the new entry once after each release
@@ -287,7 +287,7 @@ AbleBridgePlus --transport tcp --tcp-port 9891
 </details>
 
 Guides: [OpenCode](docs/OPENCODE.md) · [Claude Desktop](docs/CLAUDE_DESKTOP.md) ·
-[Installation](docs/INSTALLATION.md) · [All 475 tools](docs/FEATURES.md)
+[Installation](docs/INSTALLATION.md) · [All 488 tools](docs/FEATURES.md)
 
 ---
 
@@ -296,7 +296,7 @@ Guides: [OpenCode](docs/OPENCODE.md) · [Claude Desktop](docs/CLAUDE_DESKTOP.md)
 ```
 ┌────────────────────────────┐
 │  AI client (MCP host)      │
-│  sees 475 tools            │
+│  sees 488 tools            │
 └─────────────┬──────────────┘
               │ MCP over stdio, or TCP :9891
               ▼
@@ -319,7 +319,7 @@ Three layers, and only the middle one talks to the outside world:
   Model is not thread-safe, so every LOM call is dispatched onto Live's main
   thread — the UI never freezes and the session never corrupts. An optional Max
   for Live bridge on UDP/OSC :9878–9882 handles real-time parameter writes.
-- **Outside Live**, the MCP server exposes 475 tools over stdio (what MCP clients
+- **Outside Live**, the MCP server exposes 488 tools over stdio (what MCP clients
   spawn) or TCP :9891 for multiple local clients and the web dashboard. The stdio
   handshake answers `initialize` in under a second and dials Live lazily on the
   first tool call, so client startup is never blocked.
@@ -497,7 +497,7 @@ code (159 total).
 - 127 legacy `@tool(...)` tools still bypass the semaphore, the per-tool timeout
   and the unified error envelope, and they block the event loop because they are
   `async def` performing synchronous I/O.
-- ~196 of 475 tool names have a >0.80-similarity sibling (e.g. `freeze_track` /
+- ~196 of 488 tool names have a >0.80-similarity sibling (e.g. `freeze_track` /
   `unfreeze_track`, and `_m4l`-suffixed duplicates). `tools/list` is a single
   ~220 KB message with no cursor pagination.
 - `humanize_notes`, `transform_notes` and `quantize_to_scale` still delete a
@@ -547,7 +547,7 @@ practice.
 
 | | |
 |---|---|
-| [docs/FEATURES.md](docs/FEATURES.md) | All 475 tools, organised by what they do |
+| [docs/FEATURES.md](docs/FEATURES.md) | All 488 tools, organised by what they do |
 | [docs/INSTALLATION.md](docs/INSTALLATION.md) | Full install guide |
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Protocol and threading design |
 | [docs/OPENCODE.md](docs/OPENCODE.md) | OpenCode setup + troubleshooting |

@@ -1,6 +1,6 @@
 # AbleBridgePlus — Roadmap
 
-> Living document. Updated after each release. Current version: **v0.9.0** (475+ tools).
+> Living document. Updated after each release. Current version: **v0.9.1** (488 tools).
 
 ## Where the project is
 
@@ -10,6 +10,30 @@
 | **2 — Intelligence** (context engine, theory toolkit, doctor, autopilot) | ✅ Shipped v0.4 |
 | **2.5 — Ears & Producer** (DSP key/BPM detection, one-prompt-to-demo, memory) | ✅ Shipped v0.5 |
 | **3 — Collaboration** (AI listens, judges, contributes taste) | 🔜 The next frontier |
+
+---
+
+## v0.9.1 — show-control follow-ups (2026-11-17)
+
+Small but high-value additions landed after v0.9.0:
+
+- **AbleSet state** — `start_ableset_listener` / `get_ableset_state` and the
+  `ableton://ableset/state` resource track AbleSet's song/section/start/end
+  (listener binds UDP 39052, not AbleSet's own 39051; a human must point
+  AbleSet's OSC output at it) so clients read state instead of polling a dead
+  surface. The
+  earlier "2-way dashboard / AbleSet state" gap is partially closed.
+- **Tempo-driven WING delay helper** — `set_wing_delay_time_from_tempo` writes
+  the delay effect time in ms from Live tempo. This closes the "external-device
+  FX time helper" gap below; MIDI Clock sync to the WING remains impossible via
+  LOM, so a tempo reader + OSC writer is the working path.
+- **LOM capability probe** — `probe_lom_capability`, a safe read-only `dir()`
+  probe over whitelisted roots (`song`/`track`/`clip`/`device`/`scene`/`return`).
+- **Locator macro auto-fire** — a registered macro now fires automatically
+  after a successful `jump_to_locator` (the v0.9.0 deferral is resolved).
+- **Replay fixture + Python 3.14 test fixes** — the missing
+  `tests/fixtures/replay.json` was added and all eight pre-existing Python 3.14
+  test failures fixed in the test layer only.
 
 ---
 
@@ -129,6 +153,9 @@ The server now serves all three MCP surfaces. MCP supports *resources*
   feed StageCraft.
 - **2-way web dashboard** — today it's read-only monitoring. Add click-to-control:
   select a track in the browser → AI receives it as context for the next prompt.
+  **Partially addressed in v0.9.1** for show state: `start_ableset_listener` /
+  `get_ableset_state` and the `ableton://ableset/state` resource expose AbleSet's
+  song/section/start/end without a dashboard round-trip.
 - **Journal replay** — the change journal already logs every AI mutation; add
   `replay_journal(range)` to re-apply a recorded pass onto another section
   ("redo yesterday's automation pass on the new chorus").
@@ -140,7 +167,7 @@ The server now serves all three MCP surfaces. MCP supports *resources*
 These came out of driving the WING console's vocal FX from an Ableton MIDI track during a real
 show build. Full context in the private `StageCraft-Graphified` repo:
 `docs/live-pipeline/bands/deepak-bajracharya-rhythm-band/hardware/WING-CONSOLE.md`.
-Statuses below reflect v0.9.0 (2026-11-17).
+Statuses below reflect v0.9.1 (2026-11-17).
 
 - **MIDI CC envelope lanes** `high` — **capability probe added 2026-11-17** (`probe_midi_cc_envelope_surface`,
   read-only `dir()` introspection of a MIDI clip's envelope/CC/automation-target surface).
@@ -161,9 +188,11 @@ Statuses below reflect v0.9.0 (2026-11-17).
   playhead to an absolute beat, creates a cue via `song.set_or_delete_cue()` (which *does* exist —
   server tool in `tools/session.py:275`), and best-effort renames it. Earlier claims that cue creation
   needs an M4L bridge were wrong. `list_arrangement_locators` (a.k.a. `list_cue_points`) also works.
-- **External-device FX time helper** `low` — not a bridge feature, but record the pattern: when a device
-  exposes a writable OSC/TCP parameter for effect time, a tiny helper can read Live tempo and write
-  ms (`30000 / BPM` for 1/8 notes). Consider a generic `set_external_param` tool if this recurs.
+- **External-device FX time helper** `low` — **ADDRESSED in v0.9.0/v0.9.1**: the generic
+  `set_external_param` tool shipped in v0.9.0, and v0.9.1 added
+  `set_wing_delay_time_from_tempo`, which reads Live tempo and writes the device's effect-time
+  parameter in ms (`30000 / BPM` for 1/8 notes). MIDI Clock sync to the WING remains
+  impossible via LOM. See the v0.9.1 note above.
 
 ## Backlog (unscheduled)
 

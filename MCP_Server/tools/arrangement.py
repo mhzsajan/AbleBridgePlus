@@ -854,9 +854,36 @@ def register_show_navigation_tools(mcp):
     def jump_to_locator(ctx: Context, cue) -> str:
         """Jump the arrangement playhead to a locator (cue point) by index
         or by (fuzzy) name — e.g. 'Man Magan'. The playhead lands exactly
-        on the locator, ready to start that section."""
+        on the locator, ready to start that section.
+
+        After a SUCCESSFUL jump this AUTO-FIRES any OSC macro registered for
+        the locator via ``register_locator_macro`` (exact name first, then
+        case-insensitive). A failed jump never fires a macro, and a macro
+        problem can never break the jump itself.
+        """
         ableton = get_ableton_connection()
-        return json.dumps(ableton.send_command("jump_to_cue_point", {"cue": cue}))
+        result = ableton.send_command("jump_to_cue_point", {"cue": cue})
+
+        # Auto-fire only when the jump really succeeded. The remote handler
+        # returns {"jumped": True, ...} on success; treat a missing/falsy
+        # 'jumped', a truthy 'error', or an 'error' status as a failure.
+        jump_ok = isinstance(result, dict)
+        if jump_ok and result.get("error"):
+            jump_ok = False
+        if jump_ok and str(result.get("status", "")).lower() in (
+                "error", "failed", "failure"):
+            jump_ok = False
+        if jump_ok and "jumped" in result and not result.get("jumped"):
+            jump_ok = False
+        if jump_ok:
+            try:
+                from MCP_Server.tools.live_show_bridge import fire_registered_macro_for
+                fire_registered_macro_for(cue)
+            except Exception:
+                # A macro problem must never turn a good jump into an error.
+                logger.debug("locator macro auto-fire failed for %r", cue,
+                             exc_info=True)
+        return json.dumps(result)
 
     @mcp.tool()
     @_tool_handler("jumping to the next locator")

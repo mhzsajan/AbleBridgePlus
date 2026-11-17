@@ -22,13 +22,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   (4.0.0 → 0.8.0) made "which one is installed?" a fair question.
 - **The version is also in Ableton's Preferences now.** The control surface
   entry in *Preferences → Link, Tempo & MIDI* is nothing but the script's
-  folder name, so the installed copy is now named `AbleBridgePlus_0_9_0`
+  folder name, so the installed copy is now named `AbleBridgePlus_0_9_1`
   (from `MCP_Server.version.remote_script_folder()`). Underscores rather than
   dots because Python splits module names on `.` — a folder called
-  `AbleBridgePlus 0.9.0` cannot be imported at all (`ModuleNotFoundError: No
+  `AbleBridgePlus 0.9.1` cannot be imported at all (`ModuleNotFoundError: No
   module named 'AbleBridgePlus 0'`, verified against Live 12's Python 3.11).
 - `doctor` checks the installed folder name against the expected
-  `AbleBridgePlus_0_9_0` and reports stale copies, since that name changing is
+  `AbleBridgePlus_0_9_1` and reports stale copies, since that name changing is
   how a user ends up with a dead port 9877 and no visible entry to pick.
 
 ### Changed
@@ -52,6 +52,59 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   disagree, if the status bar stops showing the version, if the script folder
   grows a second hardcoded version literal, or if the installers/docs stop
   naming the same versioned folder. README test counts updated 159 → 164.
+
+## [0.9.1] - 2026-11-17
+
+Show-control follow-up: AbleSet state, tempo-driven WING delay, a generic LOM
+capability probe, and locator-macro auto-fire. Tool count 484 → **488**
+(verified by instantiating `MCPServer()`).
+Version and versioned install folder bumped to `0.9.1` / `AbleBridgePlus_0_9_1`
+everywhere.
+
+### Added
+- `set_wing_delay_time_from_tempo` — computes the WING delay time in ms from an
+  Ableton tempo (e.g. `30000 / BPM` for a 1/8 note) and writes it to the device
+  over OSC. Result of the earlier "delay follows tempo" finding: MIDI Clock sync
+  to the WING was never achievable through LOM, so the reliable path is a helper
+  that reads tempo and writes the device's effect-time parameter.
+- `start_ableset_listener` / `get_ableset_state` plus the
+  `ableton://ableset/state` resource — a background listener for AbleSet's show
+  state (song / section / start / end; the listener binds UDP 39052, not AbleSet's
+  own 39051, to avoid a bind conflict — a human must point AbleSet's OSC output
+  at it), a tool to read the latest
+  snapshot, and an MCP resource exposing it, so clients stop polling a dead
+  control surface.
+- `probe_lom_capability(root="song", track_index=0, clip_index=0,
+  device_index=0, pattern="")` — a read-only `dir()` probe of a **whitelisted**
+  Live Object Model surface (`song`, `track`, `clip`, `device`, `scene`,
+  `return`). Filters attribute names by a case-insensitive substring; with no
+  pattern it reports a curated short list (envelope / automation / clip / cue /
+  send / mute / volume) plus the first ~40 names alphabetically, instead of
+  dumping the whole `dir()`. It never evaluates a user-supplied path and never
+  mutates the set.
+
+### Changed
+- **Locator macros now auto-fire.** A macro registered with
+  `register_locator_macro` now fires automatically after a successful
+  `jump_to_locator`; the v0.9.0 note that auto-fire was "intentionally deferred"
+  is now obsolete. `fire_locator_macro` remains available for explicit firing.
+- Bumped the single-sourced release version to 0.9.1 in `pyproject.toml`,
+  `MCP_Server/version.py`, `AbleBridgePlus/version.py` and doctor's
+  `EXPECTED_SCRIPT_VERSION`; versioned install/docs folder is now
+  `AbleBridgePlus_0_9_1`.
+
+### Tests / fixture hygiene
+- Added `tests/fixtures/replay.json` (referenced by `tests/test_replay.py` but
+  missing from the tree). It maps `"command:params"` → recorded handler
+  response, so the replay suite runs fully offline with no Ableton.
+- Fixed the eight pre-existing Python 3.14 test failures without changing
+  production behavior: the seven `test_replay.py` failures came from
+  `asyncio.get_event_loop()` no longer creating a loop (the test helper now
+  uses `asyncio.run()`), and
+  `test_audio_reader.py::test_non_pcm_extensible_is_rejected` now accepts the
+  Python 3.13+ `wave` API, which parses WAVE_FORMAT_EXTENSIBLE itself and raises
+  on a non-PCM subformat instead of surfacing the older "unknown format" error
+  the manual parser hooks.
 
 ## [0.9.0] - 2026-11-17
 

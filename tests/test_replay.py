@@ -67,7 +67,11 @@ def replay_server(monkeypatch):
 
 
 def _call(srv, name, args):
-    res = asyncio.get_event_loop().run_until_complete(
+    # Python 3.14 no longer auto-creates an event loop in get_event_loop();
+    # asyncio.run() is the supported way to drive a single coroutine and works
+    # on every Python this repo targets. Each call gets a fresh loop, which is
+    # fine here (handle_request is stateless between calls).
+    res = asyncio.run(
         srv.handle_request({"method": "tools/call",
                             "params": {"name": name, "arguments": args}}))
     # handle_request returns {"content": [...]} style (internal format)
