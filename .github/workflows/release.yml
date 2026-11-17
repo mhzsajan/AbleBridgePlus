@@ -52,8 +52,11 @@ jobs:
           # Create Windows ZIP
           zip -r ablebridge-windows.zip release-package/
 
-          # Create tar.gz for Linux/macOS
+          # Create tar.gz for Linux and a clearly-named copy for macOS.
+          # Both contain the same cross-platform install.sh (it detects
+          # darwin vs linux and picks the right Ableton User Library path).
           tar -czf ablebridge-linux.tar.gz release-package/
+          cp ablebridge-linux.tar.gz ablebridge-macos.tar.gz
 
           # Clean up
           rm -rf release-package
@@ -79,6 +82,7 @@ jobs:
           files: |
             ablebridge-windows.zip
             ablebridge-linux.tar.gz
+            ablebridge-macos.tar.gz
           body_path: release_section.md
           append_body: true
 
@@ -116,9 +120,13 @@ jobs:
           1. Download `ablebridge-windows.zip`
           2. Extract and run `install.bat`
 
-          **macOS/Linux:**
+          **macOS:**
+          1. Download `ablebridge-macos.tar.gz`
+          2. Extract and run `./install.sh` (installs to `~/Music/Ableton/User Library/Remote Scripts`)
+
+          **Linux:**
           1. Download `ablebridge-linux.tar.gz`
-          2. Extract and run `./install.sh`
+          2. Extract and run `./install.sh` (installs to `~/.ableton/User Library/Remote Scripts`)
 
           ### Documentation
           - [Installation Guide](https://github.com/mhzsajan/AbleBridgePlus/blob/master/docs/INSTALLATION.md)
@@ -201,9 +209,13 @@ jobs:
           1. Download `ablebridge-windows.zip`
           2. Extract and run `install.bat`
 
-          **macOS/Linux:**
+          **macOS:**
+          1. Download `ablebridge-macos.tar.gz`
+          2. Extract and run `./install.sh` (installs to `~/Music/Ableton/User Library/Remote Scripts`)
+
+          **Linux:**
           1. Download `ablebridge-linux.tar.gz`
-          2. Extract and run `./install.sh`
+          2. Extract and run `./install.sh` (installs to `~/.ableton/User Library/Remote Scripts`)
 
           ### Documentation
           - [Installation Guide](https://codeberg.org/mhzsajan/AbleBridgePlus/src/branch/master/docs/INSTALLATION.md)
