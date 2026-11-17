@@ -78,6 +78,7 @@
     [19, 'Snapshots'],
     [17, 'Arrangement'],
     [17, 'Show control'],
+    [9, 'Live-show OSC bridge'],
     [16, 'Video &amp; lighting'],
     [16, 'Analytics'],
     [12, 'Browser'],

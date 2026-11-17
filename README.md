@@ -156,6 +156,15 @@ you change today?"* any time.
 Hands-free scene sequencing with per-section tempo changes — plus one-command
 **emergency stop**, **panic mute** and **session backups**.
 
+> *"we're entering the chorus — send the reverb on, tell the console the new tempo, and cue the visuals"*
+
+Since v0.9 the bridge can also **talk to the rest of the rig**. It speaks OSC to
+external gear (a mixing console, lighting desk, or visuals app), can read the
+song/section state that **AbleSet** publishes, and can fire a saved cue macro
+automatically the moment a new section starts. It can even work out an external
+effect's timing from Live's tempo and send it over — so when the tempo changes,
+the delay follows. Ask it to *"send this to the console"* and it does.
+
 …and the everyday work: create tracks and clips, edit MIDI notes, warp and
 quantize, write automation, set up sidechain, load any instrument or effect,
 save presets, map MIDI controllers, drive video and DMX lighting, run timers and
@@ -175,6 +184,14 @@ one that doesn't:
   aren't supported.
 - Some deeper device controls need an optional extra piece (a Max for Live
   device) — everything important works without it.
+- The live-show level watch reads Ableton's **broadband output meters**; it is an
+  over-level warning, **not** true LUFS or a broadcast true-peak measurement.
+- **MIDI CC envelope "red lanes" in the Arrangement** are not possible — that's an
+ Ableton UI rule, not a missing feature here. A read-only probe
+ (`probe_lom_capability`) reports what your Live version actually exposes.
+- Audio **stem export/render** can't be automated through Live's scripting API; it
+  needs the beta Extensions SDK. The bridge will tell you honestly rather than
+  pretend to do it.
 
 ---
 
@@ -344,6 +361,7 @@ More detail: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
 | Snapshots | 19 | device + session snapshots, morph, compare |
 | Arrangement | 17 | clip moves, time edits, locators, automation lanes |
 | Show control | 17 | emergency stop, panic mute, session backup, scene macros |
+| Live-show OSC bridge | 9 | external OSC/UDP writes, AbleSet state, transport push, level watch, locator cue macros |
 | Video & lighting | 16 | Videosync2 timeline automation, Spout, DMX scenes |
 | Analytics | 16 | CPU / memory / latency trends, exportable reports |
 | MIDI | 11 | controller mappings, 100+ plugin CC maps (NI, Arturia) |
@@ -363,12 +381,59 @@ Plus the headline tools that don't fit a category:
 | `create_checkpoint` / `rollback` | Named snapshots and one-step revert |
 | `match_reference_track` | Match your mix to a reference track |
 | `hum_to_clip` | Turns hummed input into a quantised clip with harmony |
+| `set_external_param` / `send_osc_macro` | Write OSC to any device on the show network (console, visuals, lighting) |
+| `start_ableset_listener` / `get_ableset_state` | Follow AbleSet's song/section state (resource `ableton://ableset/state`) |
+| `set_wing_delay_time_from_tempo` | Realtime external-effect timing from Live's tempo |
+| `probe_lom_capability` | Read-only "what does this Live version expose?" probe |
 
-*Counts are the live `tools/list` output.*
+*Counts are the main tool areas from a `tools/list` snapshot — plus the headline
+tools below and the audio-analysis / producer / autopilot tooling, they make up the
+488 operations. The grid is a map, not an exhaustive inventory; the full list is
+[docs/FEATURES.md](docs/FEATURES.md).*
 
 ---
 
-## Recent release
+## Recent releases
+
+### v0.9.1 — talk to the rest of the rig (current)
+
+A small follow-up to v0.9 that closes the live-show gaps found while building a
+real show. 484 → **488 tools**, full suite **164 passing / 0 failing**.
+
+- **Talk to external gear.** `set_external_param` and `send_osc_macro` send OSC to
+  any device on the network — a mixing console, a visuals app, a lighting desk.
+  `set_wing_delay_time_from_tempo` reads Live's tempo and writes an external
+  effect's time in milliseconds (the reliable answer to a MIDI-clock approach
+  that never worked).
+- **Follow AbleSet.** `start_ableset_listener` / `get_ableset_state` plus the
+  `ableton://ableset/state` resource capture the show's song/section/start/end
+  state over UDP — so clients read the real source of truth instead of guessing.
+  (The listener uses port 39052; you point AbleSet's OSC output at it.)
+- **Cue macros that fire themselves.** A macro registered with
+  `register_locator_macro` now auto-fires after a successful `jump_to_locator` —
+  a section change can cue the console and visuals in one move. Failed jumps
+  never fire it; `fire_locator_macro` still fires explicitly when you want.
+- **`probe_lom_capability`** — a read-only, whitelisted probe for "what does this
+  Live version actually expose?", so we stop guessing at APIs.
+- **Hygiene:** the missing replay fixture is back, and eight long-standing
+  Python 3.14 test failures are fixed — test layer only, no behaviour change.
+
+Full notes: [v0.9.1 release](https://github.com/mhzsajan/AbleBridgePlus/releases/tag/v0.9.1)
+
+### v0.9.0 — show-control gaps closed
+
+The first release since v0.8.0. 475 → 484 tools.
+
+- `clear_arrangement_clip_envelopes` — the old clear only saw Session clips; this
+  clears every envelope on an **Arrangement** clip.
+- `create_named_locator` — makes a named cue point at a beat position (honestly
+  reports when Live refuses the rename).
+- `probe_midi_cc_envelope_surface` — a read-only capability probe; Arrangement
+  CC "red lanes" remain impossible at the Ableton UI level.
+- Six new server-side live-show OSC tools (the foundation v0.9.1 builds on).
+
+<details>
+<summary>Earlier release: v0.8.0 — correctness and safety pass</summary>
 
 ### v0.8.0 — correctness and safety pass
 
@@ -510,6 +575,8 @@ code (159 total).
 
 </details>
 
+</details>
+
 Full history: [CHANGELOG.md](CHANGELOG.md)
 
 ---
@@ -556,10 +623,18 @@ practice.
 
 ## Roadmap
 
-- Deeper arrangement editing (tempo track, automation breakpoints)
-- Session comparison & richer change history
-- TouchDesigner integration
-- Multi-DAW support (experiment)
+- **Native AbleSet follow** — have the bridge subscribe to AbleSet OSC directly and
+  drive locator jumps itself (today the `get_ableset_state` listener exposes the
+  state; the AI still calls `jump_to_locator`).
+- **Video storyboard** — click-to-control web dashboard that feeds the selected
+  track/section back as context.
+- **Deeper arrangement editing** — tempo track, automation breakpoints.
+- **Session comparison & richer change history**.
+- **Extensions SDK** (Ableton's beta) — the only real path to automating audio
+  stem export and MIDI CC envelopes; both are blocked in the current scripting API.
+- **Multi-DAW support** (experiment).
+
+Full plan: [docs/ROADMAP.md](docs/ROADMAP.md)
 
 ---
 
