@@ -36,7 +36,11 @@ def register_tools(mcp):
             "m4l_sockets_ready": m4l_sockets_ready,
             "browser_cache_ready": state.browser_cache_ready.is_set(),
             "browser_cache_items": len(state.browser_cache_flat),
-            "tool_count": len(mcp._tool_manager._tools) if hasattr(mcp, '_tool_manager') else 0,
+            # `mcp` here is the _FastMCPAdapter, which exposes the real
+            # ToolRegistry as `._registry` (its tool_count is authoritative).
+            # The previous `mcp._tool_manager._tools` never existed on the
+            # adapter, so this field always reported 0.
+            "tool_count": mcp._registry.tool_count if hasattr(mcp, '_registry') else 0,
             "features": {
                 "grid_notation": True,
                 "snapshots": True,
