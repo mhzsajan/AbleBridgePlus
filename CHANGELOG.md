@@ -82,6 +82,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   when AbleSet ignores the message — sending the command is not treated as
   proof it worked.
 
+## [0.9.2] - 2026-11-17
+
+### Added
+- **Zero-AI audio-profile switching.** The Ableton remote script now listens on
+  **UDP 9883** (`OSC_PROFILE_PORT`) for raw OSC from AbleSet Canvas buttons:
+  `/profile/pc`, `/profile/wing`, `/profile/status`, plus `/profile/<name>` for
+  any preset saved in the shared file. A small hand-rolled OSC decoder (address
+  padded to 4 bytes, optional `,s`/`,i`/`,f` type tags, big-endian args) runs on
+  the listener thread; the applier is deferred to Ableton's main thread with
+  `schedule_message(0, task)`, exactly like the existing UDP command path.
+  Nothing here needs AI, OpenCode, or the MCP server at showtime.
+- **Per-track output presets from the shared store.** The new
+  `AbleBridgePlus/handlers/profile.py::apply_profile` reads
+  `~/.ableton-bridge/routing-presets.json` — the same file the MCP
+  `save_output_preset` tool writes — and applies **only** each track's output
+  type/channel, verifying every write with `get_track_routing`. Per-track
+  exceptions are collected (never reported as success), out-of-range indices
+  are skipped with an error, and a track-name match is a best-effort fallback
+  when setlist edits shifted the indices. `/profile/status` reports the
+  available presets and the last applied result.
+
+### Caveats (honest)
+- Ableton's **global audio device** (PC speakers vs WING USB) is outside Live's
+  object model and is still switched **by hand** — this feature routes tracks,
+  not the OS audio device.
+- The **WING must be connected** for its `Ext. Out` output names to resolve;
+  when it isn't, affected tracks are recorded as errors, not silently skipped.
+- **Regenerate the presets after any setlist edit** (track indices shift).
+- Version bumped to 0.9.2 everywhere; versioned install folder
+  `AbleBridgePlus_0_9_2`.
+
 ## [0.9.1-hotfix] - 2026-11-17 (server-side only, no remote-script change)
 
 - **OSC int→float fix (found by live test against the WING console):** `_send_osc_message`

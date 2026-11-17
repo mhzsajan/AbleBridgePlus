@@ -5,7 +5,7 @@
 [![Release](https://img.shields.io/github/v/release/mhzsajan/AbleBridgePlus)](https://github.com/mhzsajan/AbleBridgePlus/releases/latest)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
-[![Tests: 164 passing](https://img.shields.io/badge/tests-164%20passing-brightgreen.svg)](https://github.com/mhzsajan/AbleBridgePlus/actions)
+[![Tests: 171 passing](https://img.shields.io/badge/tests-171%20passing-brightgreen.svg)](https://github.com/mhzsajan/AbleBridgePlus/actions)
 [![Ableton Live 11+](https://img.shields.io/badge/ableton-Live%2011%2B-orange.svg)](https://www.ableton.com/en/live/)
 
 ---
@@ -231,12 +231,12 @@ uv sync                      # or: pip install -e .
 # folder name carries the version - that name is what Live prints in the
 # Control Surface list:
 #   Windows: %USERPROFILE%\Documents\Ableton\
-#            User Library\Remote Scripts\AbleBridgePlus_0_9_1
-#   macOS:   ~/Music/Ableton/User Library/Remote Scripts/AbleBridgePlus_0_9_1
+#            User Library\Remote Scripts\AbleBridgePlus_0_9_2
+#   macOS:   ~/Music/Ableton/User Library/Remote Scripts/AbleBridgePlus_0_9_2
 ```
 
 Then in Ableton: **Preferences → Link, Tempo & MIDI → Control Surface →
-AbleBridgePlus_0_9_1**. Restart Live if it was already open.
+AbleBridgePlus_0_9_2**. Restart Live if it was already open.
 
 Because the entry name contains the version, upgrading changes it — Live still
 has the old name selected, so re-select the new entry once after each release
@@ -291,7 +291,7 @@ connects. The same number is written to Live's `Log.txt` and returned by
 <summary>More ways to verify (optional)</summary>
 
 ```bash
-# 164 unit + replay tests — no Ableton required
+# 171 unit + replay tests — no Ableton required
 uv run --with pytest pytest tests/ -q
 
 # every module imports cleanly
@@ -395,7 +395,18 @@ tools below and the audio-analysis / producer / autopilot tooling, they make up 
 
 ## Recent releases
 
-### v0.9.1 — talk to the rest of the rig (current)
+### v0.9.2 — zero-AI audio profiles (current)
+
+Band members can switch every track's audio output between PC and WING by
+clicking an AbleSet Canvas button — no AI, no OpenCode, no MCP server required.
+The remote script listens for raw OSC on **UDP 9883** (`/profile/pc`,
+`/profile/wing`, `/profile/status`, or `/profile/<any saved preset>`) and applies
+the shared `~/.ableton-bridge/routing-presets.json` per-track output preset.
+WING must be connected (otherwise errors are reported honestly, never hidden),
+and Ableton's **global audio device still has to be switched by hand**.
+Regenerate the presets after any setlist edit. See `docs/SHOW-SETUP-TOOLS.md`.
+
+### v0.9.1 — talk to the rest of the rig
 
 A small follow-up to v0.9 that closes the live-show gaps found while building a
 real show. 484 → **488 tools**, full suite **164 passing / 0 failing**.

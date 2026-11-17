@@ -1,6 +1,6 @@
 # AbleBridgePlus — Roadmap
 
-> Living document. Updated after each release. Current version: **v0.9.1** (488 tools).
+> Living document. Updated after each release. Current version: **v0.9.2** (488 tools).
 
 ## Where the project is
 
@@ -12,6 +12,16 @@
 | **3 — Collaboration** (AI listens, judges, contributes taste) | 🔜 The next frontier |
 
 ---
+
+## v0.9.2 — zero-AI audio profile switching (2026-11-17)
+
+- **Remote-script OSC listener on UDP 9883** (`AbleBridgePlus/__init__.py` +
+  `AbleBridgePlus/handlers/profile.py`) applies per-track output presets from the
+  shared `~/.ableton-bridge/routing-presets.json` when an AbleSet Canvas button
+  sends `/profile/pc`, `/profile/wing` or `/profile/<name>`. No AI or MCP server
+  is involved at showtime. The global audio device remains a manual switch and
+  the WING must be connected for its output names to resolve; presets must be
+  regenerated after setlist edits. Tool count unchanged (488).
 
 ## v0.9.1 — show-control follow-ups (2026-11-17)
 

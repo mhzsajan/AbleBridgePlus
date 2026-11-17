@@ -20,6 +20,10 @@ from .version import SCRIPT_VERSION
 # Constants for socket communication
 DEFAULT_PORT = 9877
 UDP_REALTIME_PORT = 9882
+# Zero-AI audio-profile switching: AbleSet Canvas buttons send raw OSC to
+# /profile/<name> here. Separate from 9882 so the existing JSON command path
+# stays untouched.
+OSC_PROFILE_PORT = 9883
 HOST = "localhost"
 
 
@@ -666,9 +670,18 @@ class AbleBridgePlus(ControlSurface):
         self.udp_thread = None
         self.udp_running = False
 
+        # OSC profile listener (zero-AI audio switching, port 9883). Only
+        # plain data is kept here; the last result is safe to read from any
+        # thread, unlike anything derived from self._song.
+        self.osc_profile_sock = None
+        self.osc_profile_thread = None
+        self.osc_profile_running = False
+        self._last_profile_result = None
+
         # Start the socket servers
         self.start_server()
         self.start_udp_server()
+        self.start_osc_profile_server()
 
         self.log_message("AbleBridgePlus v" + SCRIPT_VERSION + " initialized")
 
@@ -701,6 +714,18 @@ class AbleBridgePlus(ControlSurface):
 
         if self.udp_thread and self.udp_thread.is_alive():
             self.udp_thread.join(3.0)
+
+        # Same shutdown order as UDP: close the socket to unblock recvfrom(),
+        # then clear the flag so the loop exits without logging an error.
+        if self.osc_profile_sock:
+            try:
+                self.osc_profile_sock.close()
+            except (OSError, socket.error):
+                pass
+            self.osc_profile_sock = None
+        self.osc_profile_running = False
+        if self.osc_profile_thread and self.osc_profile_thread.is_alive():
+            self.osc_profile_thread.join(3.0)
 
         # Close all client sockets so their threads can exit
         with self._client_lock:
@@ -846,6 +871,111 @@ class AbleBridgePlus(ControlSurface):
                 self.schedule_message(0, task)
             except AssertionError:
                 self.log_message("UDP batch_set: schedule_message unavailable, dropping update")
+
+    # ------------------------------------------------------------------
+    # Zero-AI audio profile listener (raw OSC on 9883)
+    # ------------------------------------------------------------------
+
+    def start_osc_profile_server(self):
+        """Bind localhost:9883 and start the profile OSC receive thread."""
+        try:
+            self.osc_profile_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            self.osc_profile_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            self.osc_profile_sock.bind((HOST, OSC_PROFILE_PORT))
+            self.osc_profile_sock.settimeout(1.0)
+
+            self.osc_profile_running = True
+            self.osc_profile_thread = threading.Thread(target=self._osc_profile_server_loop)
+            self.osc_profile_thread.daemon = True
+            self.osc_profile_thread.start()
+
+            self.log_message(
+                "OSC profile server started on port " + str(OSC_PROFILE_PORT))
+        except Exception as e:
+            self.osc_profile_running = False
+            self.log_message("Error starting OSC profile server: " + str(e))
+
+    def _osc_profile_server_loop(self):
+        """Receive OSC datagrams. Never touch self._song on this thread."""
+        while self.osc_profile_running:
+            try:
+                data, addr = self.osc_profile_sock.recvfrom(4096)
+                if not data:
+                    continue
+                address, args = handlers.profile.decode_osc_message(data)
+                if address is None:
+                    continue
+                self._process_osc_profile(address, args)
+            except socket.timeout:
+                continue
+            except Exception as e:
+                if self.osc_profile_running:
+                    self.log_message("OSC profile server error: " + str(e))
+                time.sleep(0.1)
+
+    def _process_osc_profile(self, address, args):
+        """Dispatch an OSC address on the listener thread.
+
+        Everything Live-related is deferred with schedule_message(0, task),
+        copying _process_udp_command exactly.  Here we only capture the plain
+        preset name string (the Canvas button's optional arg is a label; the
+        address is authoritative) and read plain preset data from the JSON file.
+        """
+        if address == "/profile/status":
+            self._report_profile_status()
+            return
+
+        if address in handlers.profile.KNOWN_PROFILE_ADDRESSES:
+            name = address.rsplit("/", 1)[-1]  # pc / wing
+        elif address.startswith(handlers.profile.OSC_ADDRESS_PREFIX):
+            name = address[len(handlers.profile.OSC_ADDRESS_PREFIX):]
+            if not name or "/" in name:
+                return
+            if name not in handlers.profile.list_preset_names():
+                self.log_message(
+                    "OSC profile: unknown preset '{0}', ignoring".format(name))
+                return
+        else:
+            return
+
+        def task():
+            try:
+                result = handlers.profile.apply_profile(self, name)
+                self._last_profile_result = result
+                self.log_message("OSC profile '{0}': {1} applied, {2} skipped, "
+                                 "{3} mismatches, {4} errors".format(
+                                     name, result["applied"], result["skipped"],
+                                     len(result["mismatches"]), len(result["errors"])))
+                if result["errors"]:
+                    self.log_message("OSC profile '{0}' details: {1}".format(
+                        name, result["errors"]))
+                self.show_message("Audio profile {0}: {1} tracks routed".format(
+                    name, result["applied"]))
+            except Exception as e:
+                self._last_profile_result = {
+                    "preset": name, "applied": 0, "skipped": 0,
+                    "errors": [str(e)], "mismatches": []}
+                self.log_message("OSC profile apply error: " + str(e))
+
+        try:
+            self.schedule_message(0, task)
+        except AssertionError:
+            self.log_message("OSC profile: schedule_message unavailable, dropping update")
+
+    def _report_profile_status(self):
+        """Log/show available presets + last result (no Live API access)."""
+        names = handlers.profile.list_preset_names()
+        summary = ", ".join(names) if names else "(none saved)"
+        self.log_message("OSC profile presets: " + summary)
+        last = self._last_profile_result
+        if last is None:
+            self.log_message("OSC profile: no profile applied yet")
+            self.show_message("Audio profiles available: " + summary)
+        else:
+            self.log_message("OSC profile last result: {0}".format(last))
+            self.show_message("Audio profile {0}: {1} applied / {2} errors".format(
+                last.get("preset"), last.get("applied"),
+                len(last.get("errors", []))))
 
     def _server_thread(self):
         """Server thread implementation - handles client connections"""
