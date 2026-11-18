@@ -512,6 +512,8 @@ _READONLY_HANDLERS = {
     "get_all_tracks_info": lambda song, p, ctrl: handlers.tracks.get_all_tracks_info(song, ctrl),
     "get_return_tracks_info": lambda song, p, ctrl: handlers.tracks.get_return_tracks_info(song, ctrl),
     "get_track_routing": lambda song, p, ctrl: handlers.tracks.get_track_routing(song, p.get("track_index", 0), ctrl),
+    "get_master_routing": lambda song, p, ctrl: handlers.tracks.get_master_routing(song, ctrl),
+    "set_master_routing": lambda song, p, ctrl: handlers.tracks.set_master_routing(song, p.get("output_type"), p.get("output_channel"), ctrl),
     "get_track_meters": lambda song, p, ctrl: handlers.tracks.get_track_meters(song, p.get("track_index", 0), ctrl),
     "get_take_lanes": lambda song, p, ctrl: handlers.tracks.get_take_lanes(song, p.get("track_index", 0), ctrl),
 

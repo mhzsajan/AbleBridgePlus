@@ -240,4 +240,32 @@ def apply_profile(ctrl, name, preset_path=None):
 
         result["applied"] += 1
 
+    # Master output routing (PC 1/2 vs WING 41/42) - stored in newer presets.
+    master = preset.get("master")
+    if isinstance(master, dict) and master.get("output_type"):
+        target_mt = master.get("output_type")
+        target_mc = _norm_channel(master.get("output_channel"))
+        try:
+            params = {"output_type": target_mt}
+            if target_mc is not None:
+                params["output_channel"] = target_mc
+            tracks.set_master_routing(song, ctrl=ctrl, **params)
+            after = tracks.get_master_routing(song, ctrl=ctrl)
+            got_type = after.get("output_routing_type")
+            got_ch = _norm_channel(after.get("output_routing_channel"))
+            if (got_type == target_mt
+                    and (target_mc is None or got_ch == target_mc)):
+                result["master"] = {"applied": True,
+                                    "output_type": got_type,
+                                    "output_channel": got_ch}
+            else:
+                result["mismatches"].append({
+                    "name": "Master",
+                    "expected": {"output_type": target_mt,
+                                 "output_channel": target_mc},
+                    "actual": {"output_type": got_type,
+                               "output_channel": got_ch}})
+        except Exception as e:
+            result["errors"].append({"name": "Master", "error": str(e)})
+
     return result

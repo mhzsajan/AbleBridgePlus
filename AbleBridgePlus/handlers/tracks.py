@@ -406,6 +406,59 @@ def get_track_routing(song, track_index, ctrl=None):
         raise
 
 
+def get_master_routing(song, ctrl=None):
+    """Get the master track's OUTPUT routing (display names + options).
+
+    The audio-profile presets need this: switching PC <-> WING must also move
+    the master output (e.g. Ext. Out 41/42 on WING, 1/2 on PC). Live's master
+    track exposes output routing but not input routing.
+    """
+    track = get_track(song, 0, "master")
+    result = {"track_name": getattr(track, "name", "Master")}
+    try:
+        result["output_routing_type"] = str(track.output_routing_type.display_name)
+    except Exception:
+        result["output_routing_type"] = None
+    try:
+        result["output_routing_channel"] = str(track.output_routing_channel.display_name)
+    except Exception:
+        result["output_routing_channel"] = None
+    try:
+        result["available_output_types"] = [
+            str(r.display_name) for r in track.available_output_routing_types]
+    except Exception:
+        result["available_output_types"] = []
+    try:
+        result["available_output_channels"] = [
+            str(c.display_name) for c in track.available_output_routing_channels]
+    except Exception:
+        result["available_output_channels"] = []
+    return result
+
+
+def set_master_routing(song, output_type=None, output_channel=None, ctrl=None):
+    """Set the master track's output routing by display name."""
+    track = get_track(song, 0, "master")
+    changes = {}
+    if output_type is not None:
+        for rt in track.available_output_routing_types:
+            if str(rt.display_name) == output_type:
+                track.output_routing_type = rt
+                changes["output_routing_type"] = output_type
+                break
+        else:
+            raise ValueError("Master output type '{0}' not found".format(output_type))
+    if output_channel is not None:
+        for ch in track.available_output_routing_channels:
+            if str(ch.display_name) == output_channel:
+                track.output_routing_channel = ch
+                changes["output_routing_channel"] = output_channel
+                break
+        else:
+            raise ValueError("Master output channel '{0}' not found".format(output_channel))
+    return changes
+
+
 def set_track_monitoring(song, track_index, state, ctrl=None):
     """Set the monitoring state of a track.
 

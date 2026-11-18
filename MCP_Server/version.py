@@ -9,7 +9,7 @@ Credits:
 - Original Creator: hidingwill
 """
 
-__version__ = "0.9.3"
+__version__ = "0.9.4"
 __author__ = "Sajan Maharjan"
 __license__ = "MIT"
 __description__ = "AI-integrated live show engineering system for Ableton Live"

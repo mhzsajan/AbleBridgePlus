@@ -1,6 +1,6 @@
 # AbleBridgePlus — Roadmap
 
-> Living document. Updated after each release. Current version: **v0.9.3** (495 tools).
+> Living document. Updated after each release. Current version: **v0.9.4** (495 tools).
 
 ## Where the project is
 
@@ -12,6 +12,11 @@
 | **3 — Collaboration** (AI listens, judges, contributes taste) | 🔜 The next frontier |
 
 ---
+
+## v0.9.4 — master output in audio presets (2026-11-18)
+
+- Presets now capture/apply the Master track output routing (PC 1/2 ↔ WING 41/42), not just the
+  49 regular tracks. Both MCP and the in-Live OSC handler verify it after writing.
 
 ## v0.9.3 — portable audio presets (2026-11-18)
 

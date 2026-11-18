@@ -78,6 +78,20 @@ def _norm_channel(value: Any) -> Optional[str]:
     return text or None
 
 
+def _capture_master(ableton) -> Tuple[Optional[Dict[str, Any]], Optional[str]]:
+    """Read the master track's output routing (PC 1/2 vs WING 41/42, etc.)."""
+    try:
+        info = ableton.send_command("get_master_routing") or {}
+        if not info.get("output_routing_type"):
+            return None, "master track exposes no output routing on this Live version"
+        return {
+            "output_type": info.get("output_routing_type"),
+            "output_channel": _norm_channel(info.get("output_routing_channel")),
+        }, None
+    except Exception as e:
+        return None, "master routing capture failed: {0}".format(e)
+
+
 def _capture(ableton) -> Tuple[List[Dict[str, Any]], List[str]]:
     """Read every track's current output routing in one bulk call + N reads."""
     all_info = ableton.send_command("get_all_tracks_info") or {}
@@ -130,6 +144,9 @@ def register_tools(mcp):
         name = _valid_name(name)
         ableton = get_ableton_connection()
         tracks, read_errors = _capture(ableton)
+        master, master_error = _capture_master(ableton)
+        if master_error:
+            read_errors.append("master: " + master_error)
         if not tracks:
             return json.dumps({
                 "status": "error",
@@ -153,6 +170,7 @@ def register_tools(mcp):
                 "created": time.time(),
                 "track_count": len(tracks),
                 "tracks": tracks,
+                "master": master,
             }
             _write_store(store)
         return json.dumps({
@@ -314,6 +332,41 @@ def register_tools(mcp):
                 errors.append({"index": idx, "name": label,
                                "error": str(e)})
 
+        # --- master output routing: PC 1/2 vs WING 41/42 --------------------
+        master_result = None
+        master_info = preset.get("master")
+        if isinstance(master_info, dict) and master_info.get("output_type"):
+            cur_master, merr = _capture_master(ableton)
+            target_mt = master_info.get("output_type")
+            target_mc = _norm_channel(master_info.get("output_channel"))
+            plan = {"from": cur_master,
+                    "to": {"output_type": target_mt, "output_channel": target_mc}}
+            if merr:
+                errors.append({"master": merr})
+            elif (cur_master and cur_master.get("output_type") == target_mt
+                  and (target_mc is None
+                       or cur_master.get("output_channel") == target_mc)):
+                master_result = {"already_matching": True, "plan": plan}
+            elif dry_run:
+                master_result = {"would_change": True, "plan": plan}
+            else:
+                try:
+                    params: Dict[str, Any] = {"output_type": target_mt}
+                    if target_mc is not None:
+                        params["output_channel"] = target_mc
+                    ableton.send_command("set_master_routing", params)
+                    after, _ = _capture_master(ableton)
+                    if (after and after.get("output_type") == target_mt
+                            and (target_mc is None
+                                 or after.get("output_channel") == target_mc)):
+                        master_result = {"applied": True, "plan": plan}
+                    else:
+                        master_result = {"mismatch": True, "expected": plan["to"],
+                                         "actual": after}
+                except Exception as e:
+                    master_result = {"error": str(e)}
+                    errors.append({"master": str(e)})
+
         return json.dumps({
             "status": "ok",
             "message": ("Dry run for preset '{0}': {1} track(s) would change. "
@@ -332,6 +385,7 @@ def register_tools(mcp):
             "mismatches": mismatches,
             "skipped": skipped,
             "errors": errors,
+            "master": master_result,
         })
 
     @mcp.tool()

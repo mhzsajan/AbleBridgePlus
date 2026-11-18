@@ -5,6 +5,20 @@ All notable changes to AbleBridgePlus will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.9.4] - 2026-11-18
+
+### Fixed
+- **Audio-profile presets now include the Master track's output routing.** Previously only the 49
+  regular tracks were captured/applied, so switching `pc` ↔ `wing` left the master output on the
+  WING's `Ext. Out 41/42` instead of moving it to the PC device's `1/2` (and back). Added
+  `get_master_routing` / `set_master_routing` remote-script commands; both the MCP tool
+  (`save_output_preset` / `apply_output_preset`) and the in-Live canvas handler (`profile.py`) now
+  capture, apply and read back the master output. Older presets without a `master` key simply skip
+  it — no error. Re-save both presets after upgrading.
+
+### Changed
+- Version bumped to 0.9.4 everywhere; remote folder is `AbleBridgePlus_0_9_4`.
+
 ## [0.9.3] - 2026-11-18
 
 ### Fixed
