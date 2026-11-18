@@ -37,16 +37,16 @@ This directory contains the release files for AbleBridgePlus — the MCP bridge 
    uv sync
    ```
 
-3. Copy `AbleBridgePlus` to your Ableton Remote Scripts folder as **`AbleBridgePlus_0_9_2`**
+3. Copy `AbleBridgePlus` to your Ableton Remote Scripts folder as **`AbleBridgePlus_0_9_3`**
    (the folder name carries the version — that is what Ableton shows in Preferences):
-   - **Windows:** `Documents/Ableton/User Library/Remote Scripts/AbleBridgePlus_0_9_2`
-   - **macOS:** `~/Music/Ableton/User Library/Remote Scripts/AbleBridgePlus_0_9_2`
-   - **Linux:** `~/.ableton/User Library/Remote Scripts/AbleBridgePlus_0_9_2`
+   - **Windows:** `Documents/Ableton/User Library/Remote Scripts/AbleBridgePlus_0_9_3`
+   - **macOS:** `~/Music/Ableton/User Library/Remote Scripts/AbleBridgePlus_0_9_3`
+   - **Linux:** `~/.ableton/User Library/Remote Scripts/AbleBridgePlus_0_9_3`
 
 4. Configure Ableton:
    - Open Ableton Live
    - Go to Preferences → Link, Tempo & MIDI
-   - Under "Control Surface", select **"AbleBridgePlus_0_9_2"**
+   - Under "Control Surface", select **"AbleBridgePlus_0_9_3"**
    - Leave Input and Output as "None"
 
 5. Start the MCP Server:
@@ -72,9 +72,9 @@ Make sure Python 3.10+ is installed and added to your PATH.
 Install uv with: `pip install uv`
 
 ### Ableton not connecting
-1. Make sure the Remote Script is in the correct folder (`.../Remote Scripts/AbleBridgePlus_0_9_2`)
+1. Make sure the Remote Script is in the correct folder (`.../Remote Scripts/AbleBridgePlus_0_9_3`)
 2. Restart Ableton Live
-3. Check that "AbleBridgePlus_0_9_2" is selected as Control Surface
+3. Check that "AbleBridgePlus_0_9_3" is selected as Control Surface
    (the entry is named after the folder, so after every upgrade the old entry
    disappears — re-select the new one once)
 

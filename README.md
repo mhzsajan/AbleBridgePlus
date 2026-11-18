@@ -252,12 +252,12 @@ uv sync                      # or: pip install -e .
 # folder name carries the version - that name is what Live prints in the
 # Control Surface list:
 #   Windows: %USERPROFILE%\Documents\Ableton\
-#            User Library\Remote Scripts\AbleBridgePlus_0_9_2
-#   macOS:   ~/Music/Ableton/User Library/Remote Scripts/AbleBridgePlus_0_9_2
+#            User Library\Remote Scripts\AbleBridgePlus_0_9_3
+#   macOS:   ~/Music/Ableton/User Library/Remote Scripts/AbleBridgePlus_0_9_3
 ```
 
 Then in Ableton: **Preferences → Link, Tempo & MIDI → Control Surface →
-AbleBridgePlus_0_9_2**. Restart Live if it was already open.
+AbleBridgePlus_0_9_3**. Restart Live if it was already open.
 
 Because the entry name contains the version, upgrading changes it — Live still
 has the old name selected, so re-select the new entry once after each release
@@ -416,7 +416,17 @@ tools below and the audio-analysis / producer / autopilot tooling, they make up 
 
 ## Recent releases
 
-### v0.9.2 — zero-AI audio profiles (current)
+### v0.9.3 — portable audio profiles (current)
+
+The `pc` / `wing` routing presets can now live **inside the AbleSet project** and
+travel to another Mac. Both the MCP writer and the in-Live reader resolve one
+configurable path (env `ABLETON_BRIDGE_PRESET_PATH` / `ABLETON_BRIDGE_PRESET_DIR`,
+or `~/.ableton-bridge/config.json`), with the old home path kept as fallback.
+No code patching or symlink tricks are needed on a new machine — copy the
+project, point the config file at its `AbleSet/AudioProfiles/` folder, and the
+canvas buttons work. See `docs/SHOW-SETUP-TOOLS.md`.
+
+### v0.9.2 — zero-AI audio profiles
 
 Band members can switch every track's audio output between PC and WING by
 clicking an AbleSet Canvas button — no AI, no OpenCode, no MCP server required.

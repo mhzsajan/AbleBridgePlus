@@ -73,7 +73,7 @@ sequenceDiagram
     participant T as Live tracks
 
     C->>R: UDP OSC /profile/wing (or /profile/pc)
-    R->>P: read ~/.ableton-bridge/routing-presets.json
+    R->>P: read resolved path (config/env, else ~/.ableton-bridge/routing-presets.json)
     P-->>R: saved per-track outputs
     loop about 49 tracks
         R->>T: set_track_routing

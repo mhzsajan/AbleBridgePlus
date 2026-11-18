@@ -5,6 +5,29 @@ All notable changes to AbleBridgePlus will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.9.3] - 2026-11-18
+
+### Fixed
+- **Audio presets are now portable.** The MCP writer (`MCP_Server/tools/output_routing.py`)
+  and the remote-script reader (`AbleBridgePlus/handlers/profile.py`) both hardcoded
+  `~/.ableton-bridge/routing-presets.json`, so copying an AbleSet project to another
+  Mac lost the `pc` / `wing` routing snapshots and the canvas buttons had nothing to
+  apply. A shared resolver (`MCP_Server/preset_store.py` and its Python-2-compatible
+  twin `AbleBridgePlus/preset_store.py`) now picks the first of: env
+  `ABLETON_BRIDGE_PRESET_PATH`, env `ABLETON_BRIDGE_PRESET_DIR`,
+  `~/.ableton-bridge/config.json` (`routing_presets_path` / `routing_presets_dir`),
+  then the legacy home path as fallback. The path is resolved at every call, so a
+  freshly copied project works without restarting the server. The file can now live
+  in `<Project>/AbleSet/AudioProfiles/routing-presets.json` and travel with the show.
+- **Atomic write is safe with project-local paths.** `os.replace` still writes a
+  sibling `.tmp` then renames, so the preset file itself must be a real file, not a
+  symlink (the folder may be symlinked safely). Documented in the show-profile repo.
+
+### Added
+- `tests/test_preset_store.py` — asserts both resolvers agree, the precedence order,
+  `~` expansion, malformed-config fallback, and that the MCP writer uses the resolved
+  path. Full suite: 180 passing.
+
 ## [Unreleased] - 2026-11-17
 
 ### Fixed (found by live testing 2026-11-17)

@@ -5,9 +5,11 @@ every track between the PC's audio device and the WING console's USB outputs by
 hand is tedious and error-prone. This module captures the output routing of
 *every* track into a named preset and applies it back in one call.
 
-Presets are stored next to the named checkpoints in
-``~/.ableton-bridge/routing-presets.json``. Applying a preset defaults to a
-dry run and verifies every write by reading the routing back from Ableton.
+Presets are written to the path resolved by ``MCP_Server.preset_store``: a
+project-local ``AbleSet/AudioProfiles/routing-presets.json`` when configured,
+otherwise the legacy ``~/.ableton-bridge/routing-presets.json``. Applying a
+preset defaults to a dry run and verifies every write by reading the routing
+back from Ableton.
 
 Nothing here restructures the set: only each track's output routing type and
 channel are read/written, using the existing ``get_track_routing`` /
@@ -25,11 +27,8 @@ from typing import Any, Dict, List, Optional, Tuple
 from mcp.server.fastmcp import Context
 
 from MCP_Server.connections.ableton import get_ableton_connection
+from MCP_Server.preset_store import resolve_preset_path
 from MCP_Server.tools._base import _tool_handler
-
-# Same directory as the checkpoint store (see MCP_Server/checkpoints.py).
-_PRESET_PATH = os.path.join(
-    os.path.expanduser("~"), ".ableton-bridge", "routing-presets.json")
 
 _lock = threading.RLock()
 _NAME_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9 _.-]{0,63}$")
@@ -41,7 +40,7 @@ _NAME_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9 _.-]{0,63}$")
 
 def _load_store() -> Dict[str, Any]:
     try:
-        with open(_PRESET_PATH, encoding="utf-8") as f:
+        with open(resolve_preset_path(), encoding="utf-8") as f:
             data = json.load(f)
         if isinstance(data, dict) and isinstance(data.get("presets"), dict):
             return data
@@ -52,11 +51,12 @@ def _load_store() -> Dict[str, Any]:
 
 def _write_store(store: Dict[str, Any]) -> None:
     """Atomic write, matching the checkpoint store's durability pattern."""
-    os.makedirs(os.path.dirname(_PRESET_PATH), exist_ok=True)
-    tmp = _PRESET_PATH + ".tmp"
+    target = resolve_preset_path()
+    os.makedirs(os.path.dirname(target), exist_ok=True)
+    tmp = target + ".tmp"
     with open(tmp, "w", encoding="utf-8") as f:
         json.dump(store, f, indent=2, ensure_ascii=False)
-    os.replace(tmp, _PRESET_PATH)
+    os.replace(tmp, target)
 
 
 def _valid_name(name: str) -> str:

@@ -1,6 +1,6 @@
 # AbleBridgePlus — Roadmap
 
-> Living document. Updated after each release. Current version: **v0.9.2** (488 tools).
+> Living document. Updated after each release. Current version: **v0.9.3** (495 tools).
 
 ## Where the project is
 
@@ -12,6 +12,14 @@
 | **3 — Collaboration** (AI listens, judges, contributes taste) | 🔜 The next frontier |
 
 ---
+
+## v0.9.3 — portable audio presets (2026-11-18)
+
+- **Both sides resolve the same path.** MCP writer and in-Live reader share a
+  resolver so `routing-presets.json` can live in the AbleSet project folder and
+  travel to another Mac. Env vars / `~/.ableton-bridge/config.json` override the
+  legacy home-path fallback; resolved on every call, no server restart needed.
+- `tests/test_preset_store.py` locks the precedence and cross-side agreement.
 
 ## v0.9.2 — zero-AI audio profile switching (2026-11-17)
 

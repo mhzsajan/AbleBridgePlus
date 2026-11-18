@@ -63,9 +63,23 @@ one track at a time.
 | `apply_output_preset` | `(name: str, dry_run: bool = True)` | Preview or apply + verify a preset |
 | `delete_output_preset` | `(name: str)` | Remove a preset |
 
-Presets live in `~/.ableton-bridge/routing-presets.json` (same folder as the
-named checkpoint store) and survive restarts. Each preset stores only
-`{index, name, output_type, output_channel}` per track.
+Presets live in one file shared by the MCP tools and the in-Live OSC listener.
+From v0.9.3 that path is configurable so it can live **inside the AbleSet project**
+and travel to another Mac. The resolver (both sides) picks the first of:
+
+1. env `ABLETON_BRIDGE_PRESET_PATH` — full path to `routing-presets.json`
+2. env `ABLETON_BRIDGE_PRESET_DIR` — folder holding that file
+3. `~/.ableton-bridge/config.json` — `{"routing_presets_path": "..."}` or
+   `{"routing_presets_dir": "..."}`
+4. legacy `~/.ableton-bridge/routing-presets.json`
+
+Recommended for a show: keep the file at
+`<Project>/AbleSet/AudioProfiles/routing-presets.json` and have
+`ableset-show-profile/scripts/setup.sh` write the config entry on each Mac.
+Each preset stores only `{index, name, output_type, output_channel}` per track;
+re-save after any setlist edit because indexes shift. **The preset file itself
+must be a real file, not a symlink** — saves replace it atomically (`os.replace`);
+symlinking the whole folder is safe.
 
 `apply_output_preset` **defaults to `dry_run=True`**. A dry run performs reads
 only. A real apply writes each changed track with `set_track_routing`, reads it

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 echo "========================================"
-echo "AbleBridgePlus Installer v0.9.2"
+echo "AbleBridgePlus Installer v0.9.3"
 echo "========================================"
 echo ""
 echo "MCP bridge for Ableton Live - 488 tools"
@@ -90,9 +90,9 @@ else
     # Drop every AbleBridgePlus* folder first: the folder name carries the
     # version, so older versions would otherwise pile up in the dropdown.
     rm -rf "$ABLETON_DIR"/AbleBridgePlus*
-    mkdir -p "$ABLETON_DIR/AbleBridgePlus_0_9_2"
-    cp -r "$INSTALL_DIR/AbleBridgePlus"/* "$ABLETON_DIR/AbleBridgePlus_0_9_2/"
-    echo "Remote Script installed to: $ABLETON_DIR/AbleBridgePlus_0_9_2"
+    mkdir -p "$ABLETON_DIR/AbleBridgePlus_0_9_3"
+    cp -r "$INSTALL_DIR/AbleBridgePlus"/* "$ABLETON_DIR/AbleBridgePlus_0_9_3/"
+    echo "Remote Script installed to: $ABLETON_DIR/AbleBridgePlus_0_9_3"
 fi
 
 echo ""
@@ -104,7 +104,7 @@ echo "Next steps:"
 echo ""
 echo "1. Open Ableton Live"
 echo "2. Go to Preferences -> Link, Tempo & MIDI"
-echo "3. Under 'Control Surface', select 'AbleBridgePlus_0_9_2'"
+echo "3. Under 'Control Surface', select 'AbleBridgePlus_0_9_3'"
 echo "4. Leave Input and Output as 'None'"
 echo ""
 echo "NOTE: the control surface entry is named after the folder, so it changes"

@@ -6,9 +6,11 @@ The listener in ``AbleBridgePlus/__init__.py`` decodes those datagrams here and
 defers the actual Live API work to Ableton's main thread.
 
 The presets themselves are the shared source of truth built by the MCP tool
-``MCP_Server/tools/output_routing.py``:
+``MCP_Server/tools/output_routing.py``. The path is resolved by
+``AbleBridgePlus.preset_store`` so it can live inside the AbleSet project
+(AbleSet/AudioProfiles/routing-presets.json) and travel with it; the legacy
+``~/.ableton-bridge/routing-presets.json`` is used when nothing is configured:
 
-    ~/.ableton-bridge/routing-presets.json
     {"version": 1, "presets": {"wing": {"name": ..., "description": ...,
       "track_count": 49, "tracks": [{"index": N, "name": "TrackName",
       "output_type": "Ext. Out", "output_channel": "1/2"}, ...]}}}
@@ -28,13 +30,15 @@ import os
 import struct
 
 from . import tracks
+from ..preset_store import resolve_preset_path
 
 # OSC addresses the listener will act on.  Any other /profile/<name> is also
 # accepted when <name> is a preset in the shared JSON file.
 OSC_ADDRESS_PREFIX = "/profile/"
 KNOWN_PROFILE_ADDRESSES = ("/profile/pc", "/profile/wing", "/profile/status")
 
-# Same relative location as MCP_Server/tools/output_routing.py::_PRESET_PATH.
+# Legacy home-relative location. Kept as a constant for callers that inspect
+# it; new code should use preset_store.resolve_preset_path() instead.
 PRESET_RELATIVE_PATH = os.path.join(".ableton-bridge", "routing-presets.json")
 
 
@@ -100,7 +104,7 @@ def decode_osc_message(data):
 # ---------------------------------------------------------------------------
 
 def _default_preset_path():
-    return os.path.join(os.path.expanduser("~"), PRESET_RELATIVE_PATH)
+    return resolve_preset_path()
 
 
 def _load_store(path=None):
@@ -140,7 +144,8 @@ def apply_profile(ctrl, name, preset_path=None):
     """Apply one saved output-routing preset; return a plain result dict.
 
     ``preset_path`` is optional and only exists to make this testable offline;
-    production always reads the shared ~/.ableton-bridge/routing-presets.json.
+    production reads the path from ``AbleBridgePlus.preset_store`` (the
+    project-local preset file when configured, legacy home path otherwise).
     The Live object is reached through ``ctrl._song`` exactly once, on the
     main thread; no Live API call happens on the OSC listener thread.
     """
