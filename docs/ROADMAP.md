@@ -1,6 +1,6 @@
 # AbleBridgePlus — Roadmap
 
-> Living document. Updated after each release. Current version: **v0.9.4** (495 tools).
+> Living document. Updated after each release. Current version: **v0.9.5** (495 tools).
 
 ## Where the project is
 
@@ -12,6 +12,11 @@
 | **3 — Collaboration** (AI listens, judges, contributes taste) | 🔜 The next frontier |
 
 ---
+
+## v0.9.5 — device-adaptive master switching (2026-11-18)
+
+- Master output resolution no longer depends on preset display names matching the local audio
+  device; the in-Live handler falls back to adaptive resolution at click time.
 
 ## v0.9.4 — master output in audio presets (2026-11-18)
 

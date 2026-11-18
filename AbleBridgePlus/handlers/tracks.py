@@ -406,6 +406,79 @@ def get_track_routing(song, track_index, ctrl=None):
         raise
 
 
+def set_master_output_for_profile(song, profile_name, ctrl=None):
+    """Device-adaptive master output: resolve names at click time.
+
+    Presets captured on one machine can carry display names another machine's
+    audio device does not offer ("Ext. Out" vs "Cue Out"/"Main", "41/42" vs a
+    device-specific label). This helper picks from what is ACTUALLY available:
+
+    - profile name containing 'wing' (or '41') -> prefer a channel with 41/42
+    - otherwise (pc) -> prefer channel 1/2
+    - falls back to the first usable output type/channel if no match
+    """
+    track = get_track(song, 0, "master")
+
+    def names(items):
+        return [str(x.display_name) for x in items]
+
+    types = names(track.available_output_routing_types)
+    type_choice = None
+    for want in ("Ext. Out", "External Out", "Cue Out", "Main"):
+        for t in types:
+            if t.lower() == want.lower():
+                type_choice = t
+                break
+        if type_choice:
+            break
+    if not type_choice:
+        for t in types:
+            if t not in ("No Output", "Sends Only", ""):
+                type_choice = t
+                break
+    if not type_choice:
+        raise ValueError("master track exposes no usable output type")
+
+    for rt in track.available_output_routing_types:
+        if str(rt.display_name) == type_choice:
+            track.output_routing_type = rt
+            break
+    channels = names(track.available_output_routing_channels)  # refreshed
+
+    name = (profile_name or "").lower()
+    want_pair = ("41", "42") if ("wing" in name or "41" in name) else ("1", "2")
+    # 1) exact pair, 2) both digits present, 3) either digit, 4) first usable
+    channel_choice = None
+    for candidate in ("/".join(want_pair),):
+        for c in channels:
+            if c == candidate:
+                channel_choice = c
+                break
+        if channel_choice:
+            break
+    if not channel_choice:
+        for c in channels:
+            if all(d in c for d in want_pair):
+                channel_choice = c
+                break
+    if not channel_choice:
+        for c in channels:
+            if any(d in c for d in want_pair):
+                channel_choice = c
+                break
+    if not channel_choice and channels:
+        channel_choice = channels[0]
+
+    if channel_choice:
+        for ch in track.available_output_routing_channels:
+            if str(ch.display_name) == channel_choice:
+                track.output_routing_channel = ch
+                break
+    if ctrl:
+        ctrl.log_message("master adaptive: {0} / {1}".format(type_choice, channel_choice))
+    return {"output_type": type_choice, "output_channel": channel_choice}
+
+
 def get_master_routing(song, ctrl=None):
     """Get the master track's OUTPUT routing (display names + options).
 

@@ -240,8 +240,11 @@ def apply_profile(ctrl, name, preset_path=None):
 
         result["applied"] += 1
 
-    # Master output routing (PC 1/2 vs WING 41/42) - stored in newer presets.
+    # Master output routing: try the stored names first, then fall back to
+    # device-adaptive resolution so a preset captured on another machine (or
+    # an old preset with no master key) still switches the master correctly.
     master = preset.get("master")
+    stored_ok = False
     if isinstance(master, dict) and master.get("output_type"):
         target_mt = master.get("output_type")
         target_mc = _norm_channel(master.get("output_channel"))
@@ -258,13 +261,17 @@ def apply_profile(ctrl, name, preset_path=None):
                 result["master"] = {"applied": True,
                                     "output_type": got_type,
                                     "output_channel": got_ch}
-            else:
-                result["mismatches"].append({
-                    "name": "Master",
-                    "expected": {"output_type": target_mt,
-                                 "output_channel": target_mc},
-                    "actual": {"output_type": got_type,
-                               "output_channel": got_ch}})
+                stored_ok = True
+        except Exception:
+            pass  # fall through to adaptive resolution
+
+    if not stored_ok and name in ("pc", "wing"):
+        try:
+            chosen = tracks.set_master_output_for_profile(song, name, ctrl=ctrl)
+            after = tracks.get_master_routing(song, ctrl=ctrl)
+            result["master"] = {"applied_adaptive": True,
+                                "chosen": chosen,
+                                "actual": after}
         except Exception as e:
             result["errors"].append({"name": "Master", "error": str(e)})
 

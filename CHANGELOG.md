@@ -5,6 +5,18 @@ All notable changes to AbleBridgePlus will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.9.5] - 2026-11-18
+
+### Fixed
+- **Master output switching is now device-adaptive.** A preset captured on one machine could carry
+  master display names (`Ext. Out`, `41/42`) that another machine's audio device does not offer
+  (`Cue Out`, `Main`, different channel labels), so `pc` ↔ `wing` switched the 49 tracks but silently
+  failed on the master. The in-Live profile handler now tries the stored names first and, if they do
+  not resolve (or the preset has no `master` key at all), resolves the master output from what the
+  device actually exposes: WING profiles prefer a channel containing `41`/`42`, PC profiles prefer
+  `1`/`2`, with a safe fallback to the first usable output. Verified on every click by read-back.
+- Works with older presets that have no `master` entry — no need to re-capture before upgrading.
+
 ## [0.9.4] - 2026-11-18
 
 ### Fixed

@@ -2,7 +2,7 @@
 setlocal enabledelayedexpansion
 
 echo ========================================
-echo AbleBridgePlus Installer v0.9.4
+echo AbleBridgePlus Installer v0.9.5
 echo ========================================
 echo.
 echo MCP bridge for Ableton Live - 488 tools
@@ -89,9 +89,9 @@ if not exist "%ABLETON_DIR%" (
     REM Drop every AbleBridgePlus* folder first: the folder name carries the
     REM version, so older versions would otherwise pile up in the dropdown.
     for /d %%D in ("%ABLETON_DIR%\AbleBridgePlus*") do rmdir /S /Q "%%D"
-    mkdir "%ABLETON_DIR%\AbleBridgePlus_0_9_4"
-    xcopy /E /I /Y "%INSTALL_DIR%\AbleBridgePlus" "%ABLETON_DIR%\AbleBridgePlus_0_9_4" >nul
-    echo Remote Script installed to: %ABLETON_DIR%\AbleBridgePlus_0_9_4
+    mkdir "%ABLETON_DIR%\AbleBridgePlus_0_9_5"
+    xcopy /E /I /Y "%INSTALL_DIR%\AbleBridgePlus" "%ABLETON_DIR%\AbleBridgePlus_0_9_5" >nul
+    echo Remote Script installed to: %ABLETON_DIR%\AbleBridgePlus_0_9_5
 )
 
 echo.
@@ -103,7 +103,7 @@ echo Next steps:
 echo.
 echo 1. Open Ableton Live
 echo 2. Go to Preferences - Link, Tempo ^& MIDI
-echo 3. Under "Control Surface", select "AbleBridgePlus_0_9_4"
+echo 3. Under "Control Surface", select "AbleBridgePlus_0_9_5"
 echo 4. Leave Input and Output as "None"
 echo.
 echo NOTE: the control surface entry is named after the folder, so it changes

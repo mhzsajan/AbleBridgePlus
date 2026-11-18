@@ -105,9 +105,19 @@ class _FakeTrack(object):
             _RoutingOption("1/2"), _RoutingOption("3/4")]
 
 
+class _FakeMaster(object):
+    """Minimal master track for the device-adaptive master step."""
+    name = "Master"
+    output_routing_type = type("T", (), {"display_name": "Ext. Out"})()
+    output_routing_channel = type("C", (), {"display_name": "1/2"})()
+    available_output_routing_types = [output_routing_type]
+    available_output_routing_channels = [output_routing_channel]
+
+
 class _FakeSong(object):
     def __init__(self, names):
         self.tracks = [_FakeTrack(name) for name in names]
+        self.master_track = _FakeMaster()
 
 
 class _FakeCtrl(object):
