@@ -1,6 +1,6 @@
 # AbleBridgePlus — Roadmap
 
-> Living document. Updated after each release. Current version: **v0.9.5** (495 tools).
+> Living document. Updated after each release. Current version: **v0.9.6** (495 tools).
 
 ## Where the project is
 

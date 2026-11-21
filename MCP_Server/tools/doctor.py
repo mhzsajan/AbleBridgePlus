@@ -25,7 +25,7 @@ ABridge_PORT = 9877
 
 # Bumped with the release; the remote script must report the same version
 # or `doctor` flags an install/repo drift (a failure mode we have hit).
-EXPECTED_SCRIPT_VERSION = "0.9.5"
+EXPECTED_SCRIPT_VERSION = "0.9.6"
 
 # Live's Control Surface dropdown prints the script *folder* name, and that
 # name carries the version (MCP_Server.version.remote_script_folder). Because

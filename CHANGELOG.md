@@ -5,6 +5,18 @@ All notable changes to AbleBridgePlus will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.9.6] - 2026-11-21
+
+### Fixed
+- **Repaired triple-encoded mojibake in all 100 `midi_cc/*.json` note/description fields.**
+  UTF-8 punctuation had been read as cp437 and re-saved, so em/en dashes, fractions and umlauts
+  appeared as garbled multi-character sequences. Each token was encoded back to cp437 and
+  decoded as UTF-8 - 1,280 tokens fixed. No code or CC values changed, only human-readable text.
+  Backups of the original files were kept outside the repo.
+
+### Notes
+- No protocol or tool changes: the show-time path stays local OSC/MIDI with no AI, MCP or internet.
+
 ## [0.9.5] - 2026-11-18
 
 ### Fixed
