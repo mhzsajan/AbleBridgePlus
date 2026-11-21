@@ -6,24 +6,24 @@
   "parameters": {
     "Volume":            {"cc": 7,  "description": "Master output volume"},
     "Pan":               {"cc": 10, "description": "Stereo pan position"},
-    "Expression":        {"cc": 11, "description": "Expression ΓÇö scales output level for dynamics"},
-    "Modulation":        {"cc": 1,  "description": "Modulation wheel ΓÇö typically routed to filter cutoff or VCO pitch"},
+    "Expression":        {"cc": 11, "description": "Expression — scales output level for dynamics"},
+    "Modulation":        {"cc": 1,  "description": "Modulation wheel — typically routed to filter cutoff or VCO pitch"},
     "Sustain":           {"cc": 64, "description": "Sustain pedal"},
-    "Portamento Time":   {"cc": 5,  "description": "Portamento time ΓÇö Moog-style glide between pitches"},
+    "Portamento Time":   {"cc": 5,  "description": "Portamento time — Moog-style glide between pitches"},
 
-    "VCF Cutoff":        {"cc": 74, "description": "Moog ladder filter cutoff frequency ΓÇö the warm, creamy 24dB/oct low-pass; the defining sonic control"},
-    "VCF Resonance":     {"cc": 71, "description": "Filter resonance/emphasis ΓÇö adds the characteristic Moog resonant peak; self-oscillates as a sine wave at maximum"},
-    "VCF Env Amount":    {"cc": 22, "description": "Filter envelope amount ΓÇö how much EG1 opens or closes the filter cutoff"},
-    "VCO Mix":           {"cc": 23, "description": "VCO mix balance ΓÇö relative levels of the three oscillators in the mixer"},
-    "Attack":            {"cc": 73, "description": "EG1 attack time ΓÇö envelope applied to both filter and VCA"},
+    "VCF Cutoff":        {"cc": 74, "description": "Moog ladder filter cutoff frequency — the warm, creamy 24dB/oct low-pass; the defining sonic control"},
+    "VCF Resonance":     {"cc": 71, "description": "Filter resonance/emphasis — adds the characteristic Moog resonant peak; self-oscillates as a sine wave at maximum"},
+    "VCF Env Amount":    {"cc": 22, "description": "Filter envelope amount — how much EG1 opens or closes the filter cutoff"},
+    "VCO Mix":           {"cc": 23, "description": "VCO mix balance — relative levels of the three oscillators in the mixer"},
+    "Attack":            {"cc": 73, "description": "EG1 attack time — envelope applied to both filter and VCA"},
     "Decay":             {"cc": 79, "description": "EG1 decay time"},
     "Sustain Level":     {"cc": 80, "description": "EG1 sustain level"},
     "Release":           {"cc": 72, "description": "EG1 release time"},
-    "LFO Rate":          {"cc": 76, "description": "LFO rate ΓÇö speed of the primary low-frequency oscillator"},
-    "LFO Depth":         {"cc": 77, "description": "LFO depth ΓÇö modulation amount applied to pitch, filter, or PWM"},
-    "VCO1 Tune":         {"cc": 24, "description": "VCO1 fine tune ΓÇö pitch offset for detuning against VCO2 and VCO3"},
-    "VCO2 Tune":         {"cc": 25, "description": "VCO2 fine tune ΓÇö detuning creates beating and fatness"},
-    "Noise Level":       {"cc": 26, "description": "Noise generator level ΓÇö white noise for percussion, wind effects, and S&H input"},
-    "Spring Reverb":     {"cc": 91, "description": "Built-in spring reverb level ΓÇö classic Moog warm hall reverb character"}
+    "LFO Rate":          {"cc": 76, "description": "LFO rate — speed of the primary low-frequency oscillator"},
+    "LFO Depth":         {"cc": 77, "description": "LFO depth — modulation amount applied to pitch, filter, or PWM"},
+    "VCO1 Tune":         {"cc": 24, "description": "VCO1 fine tune — pitch offset for detuning against VCO2 and VCO3"},
+    "VCO2 Tune":         {"cc": 25, "description": "VCO2 fine tune — detuning creates beating and fatness"},
+    "Noise Level":       {"cc": 26, "description": "Noise generator level — white noise for percussion, wind effects, and S&H input"},
+    "Spring Reverb":     {"cc": 91, "description": "Built-in spring reverb level — classic Moog warm hall reverb character"}
   }
 }

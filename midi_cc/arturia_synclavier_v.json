@@ -2,7 +2,7 @@
   "plugin_name": "Synclavier V",
   "manufacturer": "Arturia",
   "match_patterns": ["Synclavier V", "Synclavier"],
-  "notes": "Arturia Synclavier V ΓÇö New England Digital Synclavier II emulation. Combines FM synthesis with additive harmonic control. Up to 12 partials, each with independent level and ratio. Timbre frames allow morphing between harmonic states.",
+  "notes": "Arturia Synclavier V — New England Digital Synclavier II emulation. Combines FM synthesis with additive harmonic control. Up to 12 partials, each with independent level and ratio. Timbre frames allow morphing between harmonic states.",
   "parameters": {
     "Volume":              {"cc": 7,  "description": "Master volume"},
     "Pan":                 {"cc": 10, "description": "Stereo pan"},
@@ -12,7 +12,7 @@
     "Portamento Time":     {"cc": 5,  "description": "Portamento time"},
 
     "FM Ratio":            {"cc": 14, "description": "FM carrier-to-modulator frequency ratio"},
-    "FM Index":            {"cc": 15, "description": "FM modulation index (depth) ΓÇö core timbre control"},
+    "FM Index":            {"cc": 15, "description": "FM modulation index (depth) — core timbre control"},
     "FM Harmonic":         {"cc": 16, "description": "FM modulator harmonic content"},
     "Timbre Frame":        {"cc": 17, "description": "Timbre frame morph position (scrub through harmonic snapshots)"},
     "Frame Speed":         {"cc": 18, "description": "Timbre frame playback speed"},

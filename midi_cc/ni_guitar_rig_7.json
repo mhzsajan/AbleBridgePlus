@@ -2,14 +2,14 @@
   "plugin_name": "Guitar Rig 7",
   "manufacturer": "Native Instruments",
   "match_patterns": ["Guitar Rig 7", "Guitar Rig 6", "Guitar Rig"],
-  "notes": "NI Guitar Rig 7 ΓÇö multi-effects processor. MIDI CC maps to the 8 Macro controls (assign in Guitar Rig's Macro panel to amp/effect parameters) plus global controls. Right-click any knob in Guitar Rig ΓåÆ Learn MIDI CC to assign directly.",
+  "notes": "NI Guitar Rig 7 — multi-effects processor. MIDI CC maps to the 8 Macro controls (assign in Guitar Rig's Macro panel to amp/effect parameters) plus global controls. Right-click any knob in Guitar Rig → Learn MIDI CC to assign directly.",
   "parameters": {
     "Volume":              {"cc": 7,  "description": "Master output volume"},
     "Pan":                 {"cc": 10, "description": "Stereo pan"},
     "Expression":          {"cc": 11, "description": "Expression pedal (wah, volume swells)"},
     "Sustain":             {"cc": 64, "description": "Sustain / hold"},
 
-    "Macro 1":             {"cc": 14, "description": "Macro 1 ΓÇö assign in Guitar Rig Macro panel (e.g. amp gain)"},
+    "Macro 1":             {"cc": 14, "description": "Macro 1 — assign in Guitar Rig Macro panel (e.g. amp gain)"},
     "Macro 2":             {"cc": 15, "description": "Macro 2 (e.g. amp tone/EQ)"},
     "Macro 3":             {"cc": 16, "description": "Macro 3 (e.g. reverb mix)"},
     "Macro 4":             {"cc": 17, "description": "Macro 4 (e.g. delay mix)"},

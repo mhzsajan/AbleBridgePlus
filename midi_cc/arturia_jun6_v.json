@@ -2,7 +2,7 @@
   "plugin_name": "Jun-6 V",
   "manufacturer": "Arturia",
   "match_patterns": ["Jun-6 V"],
-  "notes": "Arturia Jun-6 V ΓÇö Roland Juno-6/106 emulation. DCO-based subtractive synthesis. Chorus is a defining feature.",
+  "notes": "Arturia Jun-6 V — Roland Juno-6/106 emulation. DCO-based subtractive synthesis. Chorus is a defining feature.",
   "parameters": {
     "Volume":            {"cc": 7,  "description": "Master volume"},
     "Pan":               {"cc": 10, "description": "Stereo pan"},

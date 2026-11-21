@@ -2,7 +2,7 @@
   "plugin_name": "Jup-8000",
   "manufacturer": "Arturia",
   "match_patterns": ["Jup-8000", "Jup 8000", "Jup8000"],
-  "notes": "Arturia Jup-8000 ΓÇö virtual analog synthesizer inspired by the Roland Jupiter series. 8-voice poly, 2 oscillators per voice, 24dB LP filter, extensive modulation matrix.",
+  "notes": "Arturia Jup-8000 — virtual analog synthesizer inspired by the Roland Jupiter series. 8-voice poly, 2 oscillators per voice, 24dB LP filter, extensive modulation matrix.",
   "parameters": {
     "Volume":              {"cc": 7,  "description": "Master volume"},
     "Pan":                 {"cc": 10, "description": "Stereo pan"},

@@ -2,7 +2,7 @@
   "plugin_name": "Mini V",
   "manufacturer": "Arturia",
   "match_patterns": ["Mini V3", "Mini V4", "Mini V"],
-  "notes": "Arturia Mini V3/V4 ΓÇö Minimoog emulation. 3-oscillator subtractive synthesis. Classic ladder filter.",
+  "notes": "Arturia Mini V3/V4 — Minimoog emulation. 3-oscillator subtractive synthesis. Classic ladder filter.",
   "parameters": {
     "Volume":            {"cc": 7,  "description": "Master volume"},
     "Pan":               {"cc": 10, "description": "Stereo pan"},

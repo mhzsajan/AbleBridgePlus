@@ -2,7 +2,7 @@
   "plugin_name": "Mellotron V",
   "manufacturer": "Arturia",
   "match_patterns": ["Mellotron V"],
-  "notes": "Arturia Mellotron V ΓÇö tape replay instrument emulation. Select tape banks (strings, flute, choir, brass etc). Less synthesis, more sample-based.",
+  "notes": "Arturia Mellotron V — tape replay instrument emulation. Select tape banks (strings, flute, choir, brass etc). Less synthesis, more sample-based.",
   "parameters": {
     "Volume":            {"cc": 7,  "description": "Master volume"},
     "Pan":               {"cc": 10, "description": "Stereo pan"},

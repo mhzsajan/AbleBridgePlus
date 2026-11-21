@@ -2,7 +2,7 @@
   "plugin_name": "Jupiter-8 V",
   "manufacturer": "Arturia",
   "match_patterns": ["Jupiter-8 V", "Jupiter 8 V", "Jupiter8 V"],
-  "notes": "Arturia Jupiter-8 V ΓÇö Roland Jupiter-8 (1981) emulation. 8-voice poly, 2 DCOs per voice, 24dB LP filter, iconic Roland chorus.",
+  "notes": "Arturia Jupiter-8 V — Roland Jupiter-8 (1981) emulation. 8-voice poly, 2 DCOs per voice, 24dB LP filter, iconic Roland chorus.",
   "parameters": {
     "Volume":              {"cc": 7,  "description": "Master volume"},
     "Pan":                 {"cc": 10, "description": "Stereo pan"},

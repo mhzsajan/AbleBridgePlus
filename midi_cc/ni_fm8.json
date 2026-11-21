@@ -2,7 +2,7 @@
   "plugin_name": "FM8",
   "manufacturer": "Native Instruments",
   "match_patterns": ["FM8"],
-  "notes": "NI FM8 ΓÇö 6-operator FM synthesis. MIDI CC maps to the 8 Macro controls + standard parameters. Assign macros in FM8's Macro panel.",
+  "notes": "NI FM8 — 6-operator FM synthesis. MIDI CC maps to the 8 Macro controls + standard parameters. Assign macros in FM8's Macro panel.",
   "parameters": {
     "Volume":            {"cc": 7,  "description": "Master volume"},
     "Pan":               {"cc": 10, "description": "Stereo pan"},
@@ -10,7 +10,7 @@
     "Sustain":           {"cc": 64, "description": "Sustain pedal"},
     "Portamento Time":   {"cc": 5,  "description": "Portamento time"},
 
-    "Macro 1":           {"cc": 14, "description": "FM8 Macro 1 ΓÇö assign to any FM8 parameter"},
+    "Macro 1":           {"cc": 14, "description": "FM8 Macro 1 — assign to any FM8 parameter"},
     "Macro 2":           {"cc": 15, "description": "FM8 Macro 2"},
     "Macro 3":           {"cc": 16, "description": "FM8 Macro 3"},
     "Macro 4":           {"cc": 17, "description": "FM8 Macro 4"},

@@ -2,7 +2,7 @@
   "plugin_name": "SQ80 V",
   "manufacturer": "Arturia",
   "match_patterns": ["SQ80 V", "SQ-80 V", "SQ80", "Ensoniq SQ80"],
-  "notes": "Arturia SQ80 V ΓÇö Ensoniq SQ-80 (1987) emulation. Hybrid synth: 3 digital wavetable oscillators + Curtis analog filter. 8-voice poly. Unique wavetable character with punchy analog filtering.",
+  "notes": "Arturia SQ80 V — Ensoniq SQ-80 (1987) emulation. Hybrid synth: 3 digital wavetable oscillators + Curtis analog filter. 8-voice poly. Unique wavetable character with punchy analog filtering.",
   "parameters": {
     "Volume":              {"cc": 7,  "description": "Master volume"},
     "Pan":                 {"cc": 10, "description": "Stereo pan"},

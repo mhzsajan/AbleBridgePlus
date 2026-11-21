@@ -2,7 +2,7 @@
   "plugin_name": "OP-Xa V",
   "manufacturer": "Arturia",
   "match_patterns": ["OP-Xa V", "OB-Xa", "Oberheim"],
-  "notes": "Arturia OP-Xa V ΓÇö Oberheim OB-Xa emulation. 8-voice poly, 2 DCOs per voice, classic Oberheim filter.",
+  "notes": "Arturia OP-Xa V — Oberheim OB-Xa emulation. 8-voice poly, 2 DCOs per voice, classic Oberheim filter.",
   "parameters": {
     "Volume":            {"cc": 7,  "description": "Master volume"},
     "Pan":               {"cc": 10, "description": "Stereo pan"},

@@ -2,7 +2,7 @@
   "plugin_name": "Piano V",
   "manufacturer": "Arturia",
   "match_patterns": ["Piano V2", "Piano V3", "Piano V"],
-  "notes": "Arturia Piano V ΓÇö physical modelling piano. Controls hammer/string/soundboard physical parameters.",
+  "notes": "Arturia Piano V — physical modelling piano. Controls hammer/string/soundboard physical parameters.",
   "parameters": {
     "Volume":            {"cc": 7,  "description": "Master volume"},
     "Pan":               {"cc": 10, "description": "Stereo pan"},

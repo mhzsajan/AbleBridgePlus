@@ -2,7 +2,7 @@
   "plugin_name": "Prophet-5 V",
   "manufacturer": "Arturia",
   "match_patterns": ["Prophet-5 V", "Prophet V3", "Prophet V"],
-  "notes": "Arturia Prophet-5 V ΓÇö Sequential Circuits Prophet-5 emulation. Poly synth with 2 DCOs per voice, CEM filter.",
+  "notes": "Arturia Prophet-5 V — Sequential Circuits Prophet-5 emulation. Poly synth with 2 DCOs per voice, CEM filter.",
   "parameters": {
     "Volume":            {"cc": 7,  "description": "Master volume"},
     "Pan":               {"cc": 10, "description": "Stereo pan"},

@@ -2,7 +2,7 @@
   "plugin_name": "DX7 V",
   "manufacturer": "Arturia",
   "match_patterns": ["DX7 V"],
-  "notes": "Arturia DX7 V ΓÇö FM synthesis. Standard GM CCs plus DX7-specific operator controls. Verify operator CCs against Arturia's MIDI implementation PDF.",
+  "notes": "Arturia DX7 V — FM synthesis. Standard GM CCs plus DX7-specific operator controls. Verify operator CCs against Arturia's MIDI implementation PDF.",
   "parameters": {
     "Volume":            {"cc": 7,  "description": "Master volume"},
     "Pan":               {"cc": 10, "description": "Stereo pan"},
@@ -22,7 +22,7 @@
     "LFO Depth":         {"cc": 77, "description": "LFO modulation depth"},
     "LFO Delay":         {"cc": 78, "description": "LFO onset delay"},
 
-    "Algorithm":         {"cc": 14, "description": "FM algorithm (0-31 ΓåÆ 1-32)"},
+    "Algorithm":         {"cc": 14, "description": "FM algorithm (0-31 → 1-32)"},
     "Feedback":          {"cc": 15, "description": "Operator feedback amount"},
 
     "Op1 Level":         {"cc": 16, "description": "Operator 1 output level"},

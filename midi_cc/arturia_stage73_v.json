@@ -2,7 +2,7 @@
   "plugin_name": "Stage-73 V",
   "manufacturer": "Arturia",
   "match_patterns": ["Stage-73 V", "Stage 73 V", "Stage73 V", "Rhodes"],
-  "notes": "Arturia Stage-73 V ΓÇö Fender Rhodes electric piano emulation (Mark I and Mark II models). Physical modelling of tines, pickups, and tonebars. Classic tremolo built in.",
+  "notes": "Arturia Stage-73 V — Fender Rhodes electric piano emulation (Mark I and Mark II models). Physical modelling of tines, pickups, and tonebars. Classic tremolo built in.",
   "parameters": {
     "Volume":              {"cc": 7,  "description": "Master volume"},
     "Pan":                 {"cc": 10, "description": "Stereo pan"},
@@ -11,10 +11,10 @@
     "Soft Pedal":          {"cc": 67, "description": "Soft pedal"},
 
     "Rhodes Model":        {"cc": 14, "description": "Piano model: 0=Mark I (73-key), 64=Mark I (88-key), 127=Mark II"},
-    "Pickup Position":     {"cc": 15, "description": "Pickup position (near/far tine tip ΓÇö affects brightness/mellowness)"},
+    "Pickup Position":     {"cc": 15, "description": "Pickup position (near/far tine tip — affects brightness/mellowness)"},
     "Pickup Type":         {"cc": 16, "description": "Pickup type (affects tone character)"},
 
-    "Bell":                {"cc": 74, "description": "Bell/brightness ΓÇö amount of tine tip harmonic content"},
+    "Bell":                {"cc": 74, "description": "Bell/brightness — amount of tine tip harmonic content"},
     "Tine Volume":         {"cc": 17, "description": "Tine volume in the mix"},
     "Tone Bar":            {"cc": 18, "description": "Tone bar hardness / stiffness"},
     "Hammer Hardness":     {"cc": 19, "description": "Hammer felt hardness (soft=warm, hard=bright/glassy)"},

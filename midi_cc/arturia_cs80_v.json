@@ -2,7 +2,7 @@
   "plugin_name": "CS-80 V",
   "manufacturer": "Arturia",
   "match_patterns": ["CS-80 V", "CS80 V", "CS 80"],
-  "notes": "Arturia CS-80 V ΓÇö Yamaha CS-80 (1976) emulation. 8-voice poly, two independent layers (I+II) per voice each with own filter+VCA, ring modulator, ribbon controller. Famous for lush pads and 'Blade Runner' sounds.",
+  "notes": "Arturia CS-80 V — Yamaha CS-80 (1976) emulation. 8-voice poly, two independent layers (I+II) per voice each with own filter+VCA, ring modulator, ribbon controller. Famous for lush pads and 'Blade Runner' sounds.",
   "parameters": {
     "Volume":              {"cc": 7,  "description": "Master volume"},
     "Pan":                 {"cc": 10, "description": "Stereo pan"},
@@ -36,7 +36,7 @@
     "Ch2 Filter Release":  {"cc": 88, "description": "Channel 2 filter release"},
     "Ch2 Level":           {"cc": 24, "description": "Channel 2 output level"},
 
-    "Ring Mod":            {"cc": 25, "description": "Ring modulator amount (Ch1├ùCh2)"},
+    "Ring Mod":            {"cc": 25, "description": "Ring modulator amount (Ch1×Ch2)"},
     "Noise":               {"cc": 26, "description": "Noise level"},
 
     "LFO Rate":            {"cc": 76, "description": "LFO rate"},
